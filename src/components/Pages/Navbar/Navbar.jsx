@@ -103,7 +103,10 @@ const Navbar = () => {
               {links}
             </ul>
           </div>
-          <Link to="/" className="btn btn-ghost text-xl">
+          <Link
+            to="/"
+            className="btn btn-ghost text-xl font-semibold border-none shadow-none bg-transparent"
+          >
             Bazario
           </Link>
         </div>

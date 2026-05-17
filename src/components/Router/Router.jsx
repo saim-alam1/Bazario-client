@@ -9,10 +9,12 @@ import WishList from "../Pages/WishList/WishList";
 import CartItems from "../Pages/CartItems/CartItems";
 import AuthLayout from "../Layouts/AuthLayout/AuthLayout";
 import Login from "../Pages/Login/Login";
+import ErrorComponent from "../UI/ErrorComponent/ErrorComponent";
 
 const router = createBrowserRouter([
   {
     path: "/",
+    errorElement: <ErrorComponent />,
     element: <HomeLayout />,
     children: [
       {

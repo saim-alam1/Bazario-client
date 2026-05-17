@@ -5,6 +5,10 @@ import Shop from "../Pages/Shop/Shop";
 import Categories from "../Pages/Categories/Categories";
 import BecomeASeller from "../Pages/BecomeASeller/BecomeASeller";
 import About from "../Pages/About/About";
+import WishList from "../Pages/WishList/WishList";
+import CartItems from "../Pages/CartItems/CartItems";
+import AuthLayout from "../Layouts/AuthLayout/AuthLayout";
+import Login from "../Pages/Login/Login";
 
 const router = createBrowserRouter([
   {
@@ -30,6 +34,24 @@ const router = createBrowserRouter([
       {
         path: "/about",
         Component: About,
+      },
+      {
+        path: "/wish-list",
+        Component: WishList,
+      },
+      {
+        path: "/cart-items",
+        Component: CartItems,
+      },
+    ],
+  },
+  {
+    path: "/auth-layout",
+    element: <AuthLayout />,
+    children: [
+      {
+        path: "login",
+        Component: Login,
       },
     ],
   },

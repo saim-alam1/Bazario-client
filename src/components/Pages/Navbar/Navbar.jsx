@@ -1,6 +1,7 @@
 import { FiHeart } from "react-icons/fi";
 import { IoCartOutline, IoSearchOutline } from "react-icons/io5";
-import { NavLink } from "react-router";
+import { RiMenu2Fill } from "react-icons/ri";
+import { Link, NavLink } from "react-router";
 
 const Navbar = () => {
   const links = (
@@ -60,9 +61,30 @@ const Navbar = () => {
 
   const authLinks = (
     <>
-      <FiHeart size={25} />
-      <IoCartOutline size={25} />
-      <a className="btn">Button</a>
+      <NavLink
+        to="/wish-list"
+        className={({ isActive }) =>
+          `${isActive ? "text-[#EA580C] border-b pb-1 border-[#EA580C]" : "text-[#6B7280]"} font-semibold text-base`
+        }
+      >
+        <FiHeart size={25} />
+      </NavLink>
+
+      <NavLink
+        to="/cart-items"
+        className={({ isActive }) =>
+          `${isActive ? "text-[#EA580C] border-b pb-1 border-[#EA580C]" : "text-[#6B7280]"} font-semibold text-base`
+        }
+      >
+        <IoCartOutline size={25} />
+      </NavLink>
+
+      <Link
+        to="/auth-layout/login"
+        className="btn border-none shadow-none bg-[#F59E0B] hover:bg-[#D97706] text-white font-semibold text-base"
+      >
+        Login
+      </Link>
     </>
   );
 
@@ -72,21 +94,7 @@ const Navbar = () => {
         <div className="navbar-start">
           <div className="dropdown">
             <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                {" "}
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h8m-8 6h16"
-                />{" "}
-              </svg>
+              <RiMenu2Fill size={25} />
             </div>
             <ul
               tabIndex="-1"
@@ -95,14 +103,16 @@ const Navbar = () => {
               {links}
             </ul>
           </div>
-          <a className="btn btn-ghost text-xl">daisyUI</a>
+          <Link to="/" className="btn btn-ghost text-xl">
+            Bazario
+          </Link>
         </div>
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal px-1">{links}</ul>
         </div>
         <div className="navbar-end flex items-center gap-3 mr-2">
           {/* Search Filed */}
-          <div>
+          <div className="hidden md:flex">
             <label className="input">
               <IoSearchOutline size={25} />
               <input type="search" required placeholder="Search" />

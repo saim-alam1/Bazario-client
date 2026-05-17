@@ -9,14 +9,6 @@ const ErrorComponent = () => {
 
   return (
     <section className="bg-white">
-      {/* 
-        FIX:
-        - Removed the extra `.container` wrapper.
-        - `container` adds width constraints and prevents `justify-around`
-          from working as expected.
-        - Applied `flex`, `justify-around`, and `items-center`
-          directly to the main wrapper.
-      */}
       <div className="max-w-480 mx-auto min-h-screen px-6 py-12 flex items-center flex-col-reverse justify-center lg:flex-row lg:justify-around gap-12">
         {/* Left Content */}
         <div className="max-w-xl text-center lg:text-left">

@@ -3,6 +3,7 @@ import loginAnimation from "../../../assets/login.json";
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link } from "react-router";
+import userProfilePicture from "../../../assets/image-upload-icon.png";
 
 const Register = () => {
   const Lottie = LottiePlayer.default || LottiePlayer;
@@ -25,6 +26,28 @@ const Register = () => {
                   <span className="text-[#F59E0B] italic">Bazario</span>
                 </h1>
               </div>
+
+              {/* Upload Image */}
+              <div className="mb-8 space-y-4 text-center">
+                <h1 className="text-descriptions">
+                  Upload your profile picture
+                </h1>
+
+                <label className="cursor-pointer flex flex-col items-center text-center">
+                  <>
+                    <img
+                      src={userProfilePicture}
+                      alt="Upload"
+                      className="w-32 h-32 mb-2"
+                    />
+                    <p className="text-sm text-gray-500 mt-4">
+                      Click or drag & drop to upload
+                    </p>
+                  </>
+                  <input type="file" accept="image/*" className="hidden" />
+                </label>
+              </div>
+
               <form className="fieldset">
                 <div>
                   <label className="block mb-1.5 text-[18px] text-descriptions">
@@ -81,7 +104,7 @@ const Register = () => {
                   </p>
                 </div>
                 <button className="btn bg-[#F59E0B] hover:bg-[#D97706] text-white font-semibold mt-4">
-                  Login
+                  Register
                 </button>
               </form>
             </div>

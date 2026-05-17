@@ -1,2 +1,10 @@
 @import "tailwindcss";
 @plugin "daisyui";
+
+.text-headings {
+  color: #242424;
+}
+
+.text-descriptions {
+  color: #4b5563;
+}

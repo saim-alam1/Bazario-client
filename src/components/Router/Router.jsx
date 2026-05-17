@@ -10,6 +10,7 @@ import CartItems from "../Pages/CartItems/CartItems";
 import AuthLayout from "../Layouts/AuthLayout/AuthLayout";
 import Login from "../Pages/Login/Login";
 import ErrorComponent from "../UI/ErrorComponent/ErrorComponent";
+import Register from "../Pages/Register/Register";
 
 const router = createBrowserRouter([
   {
@@ -54,6 +55,10 @@ const router = createBrowserRouter([
       {
         path: "login",
         Component: Login,
+      },
+      {
+        path: "register",
+        Component: Register,
       },
     ],
   },

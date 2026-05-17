@@ -1,10 +1,10 @@
 import LottiePlayer from "lottie-react";
 import loginAnimation from "../../../assets/login.json";
-import { Link } from "react-router";
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { Link } from "react-router";
 
-const Login = () => {
+const Register = () => {
   const Lottie = LottiePlayer.default || LottiePlayer;
   const [show, setShow] = useState(false);
 
@@ -21,17 +21,30 @@ const Login = () => {
             <div className="card-body">
               <div className="text-center my-4">
                 <h1 className="text-3xl font-semibold tracking-wider text-headings">
-                  Login to your account
+                  Register to{" "}
+                  <span className="text-[#F59E0B] italic">Bazario</span>
                 </h1>
               </div>
               <form className="fieldset">
                 <div>
-                  <label className="block text-[18px] text-descriptions">
+                  <label className="block mb-1.5 text-[18px] text-descriptions">
                     Name
                   </label>
                   <input
                     type="text"
                     placeholder="Your name"
+                    className="block placeholder:text-sm
+      placeholder:font-medium w-full px-3 py-3 text-black bg-white border border-gray-200 text-sm rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+                  />
+                </div>
+                {/* Email */}
+                <div className="my-2">
+                  <label className="block mb-1.5 text-[18px] text-descriptions">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="Your email"
                     className="block placeholder:text-sm
       placeholder:font-medium w-full px-3 py-3 text-black bg-white border border-gray-200 text-sm rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
                   />
@@ -44,7 +57,7 @@ const Login = () => {
                   <input
                     type={show ? "text" : "password"}
                     placeholder="********"
-                    className="block w-full px-5 py-3 text-black bg-white border border-gray-200 rounded-lg focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+                    className="block w-full px-5 py-3 mt-2 text-black bg-white border border-gray-200 rounded-lg focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
                   />
 
                   <button
@@ -58,12 +71,12 @@ const Login = () => {
                 {/* Link to Register */}
                 <div className="my-3">
                   <p className="text-sm">
-                    Don't have any account?{" "}
+                    Already have account?{" "}
                     <Link
-                      to="/auth-layout/register"
+                      to="/auth-layout/login"
                       className="text-blue-500 font-semibold underline"
                     >
-                      Register
+                      Login
                     </Link>
                   </p>
                 </div>
@@ -79,4 +92,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

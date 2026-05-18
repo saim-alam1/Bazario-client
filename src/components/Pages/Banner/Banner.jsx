@@ -40,7 +40,7 @@ const Banner = () => {
   return (
     <section className="">
       <div
-        className="relative w-full h-[800px] md:h-[1050px] bg-cover bg-center bg-no-repeat"
+        className="relative w-full h-[1050px] bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${dashWave})` }}
       >
         <div className="absolute inset-0 z-20 bg-linear-to-br from-black/30 via-black/80 to-[#EA580C90] grid lg:grid-cols-2 items-center justify-around">
@@ -84,23 +84,23 @@ const Banner = () => {
           <div className="flex items-center justify-center">
             <div className="relative">
               <img
-                className="md:h-[400px] object-cover -rotate-8 rounded-xs"
+                className="h-[250px] md:h-[400px] object-cover -rotate-8 rounded-xs"
                 src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f"
                 alt="Image"
               />
 
               {/* badge 1 */}
               <div
-                className="absolute top-25 -left-18 flex items-center gap-3 px-4 py-3
+                className="absolute top-11 md:top-25 -left-7 md:-left-18 flex items-center gap-3 px-4 py-3
     bg-white/10 backdrop-blur-md border border-white/20 rounded-xl"
               >
                 <CiDeliveryTruck size={35} color="#22c55e" />
 
                 <div>
-                  <h3 className="text-xl text-white font-semibold">
+                  <h3 className="text-sm md:text-xl text-white font-semibold">
                     Free Shipping
                   </h3>
-                  <p className="text-base text-gray-300 font-semibold">
+                  <p className="text-xs md:text-base text-gray-300 font-semibold">
                     For Orders Upto 50$
                   </p>
                 </div>
@@ -108,16 +108,16 @@ const Banner = () => {
 
               {/* badge 2 */}
               <div
-                className="absolute bottom-25 -right-18 flex items-center gap-3 px-4 py-3
+                className="absolute bottom-11 -right-5 md:-right-18 flex items-center gap-3 px-4 py-3
     bg-white/10 backdrop-blur-md border border-white/20 rounded-xl"
               >
                 <GrUpdate size={25} color="#22c55e" />
 
                 <div>
-                  <h3 className="text-xl text-white font-semibold">
+                  <h3 className="text-sm md:text-xl text-white font-semibold">
                     Easy Returns
                   </h3>
-                  <p className="text-base text-gray-300 font-semibold">
+                  <p className="text-xs md:text-base text-gray-300 font-semibold">
                     60-day guarantee
                   </p>
                 </div>

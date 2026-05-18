@@ -10,9 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@egjs/flicking-plugins": "^4.7.1",
-    "@egjs/react-flicking": "^4.15.0",
     "@tailwindcss/vite": "^4.3.0",
+    "firebase": "^12.13.0",
     "framer-motion": "^12.38.0",
     "lottie-react": "^2.4.1",
     "react": "^19.2.6",

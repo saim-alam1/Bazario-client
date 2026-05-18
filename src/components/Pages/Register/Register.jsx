@@ -4,10 +4,50 @@ import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link } from "react-router";
 import userProfilePicture from "../../../assets/image-upload-icon.png";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useForm } from "react-hook-form";
 
 const Register = () => {
   const Lottie = LottiePlayer.default || LottiePlayer;
   const [show, setShow] = useState(false);
+  const [profilePic, setProfilePic] = useState("");
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    shouldUnregister: true,
+  });
+
+  const handleImageUpload = async (e) => {
+    const image = e.target.files[0];
+    if (!image) return;
+
+    const formData = new FormData();
+    formData.append("image", image);
+
+    try {
+      const imageUpload = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMGBB}`;
+
+      const res = await axios.post(imageUpload, formData);
+
+      const url = res.data?.data?.display_url;
+
+      setProfilePic(url);
+
+      // IMPORTANT: sync with form if needed
+      setValue("image", url);
+    } catch (err) {
+      console.log(err);
+      toast.error("Image upload failed");
+    }
+  };
+
+  // Monitoring the Icon Image Field
+  const liveImage = watch("image");
 
   return (
     <section className="flex">
@@ -34,17 +74,39 @@ const Register = () => {
                 </h1>
 
                 <label className="cursor-pointer flex flex-col items-center text-center">
-                  <>
+                  {profilePic ? (
                     <img
-                      src={userProfilePicture}
-                      alt="Upload"
-                      className="w-32 h-32 mb-2"
+                      src={profilePic}
+                      alt="Preview"
+                      className="w-32 h-32 object-cover rounded-full"
                     />
-                    <p className="text-sm text-gray-500 mt-4">
-                      Click or drag & drop to upload
-                    </p>
-                  </>
-                  <input type="file" accept="image/*" className="hidden" />
+                  ) : liveImage?.length > 0 ? (
+                    <img
+                      src={URL.createObjectURL(liveImage[0])}
+                      alt="Preview"
+                      className="w-32 h-32 object-cover rounded-full"
+                    />
+                  ) : (
+                    <>
+                      <img
+                        src={userProfilePicture}
+                        alt="Upload"
+                        className="w-32 h-32 mb-2"
+                      />
+                      <p className="text-sm text-gray-500 mt-4">
+                        Click or drag & drop to upload
+                      </p>
+                    </>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    {...register("image", {
+                      required: true,
+                      onChange: handleImageUpload,
+                    })}
+                  />
                 </label>
               </div>
 

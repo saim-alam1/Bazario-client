@@ -1,132 +1,107 @@
-import { Link } from "react-router";
-import dashWave from "../../../assets/dash-wave.svg";
-import { AiOutlineThunderbolt } from "react-icons/ai";
-import { LuShoppingBag } from "react-icons/lu";
-import { FaChevronRight } from "react-icons/fa";
-import { CiDeliveryTruck } from "react-icons/ci";
-import { GrUpdate } from "react-icons/gr";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/effect-fade";
+
+import { Pagination, Autoplay, EffectFade } from "swiper/modules";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
+
+const slides = [
+  {
+    image:
+      "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?auto=format&fit=crop&w=1600&q=80",
+    title: "Exclusive Discounts",
+    description:
+      "Upgrade your entire wardrobe today . For a limited time only, we are offering discount on our latest fashion items",
+  },
+  {
+    image:
+      "https://images.unsplash.com/photo-1520975916090-3105956dac38?auto=format&fit=crop&w=1600&q=80",
+    title: "Trending Fashion",
+    description:
+      "Trending outfits for men, women & children. Street wear-inspired relaxed fits dominate, soft romantic layers.",
+  },
+  {
+    image:
+      "https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=1600&q=80",
+    title: "Essentials Offers",
+    description:
+      "Transform your living space for less with massive promotions on smart organization, kitchenware, and luxury bedding.",
+  },
+  {
+    image:
+      "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    title: "Hot Deals",
+    description:
+      "Turn up the savings with our handpicked Hot Deals section, featuring the deepest discounts of the season on our most wanted products.",
+  },
+];
+
+const textAnimation = {
+  hidden: { opacity: 0, y: 60 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.8, ease: "easeOut" },
+  },
+};
 
 const Banner = () => {
-  const slides = [
-    {
-      id: 1,
-      image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518",
-      title: "Summer Collection",
-      descriptions:
-        "Designed for hot, humid days, the Summer Collection features breathable, lightweight fabrics like cotton, linen, and chiffon.",
-    },
-    {
-      id: 2,
-      image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
-      title: "New Sneakers",
-    },
-    {
-      id: 3,
-      image: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f",
-      title: "Fashion Trends",
-    },
-    {
-      id: 4,
-      image: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c",
-      title: "Premium Jackets",
-    },
-    {
-      id: 5,
-      image: "https://images.unsplash.com/photo-1483985988355-763728e1935b",
-      title: "Luxury Style",
-    },
-  ];
+  const [activeIndex, setActiveIndex] = useState(0);
 
   return (
-    <section className="">
-      <div
-        className="relative w-full h-[1050px] bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${dashWave})` }}
-      >
-        <div className="absolute inset-0 z-20 bg-linear-to-br from-black/30 via-black/80 to-[#EA580C90] grid lg:grid-cols-2 items-center justify-around">
-          {/* Contents */}
+    <Swiper
+      effect="fade"
+      autoplay={{ delay: 3500, disableOnInteraction: false }}
+      pagination={{ clickable: true }}
+      modules={[Pagination, Autoplay, EffectFade]}
+      onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
+      className="h-[65vh] sm:h-[75vh] md:h-[85vh] w-full"
+    >
+      {slides.map((slide, index) => {
+        const isActive = index === activeIndex;
 
-          <div className="w-11/12 mx-auto">
-            <button className="btn border-none shadow-none bg-[#EA580C90] rounded-full text-[#F59E0B] text-sm font-semibold">
-              <AiOutlineThunderbolt size={25} /> New Collection 2026
-            </button>
+        return (
+          <SwiperSlide key={index}>
+            <div
+              className="relative h-full w-full bg-center bg-cover"
+              style={{ backgroundImage: `url(${slide.image})` }}
+            >
+              {/* Overlay */}
+              <div className="absolute inset-0 bg-linear-to-r from-black/80 via-black/50 to-black/80" />
 
-            <div className="my-12 space-y-5">
-              <h1 className="text-4xl font-black text-white">
-                Summer Collection
-              </h1>
-              <p className="text-lg text-gray-500 font-semibold">
-                Designed for hot, humid days, the Summer Collection features
-                breathable, lightweight fabrics like cotton, linen, and chiffon.
-                breathable, lightweight fabrics like cotton, linen, and chiffon.
-                These easy-to-wear pieces—including flowy dresses, crisp
-                button-downs, and vibrant 3-piece suits—are tailored to keep you
-                cool and stylish.
-              </p>
-            </div>
+              {/* Text */}
+              <div className="absolute inset-0 flex items-center justify-center px-4 sm:px-6 md:px-10">
+                <AnimatePresence mode="wait">
+                  {isActive && (
+                    <motion.div
+                      variants={textAnimation}
+                      initial="hidden"
+                      animate="visible"
+                      exit="hidden"
+                      className="text-center backdrop-blur-md bg-white/10 border border-white/20 
+                      p-6 sm:p-8 md:p-12 
+                      rounded-2xl sm:rounded-3xl 
+                      shadow-2xl 
+                      max-w-xs sm:max-w-xl md:max-w-3xl"
+                    >
+                      <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-snug">
+                        {slide.title}
+                      </h2>
 
-            <div className="flex gap-4">
-              <Link
-                to="/shop"
-                className="btn border-none shadow-none bg-amber-600 hover:bg-amber-700 text-white font-semibold text-base rounded-full"
-              >
-                Shop Now <LuShoppingBag size={25} />
-              </Link>
-              <Link
-                to="/categories"
-                className="btn shadow-none bg-transparent border border-amber-600 hover:text-amber-500 text-white font-semibold text-base rounded-full"
-              >
-                Browse Categories <FaChevronRight size={25} />
-              </Link>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-center">
-            <div className="relative">
-              <img
-                className="h-[250px] md:h-[400px] object-cover -rotate-8 rounded-xs"
-                src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f"
-                alt="Image"
-              />
-
-              {/* badge 1 */}
-              <div
-                className="absolute top-11 md:top-25 -left-7 md:-left-18 flex items-center gap-3 px-4 py-3
-    bg-white/10 backdrop-blur-md border border-white/20 rounded-xl"
-              >
-                <CiDeliveryTruck size={35} color="#22c55e" />
-
-                <div>
-                  <h3 className="text-sm md:text-xl text-white font-semibold">
-                    Free Shipping
-                  </h3>
-                  <p className="text-xs md:text-base text-gray-300 font-semibold">
-                    For Orders Upto 50$
-                  </p>
-                </div>
-              </div>
-
-              {/* badge 2 */}
-              <div
-                className="absolute bottom-11 -right-5 md:-right-18 flex items-center gap-3 px-4 py-3
-    bg-white/10 backdrop-blur-md border border-white/20 rounded-xl"
-              >
-                <GrUpdate size={25} color="#22c55e" />
-
-                <div>
-                  <h3 className="text-sm md:text-xl text-white font-semibold">
-                    Easy Returns
-                  </h3>
-                  <p className="text-xs md:text-base text-gray-300 font-semibold">
-                    60-day guarantee
-                  </p>
-                </div>
+                      <p className="text-sm sm:text-lg md:text-xl text-gray-200">
+                        {slide.description}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </section>
+          </SwiperSlide>
+        );
+      })}
+    </Swiper>
   );
 };
 

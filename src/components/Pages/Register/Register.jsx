@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 import useAuth from "../../../Hooks/useAuth";
 import Loading from "../../UI/Loading/Loading";
 import imageCompression from "browser-image-compression";
+import { Helmet } from "react-helmet-async";
 
 const Register = () => {
   const Lottie = LottiePlayer.default || LottiePlayer;
@@ -94,6 +95,14 @@ const Register = () => {
 
   return (
     <section className="flex">
+      <Helmet>
+        <title>Register | Bazario</title>
+        <meta
+          name="description"
+          content="Join Bazario today and create your account to explore products, manage your profile, and enjoy a smooth online shopping experience built for modern users."
+        />
+      </Helmet>
+
       {/* Animation */}
       <div className="w-full hidden md:flex justify-center lg:max-w-lg">
         <Lottie animationData={loginAnimation} loop />

@@ -1,17 +1,17 @@
 import LottiePlayer from "lottie-react";
-import loginAnimation from "../../../assets/login.json";
+import loginAnimation from "../../../../assets/login.json";
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link, useLocation, useNavigate } from "react-router";
-import userProfilePicture from "../../../assets/image-upload-icon.png";
+import userProfilePicture from "../../../../assets/image-upload-icon.png";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
-import useAuth from "../../../Hooks/useAuth";
-import Loading from "../../UI/Loading/Loading";
+import useAuth from "../../../../Hooks/useAuth";
+import Loading from "../../../UI/Loading/Loading";
 import imageCompression from "browser-image-compression";
 import { Helmet } from "react-helmet-async";
-import useAxios from "../../../Hooks/useAxios";
+import useAxios from "../../../../Hooks/useAxios";
 
 const Register = () => {
   const Lottie = LottiePlayer.default || LottiePlayer;

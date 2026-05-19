@@ -1,12 +1,12 @@
 import LottiePlayer from "lottie-react";
-import loginAnimation from "../../../assets/login.json";
+import loginAnimation from "../../../../assets/login.json";
 import { Link, useLocation, useNavigate } from "react-router";
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useForm } from "react-hook-form";
-import useAuth from "../../../Hooks/useAuth";
 import { toast } from "react-toastify";
-import Loading from "../../UI/Loading/Loading";
+import useAuth from "../../../../Hooks/useAuth";
+import Loading from "../../../UI/Loading/Loading";
 
 const Login = () => {
   const Lottie = LottiePlayer.default || LottiePlayer;

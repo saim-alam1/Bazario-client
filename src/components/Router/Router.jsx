@@ -8,9 +8,9 @@ import About from "../Pages/About/About";
 import WishList from "../Pages/WishList/WishList";
 import CartItems from "../Pages/CartItems/CartItems";
 import AuthLayout from "../Layouts/AuthLayout/AuthLayout";
-import Login from "../Pages/Login/Login";
 import ErrorComponent from "../UI/ErrorComponent/ErrorComponent";
-import Register from "../Pages/Register/Register";
+import Register from "../Pages/Auth/Register/Register";
+import Login from "../Pages/Auth/Login/Login";
 
 const router = createBrowserRouter([
   {

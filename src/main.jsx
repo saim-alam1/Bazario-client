@@ -7,6 +7,13 @@ import AuthProvider from "./contexts/AuthProvider";
 import { ToastContainer } from "react-toastify";
 import { HelmetProvider } from "react-helmet-async";
 
+// Custom Toastify Style
+const getToastStyle = () => {
+  return window.innerWidth >= 768
+    ? { width: "400px", marginTop: "20px" } // md and above devices
+    : { width: "90%", marginTop: "10px" }; // mobile devices
+};
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <HelmetProvider>
@@ -14,6 +21,6 @@ createRoot(document.getElementById("root")).render(
         <RouterProvider router={router} />
       </AuthProvider>
     </HelmetProvider>
-    <ToastContainer />
+    <ToastContainer toastStyle={getToastStyle()} />
   </StrictMode>,
 );

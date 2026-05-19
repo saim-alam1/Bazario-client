@@ -25,7 +25,7 @@ const Navbar = () => {
         <NavLink
           to="/"
           className={({ isActive }) =>
-            `${isActive ? "text-amber-500 border-b border-amber-500" : "text-white"} font-semibold text-base`
+            `${isActive ? "text-[#EA580C] border-b pb-1 border-[#EA580C]" : "text-[#6B7280]"} font-semibold text-base`
           }
         >
           Home
@@ -35,7 +35,7 @@ const Navbar = () => {
         <NavLink
           to="/shop"
           className={({ isActive }) =>
-            `${isActive ? "text-amber-500 border-b border-amber-500" : "text-white"} font-semibold text-base`
+            `${isActive ? "text-[#EA580C] border-b pb-1 border-[#EA580C]" : "text-[#6B7280]"} font-semibold text-base`
           }
         >
           Shop
@@ -45,7 +45,7 @@ const Navbar = () => {
         <NavLink
           to="/categories"
           className={({ isActive }) =>
-            `${isActive ? "text-amber-500 border-b border-amber-500" : "text-white"} font-semibold text-base`
+            `${isActive ? "text-[#EA580C] border-b pb-1 border-[#EA580C]" : "text-[#6B7280]"} font-semibold text-base`
           }
         >
           Categories
@@ -55,7 +55,7 @@ const Navbar = () => {
         <NavLink
           to="/become-a-seller"
           className={({ isActive }) =>
-            `${isActive ? "text-amber-500 border-b border-amber-500" : "text-white"} font-semibold text-base`
+            `${isActive ? "text-[#EA580C] border-b pb-1 border-[#EA580C]" : "text-[#6B7280]"} font-semibold text-base`
           }
         >
           Become a Seller
@@ -65,7 +65,7 @@ const Navbar = () => {
         <NavLink
           to="/about"
           className={({ isActive }) =>
-            `${isActive ? "text-amber-500 border-b border-amber-500" : "text-white"} font-semibold text-base`
+            `${isActive ? "text-[#EA580C] border-b pb-1 border-[#EA580C]" : "text-[#6B7280]"} font-semibold text-base`
           }
         >
           About
@@ -79,7 +79,7 @@ const Navbar = () => {
       <NavLink
         to="/wish-list"
         className={({ isActive }) =>
-          `${isActive ? "text-amber-500 border-b pb-1 border-amber-500" : "text-white"} font-semibold text-base`
+          `${isActive ? "text-[#EA580C] border-b pb-1 border-[#EA580C]" : "text-[#6B7280]"} font-semibold text-base`
         }
       >
         <FiHeart size={25} />
@@ -88,7 +88,7 @@ const Navbar = () => {
       <NavLink
         to="/cart-items"
         className={({ isActive }) =>
-          `${isActive ? "text-amber-500 border-b pb-1 border-amber-500" : "text-white"} font-semibold text-base`
+          `${isActive ? "text-[#EA580C] border-b pb-1 border-[#EA580C]" : "text-[#6B7280]"} font-semibold text-base`
         }
       >
         <IoCartOutline size={25} />
@@ -143,7 +143,7 @@ const Navbar = () => {
   );
 
   return (
-    <div className="bg-[#0b1220] shadow-sm">
+    <div className="bg-base-100 shadow-sm">
       <div className="navbar max-w-480 mx-auto">
         <div className="navbar-start">
           <div className="dropdown">
@@ -159,7 +159,7 @@ const Navbar = () => {
           </div>
           <Link
             to="/"
-            className="btn btn-ghost text-amber-500 text-xl font-semibold border-none shadow-none bg-transparent"
+            className="btn btn-ghost text-amber-600 text-xl font-semibold border-none shadow-none bg-transparent"
           >
             <SiShopify size={25} />
             Bazario
@@ -172,7 +172,7 @@ const Navbar = () => {
           {/* Search Filed */}
           <div className="hidden md:flex">
             <label className="input bg-gray-100">
-              <IoSearchOutline size={28} className="text-amber-500" />
+              <IoSearchOutline size={28} />
               <input
                 type="search"
                 required

@@ -11,6 +11,7 @@ import AuthLayout from "../Layouts/AuthLayout/AuthLayout";
 import ErrorComponent from "../UI/ErrorComponent/ErrorComponent";
 import Register from "../Pages/Auth/Register/Register";
 import Login from "../Pages/Auth/Login/Login";
+import PrivateRoute from "../Pages/Auth/Private/PrivateRoute";
 
 const router = createBrowserRouter([
   {
@@ -32,7 +33,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/become-a-seller",
-        Component: BecomeASeller,
+        element: (
+          <PrivateRoute>
+            <BecomeASeller />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/about",

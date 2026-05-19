@@ -25,18 +25,6 @@ const Login = () => {
                 </h1>
               </div>
               <form className="fieldset">
-                {/* Name */}
-                <div>
-                  <label className="block text-[18px] text-descriptions">
-                    Name
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Your name"
-                    className="block placeholder:text-sm
-      placeholder:font-medium w-full px-3 py-3 text-black bg-white border border-gray-200 text-sm rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
-                  />
-                </div>
                 {/* Email */}
                 <div className="my-2">
                   <label className="block mb-1.5 text-[18px] text-descriptions">

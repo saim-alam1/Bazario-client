@@ -72,7 +72,6 @@ const Register = () => {
     // Register User
     registerUser(email, password)
       .then(async () => {
-        // Update User Info In Firebase
         const userProfile = {
           displayName: name,
           photoURL: image,

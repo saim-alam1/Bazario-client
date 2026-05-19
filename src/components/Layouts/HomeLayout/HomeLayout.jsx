@@ -1,3 +1,4 @@
+import Footer from "../../Pages/Footer/Footer";
 import Navbar from "../../Pages/Navbar/Navbar";
 import { Outlet } from "react-router";
 
@@ -8,7 +9,7 @@ const HomeLayout = () => {
       <div className="max-w-480 mx-auto grow w-full">
         <Outlet />
       </div>
-      {/* <Footer /> */}
+      <Footer />
     </div>
   );
 };

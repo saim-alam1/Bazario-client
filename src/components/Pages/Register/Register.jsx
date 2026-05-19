@@ -8,7 +8,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import useAuth from "../../../Hooks/useAuth";
-import Loading from "../../UI/Loading/Loadig";
+import Loading from "../../UI/Loading/Loading";
+import imageCompression from "browser-image-compression";
 
 const Register = () => {
   const Lottie = LottiePlayer.default || LottiePlayer;
@@ -32,11 +33,20 @@ const Register = () => {
     const image = e.target.files[0];
     if (!image) return;
 
-    const formData = new FormData();
-    formData.append("image", image);
+    const options = {
+      maxSizeMB: 0.5,
+      maxWidthOrHeight: 800,
+      useWebWorker: true,
+    };
 
     try {
       setUploading(true);
+
+      const compressedImage = await imageCompression(image, options);
+
+      const formData = new FormData();
+      formData.append("image", compressedImage);
+
       const imageUpload = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMGBB}`;
       const res = await axios.post(imageUpload, formData);
       const url = res.data?.data?.display_url;

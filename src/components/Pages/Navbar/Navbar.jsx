@@ -1,6 +1,7 @@
 import { FiHeart } from "react-icons/fi";
 import { IoCartOutline, IoSearchOutline } from "react-icons/io5";
 import { RiMenu2Fill } from "react-icons/ri";
+import { SiShopify } from "react-icons/si";
 import { Link, NavLink } from "react-router";
 import useAuth from "../../../Hooks/useAuth";
 import { toast } from "react-toastify";
@@ -24,7 +25,7 @@ const Navbar = () => {
         <NavLink
           to="/"
           className={({ isActive }) =>
-            `${isActive ? "text-[#EA580C] border-b border-[#EA580C]" : "text-[#6B7280]"} font-semibold text-base`
+            `${isActive ? "text-amber-500 border-b border-amber-500" : "text-white"} font-semibold text-base`
           }
         >
           Home
@@ -34,7 +35,7 @@ const Navbar = () => {
         <NavLink
           to="/shop"
           className={({ isActive }) =>
-            `${isActive ? "text-[#EA580C] border-b border-[#EA580C]" : "text-[#6B7280]"} font-semibold text-base`
+            `${isActive ? "text-amber-500 border-b border-amber-500" : "text-white"} font-semibold text-base`
           }
         >
           Shop
@@ -44,7 +45,7 @@ const Navbar = () => {
         <NavLink
           to="/categories"
           className={({ isActive }) =>
-            `${isActive ? "text-[#EA580C] border-b border-[#EA580C]" : "text-[#6B7280]"} font-semibold text-base`
+            `${isActive ? "text-amber-500 border-b border-amber-500" : "text-white"} font-semibold text-base`
           }
         >
           Categories
@@ -54,7 +55,7 @@ const Navbar = () => {
         <NavLink
           to="/become-a-seller"
           className={({ isActive }) =>
-            `${isActive ? "text-[#EA580C] border-b border-[#EA580C]" : "text-[#6B7280]"} font-semibold text-base`
+            `${isActive ? "text-amber-500 border-b border-amber-500" : "text-white"} font-semibold text-base`
           }
         >
           Become a Seller
@@ -64,7 +65,7 @@ const Navbar = () => {
         <NavLink
           to="/about"
           className={({ isActive }) =>
-            `${isActive ? "text-[#EA580C] border-b border-[#EA580C]" : "text-[#6B7280]"} font-semibold text-base`
+            `${isActive ? "text-amber-500 border-b border-amber-500" : "text-white"} font-semibold text-base`
           }
         >
           About
@@ -78,7 +79,7 @@ const Navbar = () => {
       <NavLink
         to="/wish-list"
         className={({ isActive }) =>
-          `${isActive ? "text-[#EA580C] border-b pb-1 border-[#EA580C]" : "text-[#6B7280]"} font-semibold text-base`
+          `${isActive ? "text-amber-500 border-b pb-1 border-amber-500" : "text-white"} font-semibold text-base`
         }
       >
         <FiHeart size={25} />
@@ -87,7 +88,7 @@ const Navbar = () => {
       <NavLink
         to="/cart-items"
         className={({ isActive }) =>
-          `${isActive ? "text-[#EA580C] border-b pb-1 border-[#EA580C]" : "text-[#6B7280]"} font-semibold text-base`
+          `${isActive ? "text-amber-500 border-b pb-1 border-amber-500" : "text-white"} font-semibold text-base`
         }
       >
         <IoCartOutline size={25} />
@@ -100,7 +101,7 @@ const Navbar = () => {
           role="button"
           className="avatar cursor-pointer hover:opacity-80 transition"
         >
-          <div className="ring-2 ring-blue-600 ring-offset-1 ring-offset-blue-600 w-12 rounded-full">
+          <div className="ring-2 ring-amber-600 ring-offset-1 ring-offset-amber-600 w-12 rounded-full">
             <img
               referrerPolicy="no-referrer"
               src={`${user?.photoURL}`}
@@ -113,7 +114,7 @@ const Navbar = () => {
           tabIndex={0}
           className="menu menu-sm dropdown-content mt-3 z-1 p-2 shadow bg-base-100 rounded-box w-52 border border-gray-100"
         >
-          <li className="px-4 py-2 font-semibold text-[17px] text-blue-600 border-b mb-1">
+          <li className="px-4 py-2 font-semibold text-[17px] text-amber-600 border-b mb-1">
             {user?.displayName || "User"}
           </li>
           <li>
@@ -141,42 +142,13 @@ const Navbar = () => {
     </Link>
   );
 
-  // const authLinks = (
-  //   <>
-  //     <NavLink
-  //       to="/wish-list"
-  //       className={({ isActive }) =>
-  //         `${isActive ? "text-[#EA580C] border-b pb-1 border-[#EA580C]" : "text-[#6B7280]"} font-semibold text-base`
-  //       }
-  //     >
-  //       <FiHeart size={25} />
-  //     </NavLink>
-
-  //     <NavLink
-  //       to="/cart-items"
-  //       className={({ isActive }) =>
-  //         `${isActive ? "text-[#EA580C] border-b pb-1 border-[#EA580C]" : "text-[#6B7280]"} font-semibold text-base`
-  //       }
-  //     >
-  //       <IoCartOutline size={25} />
-  //     </NavLink>
-
-  //     <Link
-  //       to="/auth-layout/login"
-  //       className="btn border-none shadow-none bg-amber-500 hover:bg-amber-600 text-white font-semibold text-base"
-  //     >
-  //       Login
-  //     </Link>
-  //   </>
-  // );
-
   return (
-    <div className="bg-base-100 shadow-sm">
+    <div className="bg-[#0b1220] shadow-sm">
       <div className="navbar max-w-480 mx-auto">
         <div className="navbar-start">
           <div className="dropdown">
             <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
-              <RiMenu2Fill size={25} />
+              <RiMenu2Fill size={25} className="text-amber-500" />
             </div>
             <ul
               tabIndex="-1"
@@ -187,8 +159,9 @@ const Navbar = () => {
           </div>
           <Link
             to="/"
-            className="btn btn-ghost text-xl font-semibold border-none shadow-none bg-transparent"
+            className="btn btn-ghost text-amber-500 text-xl font-semibold border-none shadow-none bg-transparent"
           >
+            <SiShopify size={25} />
             Bazario
           </Link>
         </div>
@@ -198,9 +171,14 @@ const Navbar = () => {
         <div className="navbar-end flex items-center gap-3 mr-2">
           {/* Search Filed */}
           <div className="hidden md:flex">
-            <label className="input">
-              <IoSearchOutline size={25} />
-              <input type="search" required placeholder="Search" />
+            <label className="input bg-gray-100">
+              <IoSearchOutline size={28} className="text-amber-500" />
+              <input
+                type="search"
+                required
+                placeholder="Search"
+                className="bg-gray-100 w-full"
+              />
             </label>
           </div>
           {authLinks}

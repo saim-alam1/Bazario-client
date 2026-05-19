@@ -1,8 +1,8 @@
 const Categories = () => {
   return (
-    <div>
+    <section>
       <h1>Categories</h1>
-    </div>
+    </section>
   );
 };
 

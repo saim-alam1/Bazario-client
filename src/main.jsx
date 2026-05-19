@@ -10,8 +10,8 @@ import { HelmetProvider } from "react-helmet-async";
 // Custom Toastify Style
 const getToastStyle = () => {
   return window.innerWidth >= 768
-    ? { width: "400px", marginTop: "20px" } // md and above devices
-    : { width: "90%", marginTop: "10px" }; // mobile devices
+    ? { width: "400px", marginTop: "20px" } // for md and above devices
+    : { width: "90%", marginTop: "10px" }; // for mobile devices
 };
 
 createRoot(document.getElementById("root")).render(

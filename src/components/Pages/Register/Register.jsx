@@ -11,12 +11,14 @@ import useAuth from "../../../Hooks/useAuth";
 import Loading from "../../UI/Loading/Loading";
 import imageCompression from "browser-image-compression";
 import { Helmet } from "react-helmet-async";
+import useAxios from "../../../Hooks/useAxios";
 
 const Register = () => {
   const Lottie = LottiePlayer.default || LottiePlayer;
   const [show, setShow] = useState(false);
   const [profilePic, setProfilePic] = useState("");
   const [uploading, setUploading] = useState(false);
+  const axiosInstance = useAxios();
 
   const {
     register,
@@ -81,12 +83,21 @@ const Register = () => {
           .then(() => console.log("User profile updated"))
           .catch((error) => console.log(error));
 
-        toast.success("Registration Successful");
+        // Saving User Data In DB
+        const userInfo = {
+          displayName: name,
+          email,
+          photoURL: image,
+        };
+
+        const res = await axiosInstance.post("users", userInfo);
+
+        toast.success(res?.data?.message);
         navigate(`${location.state ? location.state : "/"}`);
       })
       .catch((error) => {
         console.log(error);
-        // toast.error(error.response?.data?.message || "Something went wrong");
+        toast.error(error.response?.data?.message || "Something went wrong");
       });
   };
 

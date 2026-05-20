@@ -13,7 +13,7 @@ const DashboardRedirects = () => {
     return <Navigate to="customer-profile" />;
   }
   if (user && userRole === "vendor") {
-    return <Navigate to="vendor-profile" replace />;
+    return <Navigate to="vendors-profile" replace />;
   }
   if (user && userRole === "admin") {
     return <Navigate to="admin-profile" />;

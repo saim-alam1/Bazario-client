@@ -43,6 +43,7 @@ import PayoutsSection from "../Pages/Admin/PayoutsSection/PayoutsSection";
 import Reports from "../Pages/Admin/Reports/Reports";
 import ForbiddenAccess from "../UI/ForbiddenAccess/ForbiddenAccess";
 import CustomerRoute from "../Pages/Auth/CustomerRoute/CustomerRoute";
+import VendorsRoute from "../Pages/Auth/VendorsRoute/VendorsRoute";
 
 const router = createBrowserRouter([
   {
@@ -158,7 +159,11 @@ const router = createBrowserRouter([
       // Vendors Routes
       {
         path: "vendors-profile",
-        Component: VendorsProfile,
+        element: (
+          <VendorsRoute>
+            <VendorsProfile />
+          </VendorsRoute>
+        ),
       },
       {
         path: "vendors-overview",
@@ -166,39 +171,83 @@ const router = createBrowserRouter([
       },
       {
         path: "my-store",
-        Component: MyStore,
+        element: (
+          <VendorsRoute>
+            <MyStore />
+          </VendorsRoute>
+        ),
       },
       {
         path: "products",
-        Component: Products,
+        // Component: Products,
+        element: (
+          <VendorsRoute>
+            <Products />
+          </VendorsRoute>
+        ),
       },
       {
         path: "add-products",
-        Component: AddProducts,
+        // Component: AddProducts,
+        element: (
+          <VendorsRoute>
+            <AddProducts />
+          </VendorsRoute>
+        ),
       },
       {
         path: "orders",
-        Component: Orders,
+        // Component: Orders,
+        element: (
+          <VendorsRoute>
+            <Orders />
+          </VendorsRoute>
+        ),
       },
       {
         path: "inventory",
-        Component: Inventory,
+        // Component: Inventory,
+        element: (
+          <VendorsRoute>
+            <Inventory />
+          </VendorsRoute>
+        ),
       },
       {
         path: "discounts",
-        Component: Discounts,
+        // Component: Discounts,
+        element: (
+          <VendorsRoute>
+            <Discounts />
+          </VendorsRoute>
+        ),
       },
       {
         path: "analytics",
-        Component: Analytics,
+        // Component: Analytics,
+        element: (
+          <VendorsRoute>
+            <Analytics />
+          </VendorsRoute>
+        ),
       },
       {
         path: "reviews",
-        Component: Reviews,
+        // Component: Reviews,
+        element: (
+          <VendorsRoute>
+            <Reviews />
+          </VendorsRoute>
+        ),
       },
       {
         path: "payouts",
-        Component: Payouts,
+        // Component: Payouts,
+        element: (
+          <VendorsRoute>
+            <Payouts />
+          </VendorsRoute>
+        ),
       },
       // Admin Routes
       {

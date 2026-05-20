@@ -5,18 +5,17 @@ import { toast } from "react-toastify";
 import Loading from "../../UI/Loading/Loading";
 import { Link, NavLink, Outlet } from "react-router";
 import useIsActive from "../../../Hooks/useIsActive";
-import {
-  FaEnvelopeOpenText,
-  FaFileAlt,
-  FaRegClipboard,
-  FaRegUser,
-  FaShoppingCart,
-  FaUserTie,
-} from "react-icons/fa";
+import { FaPlus, FaRegUser, FaShoppingCart, FaWallet } from "react-icons/fa";
 import { PiPackageLight } from "react-icons/pi";
 import { RiLayout3Line } from "react-icons/ri";
 import { FiHeart } from "react-icons/fi";
-import { FaRegStarHalfStroke } from "react-icons/fa6";
+import { FaBoxesPacking, FaRegStarHalfStroke } from "react-icons/fa6";
+import {
+  IoBagCheckOutline,
+  IoBarChartSharp,
+  IoStorefrontOutline,
+} from "react-icons/io5";
+import { LuBadgePercent } from "react-icons/lu";
 
 const DashboardLayout = () => {
   const { user, logOutUser } = useAuth();
@@ -111,18 +110,39 @@ const DashboardLayout = () => {
                 >
                   <FaRegUser style={{ marginRight: "8px" }} /> Profile
                 </NavLink>
+                <NavLink
+                  to="/dashboard/job-seeker-profile"
+                  className={useIsActive}
+                >
+                  <RiLayout3Line style={{ marginRight: "8px" }} /> Overview
+                </NavLink>
                 <NavLink to="/dashboard/applied-jobs" className={useIsActive}>
-                  <FaRegClipboard style={{ marginRight: "8px" }} /> Applied Jobs
+                  <IoStorefrontOutline style={{ marginRight: "8px" }} /> My
+                  Store
                 </NavLink>
                 <NavLink to="/dashboard/opportunities" className={useIsActive}>
-                  <FaEnvelopeOpenText style={{ marginRight: "8px" }} />{" "}
-                  Opportunities
+                  <PiPackageLight style={{ marginRight: "8px" }} /> Products
                 </NavLink>
                 <NavLink to="/dashboard/upload-resume" className={useIsActive}>
-                  <FaFileAlt style={{ marginRight: "8px" }} /> Upload Resume
+                  <FaPlus style={{ marginRight: "8px" }} /> Add Product
                 </NavLink>
                 <NavLink to="/dashboard/interview-data" className={useIsActive}>
-                  <FaUserTie style={{ marginRight: "8px" }} /> Interviews
+                  <IoBagCheckOutline style={{ marginRight: "8px" }} /> Orders
+                </NavLink>
+                <NavLink to="/dashboard/interview-data" className={useIsActive}>
+                  <FaBoxesPacking style={{ marginRight: "8px" }} /> Inventory
+                </NavLink>
+                <NavLink to="/dashboard/interview-data" className={useIsActive}>
+                  <LuBadgePercent style={{ marginRight: "8px" }} /> Discounts
+                </NavLink>
+                <NavLink to="/dashboard/interview-data" className={useIsActive}>
+                  <IoBarChartSharp style={{ marginRight: "8px" }} /> Analytics
+                </NavLink>
+                <NavLink to="/dashboard/interview-data" className={useIsActive}>
+                  <FaRegStarHalfStroke style={{ marginRight: "8px" }} /> Reviews
+                </NavLink>
+                <NavLink to="/dashboard/interview-data" className={useIsActive}>
+                  <FaWallet style={{ marginRight: "8px" }} /> Payouts
                 </NavLink>
               </>
             )}

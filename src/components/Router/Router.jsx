@@ -12,6 +12,10 @@ import ErrorComponent from "../UI/ErrorComponent/ErrorComponent";
 import Register from "../Pages/Auth/Register/Register";
 import Login from "../Pages/Auth/Login/Login";
 import PrivateRoute from "../Pages/Auth/Private/PrivateRoute";
+import DashboardLayout from "../Layouts/DashboardLayout/DashboardLayout";
+import DashboardRedirects from "../Utils/DashboardRedirects/DashboardRedirects";
+import AdminProfile from "../Pages/Admin/AdminProfile/AdminProfile";
+import CustomerProfile from "../Pages/Customer/CustomerProfile/CustomerProfile";
 
 const router = createBrowserRouter([
   {
@@ -64,6 +68,29 @@ const router = createBrowserRouter([
       {
         path: "register",
         Component: Register,
+      },
+    ],
+  },
+  {
+    path: "/dashboard-layout",
+    element: (
+      <PrivateRoute>
+        <DashboardLayout />
+      </PrivateRoute>
+    ),
+    children: [
+      {
+        index: true,
+        element: <DashboardRedirects />,
+      },
+      // Customer Routes
+      {
+        path: "customer-profile",
+        Component: CustomerProfile,
+      },
+      {
+        path: "admin-profile",
+        Component: AdminProfile,
       },
     ],
   },

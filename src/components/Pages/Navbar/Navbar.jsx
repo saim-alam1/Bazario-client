@@ -5,9 +5,13 @@ import { SiShopify } from "react-icons/si";
 import { Link, NavLink } from "react-router";
 import useAuth from "../../../Hooks/useAuth";
 import { toast } from "react-toastify";
+import useUserRole from "../../../Hooks/useUserRole";
 
 const Navbar = () => {
   const { user, logOutUser } = useAuth();
+  const { userRole } = useUserRole();
+
+  console.log(userRole);
 
   // Logout
   const handleLogout = () => {
@@ -118,7 +122,7 @@ const Navbar = () => {
             {user?.displayName || "User"}
           </li>
           <li>
-            <Link to="/dashboard" className="py-3 text-[16px]">
+            <Link to="/dashboard-layout" className="py-3 text-[16px]">
               Dashboard
             </Link>
           </li>

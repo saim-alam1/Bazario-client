@@ -42,6 +42,7 @@ import AdminAnalytics from "../Pages/Admin/AdminAnalytics/AdminAnalytics";
 import PayoutsSection from "../Pages/Admin/PayoutsSection/PayoutsSection";
 import Reports from "../Pages/Admin/Reports/Reports";
 import ForbiddenAccess from "../UI/ForbiddenAccess/ForbiddenAccess";
+import CustomerRoute from "../Pages/Auth/CustomerRoute/CustomerRoute";
 
 const router = createBrowserRouter([
   {
@@ -108,27 +109,51 @@ const router = createBrowserRouter([
       // Customer Routes
       {
         path: "customer-profile",
-        Component: CustomerProfile,
+        element: (
+          <CustomerRoute>
+            <CustomerProfile />
+          </CustomerRoute>
+        ),
       },
       {
         path: "customer-overview",
-        Component: CustomerOverview,
+        element: (
+          <CustomerRoute>
+            <CustomerOverview />
+          </CustomerRoute>
+        ),
       },
       {
         path: "my-orders",
-        Component: MyOrders,
+        element: (
+          <CustomerRoute>
+            <MyOrders />
+          </CustomerRoute>
+        ),
       },
       {
         path: "wish-list",
-        Component: WishList,
+        element: (
+          <CustomerRoute>
+            <WishList />
+          </CustomerRoute>
+        ),
       },
       {
         path: "my-cart",
-        Component: MyCart,
+        element: (
+          <CustomerRoute>
+            <MyCart />
+          </CustomerRoute>
+        ),
       },
       {
         path: "my-reviews",
-        Component: MyReviews,
+        element: (
+          <CustomerRoute>
+            <MyReviews />
+          </CustomerRoute>
+        ),
       },
       // Vendors Routes
       {

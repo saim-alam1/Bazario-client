@@ -5,7 +5,18 @@ import { toast } from "react-toastify";
 import Loading from "../../UI/Loading/Loading";
 import { Link, NavLink, Outlet } from "react-router";
 import useIsActive from "../../../Hooks/useIsActive";
-import { FaPlus, FaRegUser, FaShoppingCart, FaWallet } from "react-icons/fa";
+import {
+  FaBolt,
+  FaBoxOpen,
+  FaFlag,
+  FaPlus,
+  FaRegUser,
+  FaShoppingCart,
+  FaTags,
+  FaUserCheck,
+  FaUsers,
+  FaWallet,
+} from "react-icons/fa";
 import { PiPackageLight } from "react-icons/pi";
 import { RiLayout3Line } from "react-icons/ri";
 import { FiHeart } from "react-icons/fi";
@@ -137,6 +148,50 @@ const DashboardLayout = () => {
                 </NavLink>
                 <NavLink to="payouts" className={useIsActive}>
                   <FaWallet style={{ marginRight: "8px" }} /> Payouts
+                </NavLink>
+              </>
+            )}
+
+            {/* Admin Route */}
+            {userRole === "admin" && (
+              <>
+                <NavLink to="admin-profile" className={useIsActive}>
+                  <FaRegUser style={{ marginRight: "8px" }} /> Profile
+                </NavLink>
+                <NavLink to="admin-overview" className={useIsActive}>
+                  <RiLayout3Line style={{ marginRight: "8px" }} /> Overview
+                </NavLink>
+                <NavLink to="manage-users" className={useIsActive}>
+                  <FaUsers style={{ marginRight: "8px" }} /> Manage Users
+                </NavLink>
+                <NavLink to="manage-vendors" className={useIsActive}>
+                  <IoStorefrontOutline style={{ marginRight: "8px" }} /> Manage
+                  Vendors
+                </NavLink>
+                <NavLink to="vendor-approval" className={useIsActive}>
+                  <FaUserCheck style={{ marginRight: "8px" }} /> Vendor Approval
+                </NavLink>
+                <NavLink to="manage-products" className={useIsActive}>
+                  <FaBoxOpen style={{ marginRight: "8px" }} /> Manage Products
+                </NavLink>
+                <NavLink to="manage-orders" className={useIsActive}>
+                  <FaShoppingCart style={{ marginRight: "8px" }} /> Manage
+                  Orders
+                </NavLink>
+                <NavLink to="categories" className={useIsActive}>
+                  <FaTags style={{ marginRight: "8px" }} /> Categories
+                </NavLink>
+                <NavLink to="flash-sales" className={useIsActive}>
+                  <FaBolt style={{ marginRight: "8px" }} /> Flash Sales
+                </NavLink>
+                <NavLink to="admin-analytics" className={useIsActive}>
+                  <IoBarChartSharp style={{ marginRight: "8px" }} /> Analytics
+                </NavLink>
+                <NavLink to="admin-payouts" className={useIsActive}>
+                  <FaWallet style={{ marginRight: "8px" }} /> Payouts
+                </NavLink>
+                <NavLink to="reports" className={useIsActive}>
+                  <FaFlag style={{ marginRight: "8px" }} /> Reports
                 </NavLink>
               </>
             )}

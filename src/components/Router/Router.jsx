@@ -30,6 +30,17 @@ import Discounts from "../Pages/Vendor/Discounts/Discounts";
 import Analytics from "../Pages/Vendor/Analytics/Analytics";
 import Reviews from "../Pages/Vendor/Reviews/Reviews";
 import Payouts from "../Pages/Vendor/Payouts/Payouts";
+import AdminOverview from "../Pages/Admin/AdminOverview/AdminOverview";
+import ManageUsers from "../Pages/Admin/ManageUsers/ManageUsers";
+import ManageVendors from "../Pages/Admin/ManageVendors/ManageVendors";
+import VendorApproval from "../Pages/Admin/VendorApproval/VendorApproval";
+import ManageProducts from "../Pages/Admin/ManageProducts/ManageProducts";
+import ManageOrders from "../Pages/Admin/ManageOrders/ManageOrders";
+import CategoriesByAdmin from "../Pages/Admin/CategoriesByAdmin/CategoriesByAdmin";
+import FlashSales from "../Pages/Admin/FlashSales/FlashSales";
+import AdminAnalytics from "../Pages/Admin/AdminAnalytics/AdminAnalytics";
+import PayoutsSection from "../Pages/Admin/PayoutsSection/PayoutsSection";
+import Reports from "../Pages/Admin/Reports/Reports";
 
 const router = createBrowserRouter([
   {
@@ -163,6 +174,50 @@ const router = createBrowserRouter([
       {
         path: "admin-profile",
         Component: AdminProfile,
+      },
+      {
+        path: "admin-overview",
+        Component: AdminOverview,
+      },
+      {
+        path: "manage-users",
+        Component: ManageUsers,
+      },
+      {
+        path: "manage-vendors",
+        Component: ManageVendors,
+      },
+      {
+        path: "vendor-approval",
+        Component: VendorApproval,
+      },
+      {
+        path: "manage-products",
+        Component: ManageProducts,
+      },
+      {
+        path: "manage-orders",
+        Component: ManageOrders,
+      },
+      {
+        path: "categories",
+        Component: CategoriesByAdmin,
+      },
+      {
+        path: "flash-sales",
+        Component: FlashSales,
+      },
+      {
+        path: "admin-analytics",
+        Component: AdminAnalytics,
+      },
+      {
+        path: "admin-payouts",
+        Component: PayoutsSection,
+      },
+      {
+        path: "reports",
+        Component: Reports,
       },
     ],
   },

@@ -81,7 +81,7 @@ const Navbar = () => {
   const authLinks = user ? (
     <div className="flex items-center gap-2.5">
       <NavLink
-        to="/wish-list"
+        to="/dashboard-layout/wish-list"
         className={({ isActive }) =>
           `${isActive ? "text-[#EA580C] border-b pb-1 border-[#EA580C]" : "text-[#6B7280]"} font-semibold text-base`
         }
@@ -90,7 +90,7 @@ const Navbar = () => {
       </NavLink>
 
       <NavLink
-        to="/cart-items"
+        to="/dashboard-layout/my-cart"
         className={({ isActive }) =>
           `${isActive ? "text-[#EA580C] border-b pb-1 border-[#EA580C]" : "text-[#6B7280]"} font-semibold text-base`
         }

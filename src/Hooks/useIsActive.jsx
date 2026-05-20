@@ -1,8 +1,8 @@
 const useIsActive = ({ isActive }) =>
   `${
     isActive
-      ? "bg-blue-50 text-[#2563EB] font-medium"
-      : "text-[#374151] hover:bg-blue-50 hover:text-[#2563EB]"
+      ? "bg-amber-50 text-amber-600 font-medium"
+      : "text-[#374151] hover:bg-amber-50 hover:text-amber-600"
   } flex items-center px-4 py-2 rounded-lg transition-colors duration-200 text-lg`;
 
 export default useIsActive;

@@ -5,8 +5,6 @@ import Shop from "../Pages/Shop/Shop";
 import Categories from "../Pages/Categories/Categories";
 import BecomeASeller from "../Pages/BecomeASeller/BecomeASeller";
 import About from "../Pages/About/About";
-import WishList from "../Pages/WishList/WishList";
-import CartItems from "../Pages/CartItems/CartItems";
 import AuthLayout from "../Layouts/AuthLayout/AuthLayout";
 import ErrorComponent from "../UI/ErrorComponent/ErrorComponent";
 import Register from "../Pages/Auth/Register/Register";
@@ -16,6 +14,11 @@ import DashboardLayout from "../Layouts/DashboardLayout/DashboardLayout";
 import DashboardRedirects from "../Utils/DashboardRedirects/DashboardRedirects";
 import AdminProfile from "../Pages/Admin/AdminProfile/AdminProfile";
 import CustomerProfile from "../Pages/Customer/CustomerProfile/CustomerProfile";
+import CustomerOverview from "../Pages/Customer/CustomerOverview/CustomerOverview";
+import MyOrders from "../Pages/Customer/MyOrders/MyOrders";
+import WishList from "../Pages/Customer/WishList/WishList";
+import MyCart from "../Pages/Customer/MyCart/MyCart";
+import MyReviews from "../Pages/Customer/MyReviews/MyReviews";
 
 const router = createBrowserRouter([
   {
@@ -46,14 +49,6 @@ const router = createBrowserRouter([
       {
         path: "/about",
         Component: About,
-      },
-      {
-        path: "/wish-list",
-        Component: WishList,
-      },
-      {
-        path: "/cart-items",
-        Component: CartItems,
       },
     ],
   },
@@ -88,6 +83,27 @@ const router = createBrowserRouter([
         path: "customer-profile",
         Component: CustomerProfile,
       },
+      {
+        path: "customer-overview",
+        Component: CustomerOverview,
+      },
+      {
+        path: "my-orders",
+        Component: MyOrders,
+      },
+      {
+        path: "wish-list",
+        Component: WishList,
+      },
+      {
+        path: "my-cart",
+        Component: MyCart,
+      },
+      {
+        path: "my-reviews",
+        Component: MyReviews,
+      },
+      // Admin Routes
       {
         path: "admin-profile",
         Component: AdminProfile,

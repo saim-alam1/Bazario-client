@@ -6,15 +6,17 @@ import Loading from "../../UI/Loading/Loading";
 import { Link, NavLink, Outlet } from "react-router";
 import useIsActive from "../../../Hooks/useIsActive";
 import {
-  FaBriefcase,
   FaEnvelopeOpenText,
   FaFileAlt,
   FaRegClipboard,
   FaRegUser,
-  FaUserCheck,
-  FaUsers,
+  FaShoppingCart,
   FaUserTie,
 } from "react-icons/fa";
+import { PiPackageLight } from "react-icons/pi";
+import { RiLayout3Line } from "react-icons/ri";
+import { FiHeart } from "react-icons/fi";
+import { FaRegStarHalfStroke } from "react-icons/fa6";
 
 const DashboardLayout = () => {
   const { user, logOutUser } = useAuth();
@@ -54,10 +56,7 @@ const DashboardLayout = () => {
 
           {/* Logo */}
           <Link to="/" className="flex items-center justify-center gap-2 mb-6">
-            {/* <img src={logo} alt="Logo" className="h-6" /> */}
-            <h4 className="text-xl text-headings font-bold">
-              Next<span className="color-primary">Hire</span>
-            </h4>
+            <h4 className="text-xl text-amber-600 font-bold">Bazario</h4>
           </Link>
 
           {/* User Info */}
@@ -66,7 +65,7 @@ const DashboardLayout = () => {
               referrerPolicy="no-referrer"
               src={user?.photoURL}
               alt={user?.displayName}
-              className="w-24 h-24 rounded-full ring-2 ring-blue-500 p-1 object-cover"
+              className="w-24 h-24 rounded-full ring-2 ring-amber-500 p-1 object-cover"
             />
             <h4 className="mt-2.5 font-semibold text-headings text-lg">
               {user?.displayName}
@@ -81,21 +80,24 @@ const DashboardLayout = () => {
             {/* Customer Route */}
             {userRole === "customer" && (
               <>
-                <NavLink to="employer-profile" className={useIsActive}>
+                <NavLink to="customer-profile" className={useIsActive}>
                   <FaRegUser style={{ marginRight: "8px" }} /> Profile
                 </NavLink>
-                <NavLink to="posted-jobs" className={useIsActive}>
-                  <FaBriefcase style={{ marginRight: "8px" }} /> Posted Jobs
+                <NavLink to="customer-overview" className={useIsActive}>
+                  <RiLayout3Line style={{ marginRight: "8px" }} /> Overview
                 </NavLink>
-                <NavLink to="candidates" className={useIsActive}>
-                  <FaUsers style={{ marginRight: "8px" }} /> Candidates
+                <NavLink to="my-orders" className={useIsActive}>
+                  <PiPackageLight style={{ marginRight: "8px" }} /> My Orders
                 </NavLink>
-                <NavLink to="interview-list" className={useIsActive}>
-                  <FaUserTie style={{ marginRight: "8px" }} /> Interview List
+                <NavLink to="wish-list" className={useIsActive}>
+                  <FiHeart style={{ marginRight: "8px" }} /> Wishlist
                 </NavLink>
-                <NavLink to="hired-candidates" className={useIsActive}>
-                  <FaUserCheck style={{ marginRight: "8px" }} /> Hired
-                  Candidates
+                <NavLink to="my-cart" className={useIsActive}>
+                  <FaShoppingCart style={{ marginRight: "8px" }} /> My Cart
+                </NavLink>
+                <NavLink to="my-reviews" className={useIsActive}>
+                  <FaRegStarHalfStroke style={{ marginRight: "8px" }} /> My
+                  Reviews
                 </NavLink>
               </>
             )}

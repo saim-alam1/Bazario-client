@@ -104,44 +104,38 @@ const DashboardLayout = () => {
             {/* Vendor's Route */}
             {userRole === "vendor" && (
               <>
-                <NavLink
-                  to="/dashboard/job-seeker-profile"
-                  className={useIsActive}
-                >
+                <NavLink to="vendors-profile" className={useIsActive}>
                   <FaRegUser style={{ marginRight: "8px" }} /> Profile
                 </NavLink>
-                <NavLink
-                  to="/dashboard/job-seeker-profile"
-                  className={useIsActive}
-                >
+                <NavLink to="vendors-overview" className={useIsActive}>
                   <RiLayout3Line style={{ marginRight: "8px" }} /> Overview
                 </NavLink>
-                <NavLink to="/dashboard/applied-jobs" className={useIsActive}>
+                <NavLink to="my-store" className={useIsActive}>
                   <IoStorefrontOutline style={{ marginRight: "8px" }} /> My
                   Store
                 </NavLink>
-                <NavLink to="/dashboard/opportunities" className={useIsActive}>
+                <NavLink to="products" className={useIsActive}>
                   <PiPackageLight style={{ marginRight: "8px" }} /> Products
                 </NavLink>
-                <NavLink to="/dashboard/upload-resume" className={useIsActive}>
+                <NavLink to="add-products" className={useIsActive}>
                   <FaPlus style={{ marginRight: "8px" }} /> Add Product
                 </NavLink>
-                <NavLink to="/dashboard/interview-data" className={useIsActive}>
+                <NavLink to="orders" className={useIsActive}>
                   <IoBagCheckOutline style={{ marginRight: "8px" }} /> Orders
                 </NavLink>
-                <NavLink to="/dashboard/interview-data" className={useIsActive}>
+                <NavLink to="inventory" className={useIsActive}>
                   <FaBoxesPacking style={{ marginRight: "8px" }} /> Inventory
                 </NavLink>
-                <NavLink to="/dashboard/interview-data" className={useIsActive}>
+                <NavLink to="discounts" className={useIsActive}>
                   <LuBadgePercent style={{ marginRight: "8px" }} /> Discounts
                 </NavLink>
-                <NavLink to="/dashboard/interview-data" className={useIsActive}>
+                <NavLink to="analytics" className={useIsActive}>
                   <IoBarChartSharp style={{ marginRight: "8px" }} /> Analytics
                 </NavLink>
-                <NavLink to="/dashboard/interview-data" className={useIsActive}>
+                <NavLink to="reviews" className={useIsActive}>
                   <FaRegStarHalfStroke style={{ marginRight: "8px" }} /> Reviews
                 </NavLink>
-                <NavLink to="/dashboard/interview-data" className={useIsActive}>
+                <NavLink to="payouts" className={useIsActive}>
                   <FaWallet style={{ marginRight: "8px" }} /> Payouts
                 </NavLink>
               </>

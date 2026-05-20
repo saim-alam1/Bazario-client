@@ -41,6 +41,7 @@ import FlashSales from "../Pages/Admin/FlashSales/FlashSales";
 import AdminAnalytics from "../Pages/Admin/AdminAnalytics/AdminAnalytics";
 import PayoutsSection from "../Pages/Admin/PayoutsSection/PayoutsSection";
 import Reports from "../Pages/Admin/Reports/Reports";
+import ForbiddenAccess from "../UI/ForbiddenAccess/ForbiddenAccess";
 
 const router = createBrowserRouter([
   {
@@ -71,6 +72,10 @@ const router = createBrowserRouter([
       {
         path: "/about",
         Component: About,
+      },
+      {
+        path: "/forbidden-access",
+        Component: ForbiddenAccess,
       },
     ],
   },

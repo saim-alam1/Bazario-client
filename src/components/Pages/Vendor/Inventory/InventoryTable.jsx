@@ -68,9 +68,31 @@ const InventoryTable = ({ productsData }) => {
     },
   });
 
+  // Mark Product Active
   const handleActive = (id) => {
-    console.log(id);
+    activateProduct(id);
   };
+
+  const { mutate: activateProduct, isPending: isActivating } = useMutation({
+    mutationFn: async (id) => {
+      const res = await axiosSecure.patch(`activate-product/${id}`);
+      return res.data;
+    },
+
+    onSuccess: (data) => {
+      toast.success(data.message || "Product activated");
+
+      queryClient.invalidateQueries({
+        queryKey: ["my-products", user?.email],
+      });
+    },
+
+    onError: (error) => {
+      toast.error(
+        error.response?.data?.message || "Failed to activate product",
+      );
+    },
+  });
 
   // Restock Product
   const handleRestock = (id) => {
@@ -303,7 +325,7 @@ const InventoryTable = ({ productsData }) => {
                           onClick={() => handleActive(product._id)}
                           className="btn shadow-none bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-md"
                         >
-                          Active
+                          {isActivating ? "Activating..." : "Activate"}
                         </button>
                       ) : (
                         <button

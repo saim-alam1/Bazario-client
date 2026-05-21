@@ -21,7 +21,6 @@ import MyCart from "../Pages/Customer/MyCart/MyCart";
 import MyReviews from "../Pages/Customer/MyReviews/MyReviews";
 import VendorsProfile from "../Pages/Vendor/VendorsProfile/VendorsProfile";
 import VendorsOverview from "../Pages/Vendor/VendorsOverview/VendorsOverview";
-import MyStore from "../Pages/Vendor/MyStore/MyStore";
 import Products from "../Pages/Vendor/Products/Products";
 import AddProducts from "../Pages/Vendor/AddProducts/AddProducts";
 import Orders from "../Pages/Vendor/Orders/Orders";
@@ -168,14 +167,6 @@ const router = createBrowserRouter([
       {
         path: "vendors-overview",
         Component: VendorsOverview,
-      },
-      {
-        path: "my-store",
-        element: (
-          <VendorsRoute>
-            <MyStore />
-          </VendorsRoute>
-        ),
       },
       {
         path: "products",

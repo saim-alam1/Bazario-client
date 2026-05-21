@@ -121,10 +121,7 @@ const DashboardLayout = () => {
                 <NavLink to="vendors-overview" className={useIsActive}>
                   <RiLayout3Line style={{ marginRight: "8px" }} /> Overview
                 </NavLink>
-                <NavLink to="my-store" className={useIsActive}>
-                  <IoStorefrontOutline style={{ marginRight: "8px" }} /> My
-                  Store
-                </NavLink>
+
                 <NavLink to="products" className={useIsActive}>
                   <PiPackageLight style={{ marginRight: "8px" }} /> Products
                 </NavLink>

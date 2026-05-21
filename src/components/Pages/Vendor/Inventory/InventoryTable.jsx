@@ -1,0 +1,197 @@
+import { useState } from "react";
+
+const InventoryTable = ({ productsData }) => {
+  const [restockValues, setRestockValues] = useState({});
+  const [discountValues, setDiscountValues] = useState({});
+  const [discountDuration, setDiscountDuration] = useState({});
+
+  // Increase Quantity
+  const handleIncrease = (id) => {
+    setRestockValues((prev) => ({
+      ...prev,
+      [id]: (prev[id] || 0) + 1,
+    }));
+  };
+
+  // Decrease Quantity
+  const handleDecrease = (id) => {
+    setRestockValues((prev) => ({
+      ...prev,
+      [id]: prev[id] > 0 ? prev[id] - 1 : 0,
+    }));
+  };
+
+  // Quick Discount
+  const handleDiscountChange = (id, value) => {
+    setDiscountValues((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
+
+  // Discount Duration
+  const handleDurationChange = (id, value) => {
+    setDiscountDuration((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
+
+  // Mark Out Of Stock
+  const handleOutOfStock = (id) => {
+    console.log("Marked Out Of Stock:", id);
+  };
+
+  // Restock Product
+  const handleRestock = (id) => {
+    console.log("Restock:", {
+      id,
+      quantity: restockValues[id] || 0,
+    });
+  };
+
+  // Apply Discount
+  const handleApplyDiscount = (id) => {
+    console.log("Discount Applied:", {
+      id,
+      discount: discountValues[id],
+      duration: discountDuration[id],
+    });
+  };
+
+  return (
+    <section>
+      <div className="overflow-x-auto bg-white shadow-md rounded-lg">
+        <table className="table w-full">
+          {/* Table Head */}
+          <thead className="bg-gray-100 text-headings text-[16px]">
+            <tr>
+              <th>#</th>
+              <th>Product</th>
+              <th>Stock Quantity</th>
+              <th>Quick Discount</th>
+              <th>Restock</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          {/* Table Body */}
+          <tbody>
+            {productsData.length === 0 ? (
+              <tr>
+                <td colSpan="8" className="text-center py-6 text-gray-500">
+                  No products found
+                </td>
+              </tr>
+            ) : (
+              productsData.map((product, index) => (
+                <tr
+                  key={product._id || index}
+                  className={
+                    product.stockQuantity < 5
+                      ? "bg-red-500 hover:bg-red-600 text-white [&_a]:text-white [&_button]:text-white"
+                      : "hover:bg-gray-50"
+                  }
+                >
+                  <th>{index + 1}</th>
+
+                  {/* Product */}
+                  <td className="font-medium">{product.productName}</td>
+
+                  {/* Stock Quantity */}
+                  <td>{product.stockQuantity}</td>
+
+                  {/* Quick Discount */}
+                  <td>
+                    <div className="flex flex-col gap-2 min-w-45">
+                      <input
+                        type="number"
+                        min="1"
+                        max="90"
+                        placeholder="Discount %"
+                        value={discountValues[product._id] || ""}
+                        onChange={(e) =>
+                          handleDiscountChange(product._id, e.target.value)
+                        }
+                        className="input input-bordered input-sm text-black"
+                      />
+
+                      <select
+                        value={discountDuration[product._id] || ""}
+                        onChange={(e) =>
+                          handleDurationChange(product._id, e.target.value)
+                        }
+                        className="select select-bordered select-sm text-black"
+                      >
+                        <option value="">Duration</option>
+                        <option value="24h">24 Hours</option>
+                        <option value="48h">48 Hours</option>
+                        <option value="72h">72 Hours</option>
+                        <option value="7d">7 Days</option>
+                      </select>
+
+                      <button
+                        onClick={() => handleApplyDiscount(product._id)}
+                        className="bg-amber-500 hover:bg-amber-600 text-white text-sm px-3 py-1 rounded-md"
+                        disabled={
+                          !discountValues[product._id] ||
+                          !discountDuration[product._id]
+                        }
+                      >
+                        Apply
+                      </button>
+                    </div>
+                  </td>
+
+                  {/* Restock */}
+                  <td>
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={() => handleDecrease(product._id)}
+                        className="bg-gray-200 hover:bg-gray-300 text-black w-8 h-8 rounded-md text-lg cursor-pointer"
+                      >
+                        -
+                      </button>
+
+                      <span className="font-semibold min-w-5 text-center">
+                        {restockValues[product._id] || 0}
+                      </span>
+
+                      <button
+                        onClick={() => handleIncrease(product._id)}
+                        className="bg-gray-200 hover:bg-gray-300 text-black w-8 h-8 rounded-md text-lg cursor-pointer"
+                      >
+                        +
+                      </button>
+
+                      <button
+                        onClick={() => handleRestock(product._id)}
+                        className="btn bg-green-600 hover:bg-green-700 text-white"
+                      >
+                        Restock
+                      </button>
+                    </div>
+                  </td>
+
+                  {/* Actions */}
+                  <td>
+                    <div className="flex items-center gap-4">
+                      <button
+                        onClick={() => handleOutOfStock(product._id)}
+                        className="btn bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md"
+                      >
+                        Sold Out
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+};
+
+export default InventoryTable;

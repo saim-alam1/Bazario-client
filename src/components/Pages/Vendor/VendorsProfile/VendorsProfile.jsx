@@ -4,28 +4,38 @@ import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 import useUserRole from "../../../../Hooks/useUserRole";
 import { FaRegEdit, FaBuilding, FaBriefcase, FaEnvelope } from "react-icons/fa";
 import { MdVerifiedUser, MdDateRange } from "react-icons/md";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
+import Loading from "../../../UI/Loading/Loading";
 
 const VendorsProfile = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
   const { userRole } = useUserRole();
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-    reset,
-  } = useForm();
+  const { register, handleSubmit, reset } = useForm();
+  const queryClient = useQueryClient();
+
+  const { data: vendorInfo, isLoading } = useQuery({
+    queryKey: ["vendor-info", user?.email],
+    queryFn: async () => {
+      const res = await axiosSecure(`vendor-info/${user?.email}`);
+      return res.data;
+    },
+  });
+
+  console.log(vendorInfo);
 
   const handleProfileUpdate = (data) => {
-    console.log(data);
-    updateProfile(data);
+    const filteredData = Object.fromEntries(
+      Object.entries(data).filter(([, value]) => value !== ""),
+    );
+
+    updateProfile(filteredData);
   };
 
   const { mutate: updateProfile, isPending } = useMutation({
     mutationFn: async (vendorsInfo) => {
-      const res = await axiosSecure.post(
+      const res = await axiosSecure.patch(
         `update-vendor/${user?.email}`,
         vendorsInfo,
       );
@@ -36,7 +46,9 @@ const VendorsProfile = () => {
       if (modal) modal.close();
 
       toast.success("Invitation sent successfully");
-      // queryClient.invalidateQueries(["applicants"]);
+      queryClient.invalidateQueries({
+        queryKey: ["vendor-info", user?.email],
+      });
       reset();
     },
     onError: (error) => {
@@ -47,6 +59,8 @@ const VendorsProfile = () => {
       );
     },
   });
+
+  if (isLoading) return <Loading />;
 
   return (
     <section className="my-14 px-3">
@@ -167,13 +181,10 @@ const VendorsProfile = () => {
                     Store Name
                   </label>
                   <input
-                    {...register("storeName", { required: true })}
+                    {...register("storeName")}
                     placeholder="Job Title"
                     className="block w-full px-5 py-3 mt-2 text-black bg-white border border-gray-200 rounded-lg focus:border-amber-400  focus:ring-amber-400 focus:outline-none focus:ring focus:ring-opacity-40"
                   />
-                  {errors.storeName && (
-                    <span className="text-red-500">Required</span>
-                  )}
                 </div>
 
                 {/* Business Type */}
@@ -184,9 +195,7 @@ const VendorsProfile = () => {
                   </label>
                   <select
                     defaultValue=""
-                    {...register("businessType", {
-                      required: "Please select your business type",
-                    })}
+                    {...register("businessType")}
                     className="block w-full px-5 py-3 mt-2 text-black bg-white border border-gray-200 rounded-lg focus:border-amber-400  focus:ring-amber-400 focus:outline-none focus:ring focus:ring-opacity-40"
                   >
                     <option value="" disabled>
@@ -196,12 +205,6 @@ const VendorsProfile = () => {
                     <option value="Company">Company</option>
                     <option value="Brand">Brand</option>
                   </select>
-
-                  {errors.businessType && (
-                    <span className="text-red-500 text-[16px] mt-1">
-                      {errors.businessType.message}
-                    </span>
-                  )}
                 </div>
 
                 {/* Business Address */}
@@ -211,13 +214,10 @@ const VendorsProfile = () => {
                   </label>
                   <input
                     type="text"
-                    {...register("businessAddress", { required: true })}
+                    {...register("businessAddress")}
                     placeholder="Business Address"
                     className="block w-full px-5 py-3 mt-2 text-black bg-white border border-gray-200 rounded-lg focus:border-amber-400  focus:ring-amber-400 focus:outline-none focus:ring focus:ring-opacity-40"
                   />
-                  {errors.businessName && (
-                    <span className="text-red-500">Required</span>
-                  )}
                 </div>
 
                 {/* Contract Number */}
@@ -227,13 +227,10 @@ const VendorsProfile = () => {
                   </label>
                   <input
                     type="number"
-                    {...register("contactNumber", { required: true })}
+                    {...register("contactNumber")}
                     placeholder="Contact Number"
                     className="block w-full px-5 py-3 mt-2 text-black bg-white border border-gray-200 rounded-lg focus:border-amber-400  focus:ring-amber-400 focus:outline-none focus:ring focus:ring-opacity-40"
                   />
-                  {errors.contactNumber && (
-                    <span className="text-red-500">Required</span>
-                  )}
                 </div>
 
                 {/* Store Descriptions */}
@@ -242,13 +239,10 @@ const VendorsProfile = () => {
                     Store Description
                   </label>
                   <textarea
-                    {...register("storeDescription", { required: true })}
+                    {...register("storeDescription")}
                     placeholder="Store Description..."
                     className="block w-full px-5 py-3 mt-2 text-black bg-white border border-gray-200 rounded-lg focus:border-amber-400  focus:ring-amber-400 focus:outline-none focus:ring focus:ring-opacity-40 min-h-37.5 resize-y"
                   />
-                  {errors.storeDescription && (
-                    <span className="text-red-500">Required</span>
-                  )}
                 </div>
               </div>
 
@@ -260,13 +254,21 @@ const VendorsProfile = () => {
                 suitable, may contact you or invite you for an interview.
               </p>
 
-              <div className="flex justify-end">
+              <div className="flex justify-end gap-5">
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="text-white transition-colors duration-300 transform focus:outline-none text-[18px] font-medium bg-blue-600 hover:bg-blue-700 px-8 py-2.5 rounded-md cursor-pointer"
+                  className="text-white transition-colors duration-300 transform focus:outline-none text-[18px] font-medium bg-amber-600 hover:bg-amber-700 px-8 py-2.5 rounded-md cursor-pointer"
                 >
                   {isPending ? "Updating..." : "Update"}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => document.getElementById("my_modal_5").close()}
+                  className="text-white transition-colors duration-300 transform focus:outline-none text-[18px] font-medium bg-red-500 hover:bg-red-700 px-8 py-2.5 rounded-md cursor-pointer"
+                >
+                  Close
                 </button>
               </div>
             </form>

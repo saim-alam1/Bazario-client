@@ -79,7 +79,7 @@ const AddProducts = () => {
                 required: true,
               })}
               placeholder="Product Name"
-              className="block w-full px-5 py-3 mt-2 text-black bg-white border border-gray-200 rounded-lg focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+              className="block w-full px-5 py-3 mt-2 text-black bg-white border border-gray-200 rounded-lg focus:border-amber-400 dark:focus:border-amber-400 focus:ring-amber-400 focus:outline-none focus:ring focus:ring-opacity-40"
             />
 
             {errors.productName && (
@@ -100,7 +100,7 @@ const AddProducts = () => {
                 required: true,
               })}
               placeholder="Category"
-              className="block w-full px-5 py-3 mt-2 text-black bg-white border border-gray-200 rounded-lg focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+              className="block w-full px-5 py-3 mt-2 text-black bg-white border border-gray-200 rounded-lg focus:border-amber-400 dark:focus:border-amber-400 focus:ring-amber-400 focus:outline-none focus:ring focus:ring-opacity-40"
             />
 
             {errors.category && (
@@ -122,7 +122,7 @@ const AddProducts = () => {
                 valueAsNumber: true,
               })}
               placeholder="Price"
-              className="block w-full px-5 py-3 mt-2 text-black bg-white border border-gray-200 rounded-lg focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+              className="block w-full px-5 py-3 mt-2 text-black bg-white border border-gray-200 rounded-lg focus:border-amber-400 dark:focus:border-amber-400 focus:ring-amber-400 focus:outline-none focus:ring focus:ring-opacity-40"
             />
 
             {errors.price && (
@@ -143,7 +143,7 @@ const AddProducts = () => {
                 valueAsNumber: true,
               })}
               placeholder="Discount"
-              className="block w-full px-5 py-3 mt-2 text-black bg-white border border-gray-200 rounded-lg focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+              className="block w-full px-5 py-3 mt-2 text-black bg-white border border-gray-200 rounded-lg focus:border-amber-400 dark:focus:border-amber-400 focus:ring-amber-400 focus:outline-none focus:ring focus:ring-opacity-40"
             />
           </div>
 
@@ -159,7 +159,7 @@ const AddProducts = () => {
                 valueAsNumber: true,
               })}
               placeholder="Stock Quantity"
-              className="block w-full px-5 py-3 mt-2 text-black bg-white border border-gray-200 rounded-lg focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+              className="block w-full px-5 py-3 mt-2 text-black bg-white border border-gray-200 rounded-lg focus:border-amber-400 dark:focus:border-amber-400 focus:ring-amber-400 focus:outline-none focus:ring focus:ring-opacity-40"
             />
 
             {errors.skillsRequired && (
@@ -180,7 +180,7 @@ const AddProducts = () => {
                 required: true,
               })}
               placeholder="Product Image"
-              className="block w-full px-5 py-3 mt-2 text-black bg-white border border-gray-200 rounded-lg focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+              className="block w-full px-5 py-3 mt-2 text-black bg-white border border-gray-200 rounded-lg focus:border-amber-400 dark:focus:border-amber-400 focus:ring-amber-400 focus:outline-none focus:ring focus:ring-opacity-40"
             />
 
             {errors.productImage && (
@@ -201,7 +201,7 @@ const AddProducts = () => {
                 required: true,
               })}
               placeholder="Enter detailed job description here..."
-              className="block w-full px-5 py-3 mt-2 text-black bg-white border border-gray-200 rounded-lg focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40 min-h-37.5 resize-y"
+              className="block w-full px-5 py-3 mt-2 text-black bg-white border border-gray-200 rounded-lg focus:border-amber-400 dark:focus:border-amber-400 focus:ring-amber-400 focus:outline-none focus:ring focus:ring-opacity-40 min-h-37.5 resize-y"
             />
 
             {errors.productDescriptions && (
@@ -215,7 +215,7 @@ const AddProducts = () => {
         <div className="flex justify-end mt-6">
           <button
             type="submit"
-            className=" text-white transition-colors duration-300 transform focus:outline-none text-[18px] font-medium bg-blue-600 hover:bg-blue-700 px-8 py-2.5 rounded-md cursor-pointer"
+            className=" text-white transition-colors duration-300 transform focus:outline-none text-[18px] font-medium bg-amber-600 hover:bg-amber-700 px-8 py-2.5 rounded-md cursor-pointer"
           >
             {isPending ? "Posting..." : "Post"}
           </button>

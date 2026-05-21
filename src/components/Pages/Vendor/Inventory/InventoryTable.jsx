@@ -44,9 +44,32 @@ const InventoryTable = ({ productsData }) => {
     }));
   };
 
-  // Mark Out Of Stock
-  const handleOutOfStock = (id) => {
-    console.log("Marked Out Of Stock:", id);
+  // Mark Product Paused
+  const handlePause = (id) => {
+    pauseProduct(id);
+  };
+
+  const { mutate: pauseProduct, isPending: isPausing } = useMutation({
+    mutationFn: async (id) => {
+      const res = await axiosSecure.patch(`pause-product/${id}`);
+      return res.data;
+    },
+
+    onSuccess: (data) => {
+      toast.success(data.message || "Product paused");
+
+      queryClient.invalidateQueries({
+        queryKey: ["my-products", user?.email],
+      });
+    },
+
+    onError: (error) => {
+      toast.error(error.response?.data?.message);
+    },
+  });
+
+  const handleActive = (id) => {
+    console.log(id);
   };
 
   // Restock Product
@@ -60,7 +83,7 @@ const InventoryTable = ({ productsData }) => {
 
   const { mutate: restock, isPending } = useMutation({
     mutationFn: async ({ id, quantity }) => {
-      const res = await axiosSecure.patch(`/restock/${id}`, {
+      const res = await axiosSecure.patch(`restock/${id}`, {
         quantity,
       });
 
@@ -102,7 +125,7 @@ const InventoryTable = ({ productsData }) => {
   const { mutate: applyFlashDiscount, isPending: isApplyingDiscount } =
     useMutation({
       mutationFn: async ({ id, flashDiscount, duration }) => {
-        const res = await axiosSecure.patch(`/flash-discount/${id}`, {
+        const res = await axiosSecure.patch(`flash-discount/${id}`, {
           flashDiscount,
           duration,
         });
@@ -146,8 +169,10 @@ const InventoryTable = ({ productsData }) => {
             <tr>
               <th>#</th>
               <th>Product</th>
-              <th>Discount</th>
-              <th>Stock Quantity</th>
+              <th>Discount (Normal)</th>
+              <th>Discount (Flash Offer)</th>
+              <th>Quantity</th>
+              <th>Status</th>
               <th>Flash Discount</th>
               <th>Restock</th>
               <th>Actions</th>
@@ -178,10 +203,25 @@ const InventoryTable = ({ productsData }) => {
                   <td className="font-medium">{product.productName}</td>
 
                   {/* Discount */}
-                  <td className="font-medium">{product.discount}</td>
+                  <td className="font-medium">
+                    {product.discount ? `${product.discount}%` : "No Discount"}
+                  </td>
+
+                  {/* Flash Discount */}
+                  <td className="font-medium">
+                    {product.flashDiscount
+                      ? `${product.flashDiscount}%`
+                      : "No Discount"}
+                  </td>
 
                   {/* Stock Quantity */}
                   <td>{product.stockQuantity}</td>
+
+                  {/* Status */}
+                  <td>
+                    {(product.stockStatus || "active").charAt(0).toUpperCase() +
+                      (product.stockStatus || "active").slice(1)}
+                  </td>
 
                   {/* Flash Discount */}
                   <td>
@@ -248,7 +288,7 @@ const InventoryTable = ({ productsData }) => {
 
                       <button
                         onClick={() => handleRestock(product._id)}
-                        className="btn bg-green-600 hover:bg-green-700 text-white"
+                        className="btn border-none shadow-none bg-green-600 hover:bg-green-700 text-white"
                       >
                         {isPending ? "Restocking..." : "Restock"}
                       </button>
@@ -258,12 +298,21 @@ const InventoryTable = ({ productsData }) => {
                   {/* Actions */}
                   <td>
                     <div className="flex items-center gap-4">
-                      <button
-                        onClick={() => handleOutOfStock(product._id)}
-                        className="btn bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md"
-                      >
-                        Sold Out
-                      </button>
+                      {product.stockStatus === "paused" ? (
+                        <button
+                          onClick={() => handleActive(product._id)}
+                          className="btn shadow-none bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-md"
+                        >
+                          Active
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handlePause(product._id)}
+                          className="btn shadow-none bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md"
+                        >
+                          {isPausing ? "Pausing..." : "Pause"}
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>

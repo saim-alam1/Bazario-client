@@ -2,11 +2,12 @@ import { useForm } from "react-hook-form";
 import useAuth from "../../../../Hooks/useAuth";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 import useUserRole from "../../../../Hooks/useUserRole";
-import { FaRegEdit, FaBuilding, FaBriefcase, FaEnvelope } from "react-icons/fa";
-import { MdVerifiedUser, MdDateRange } from "react-icons/md";
+import { FaRegEdit, FaStoreAlt, FaLayerGroup } from "react-icons/fa";
+import { MdVerifiedUser, MdDateRange, MdPermPhoneMsg } from "react-icons/md";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import Loading from "../../../UI/Loading/Loading";
+import { IoLocationSharp } from "react-icons/io5";
 
 const VendorsProfile = () => {
   const { user } = useAuth();
@@ -15,7 +16,7 @@ const VendorsProfile = () => {
   const { register, handleSubmit, reset } = useForm();
   const queryClient = useQueryClient();
 
-  const { data: vendorInfo, isLoading } = useQuery({
+  const { data: vendorInfo = {}, isLoading } = useQuery({
     queryKey: ["vendor-info", user?.email],
     queryFn: async () => {
       const res = await axiosSecure(`vendor-info/${user?.email}`);
@@ -23,7 +24,15 @@ const VendorsProfile = () => {
     },
   });
 
-  console.log(vendorInfo);
+  const {
+    storeName,
+    storeDescription,
+    registeredAt,
+    contactNumber,
+    businessType,
+    businessAddress,
+    role,
+  } = vendorInfo;
 
   const handleProfileUpdate = (data) => {
     const filteredData = Object.fromEntries(
@@ -102,6 +111,10 @@ const VendorsProfile = () => {
               {user?.displayName}
             </h3>
 
+            <p className="text-descriptions my-1.5 font-medium break-all">
+              {user?.email}
+            </p>
+
             <div className="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-blue-100 text-blue-600 rounded-full text-sm font-medium capitalize">
               <MdVerifiedUser className="text-lg" />
               {userRole}
@@ -118,47 +131,91 @@ const VendorsProfile = () => {
 
           {/* Information Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Company */}
+            {/* Store Name */}
             <div className="bg-base-200/50 rounded-2xl p-5">
               <div className="flex items-center gap-3 mb-2">
-                <FaBuilding className="text-blue-600 text-xl" />
-                <h4 className="text-lg font-semibold text-headings">Company</h4>
-              </div>
-              <p className="text-descriptions font-medium">{"company"}</p>
-            </div>
-
-            {/* Position */}
-            <div className="bg-base-200/50 rounded-2xl p-5">
-              <div className="flex items-center gap-3 mb-2">
-                <FaBriefcase className="text-blue-600 text-xl" />
+                <FaStoreAlt className="text-amber-600 text-xl" />
                 <h4 className="text-lg font-semibold text-headings">
-                  Position
+                  Store Name
                 </h4>
               </div>
-              <p className="text-descriptions font-medium">{"position"}</p>
+              <p className="text-descriptions font-medium">
+                {storeName || "Not Provided"}
+              </p>
             </div>
 
-            {/* Email */}
+            {/* Business Type */}
             <div className="bg-base-200/50 rounded-2xl p-5">
               <div className="flex items-center gap-3 mb-2">
-                <FaEnvelope className="text-blue-600 text-xl" />
-                <h4 className="text-lg font-semibold text-headings">Email</h4>
+                <FaLayerGroup className="text-amber-600 text-xl" />
+                <h4 className="text-lg font-semibold text-headings">
+                  Business Type
+                </h4>
+              </div>
+              <p className="text-descriptions font-medium">
+                {businessType || "Not Provided"}
+              </p>
+            </div>
+
+            {/* Role */}
+            <div className="bg-base-200/50 rounded-2xl p-5">
+              <div className="flex items-center gap-3 mb-2">
+                <MdVerifiedUser className="text-amber-600 text-xl" />
+                <h4 className="text-lg font-semibold text-headings">Role</h4>
+              </div>
+              <p className="text-descriptions font-medium">
+                {role || "Not Provided"}
+              </p>
+            </div>
+
+            {/* Address */}
+            <div className="bg-base-200/50 rounded-2xl p-5">
+              <div className="flex items-center gap-3 mb-2">
+                <IoLocationSharp className="text-amber-600 text-xl" />
+                <h4 className="text-lg font-semibold text-headings">Address</h4>
               </div>
               <p className="text-descriptions font-medium break-all">
-                {user?.email}
+                {businessAddress || "Not Provided"}
+              </p>
+            </div>
+
+            {/* Contract Number */}
+            <div className="bg-base-200/50 rounded-2xl p-5">
+              <div className="flex items-center gap-3 mb-2">
+                <MdPermPhoneMsg className="text-amber-600 text-xl" />
+                <h4 className="text-lg font-semibold text-headings">
+                  Contract Number
+                </h4>
+              </div>
+              <p className="text-descriptions font-medium break-all">
+                {contactNumber || "Not Provided"}
               </p>
             </div>
 
             {/* Joined Date */}
             <div className="bg-base-200/50 rounded-2xl p-5">
               <div className="flex items-center gap-3 mb-2">
-                <MdDateRange className="text-blue-600 text-xl" />
+                <MdDateRange className="text-amber-600 text-xl" />
                 <h4 className="text-lg font-semibold text-headings">
                   Member Since
                 </h4>
               </div>
               <p className="text-descriptions font-medium">
-                {/* {createdAt || "Unknown"} */}
+                {new Date(registeredAt).toLocaleDateString("en-GB") ||
+                  "Unknown"}
+              </p>
+            </div>
+
+            {/* Store Description */}
+            <div className="bg-base-200/50 rounded-2xl p-5 md:col-span-2">
+              <div className="flex items-center gap-3 mb-2">
+                <MdDateRange className="text-amber-600 text-xl" />
+                <h4 className="text-lg font-semibold text-headings">
+                  Store Description
+                </h4>
+              </div>
+              <p className="text-descriptions font-medium">
+                {storeDescription || "Unknown"}
               </p>
             </div>
           </div>

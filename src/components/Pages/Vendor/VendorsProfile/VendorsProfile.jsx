@@ -8,6 +8,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import Loading from "../../../UI/Loading/Loading";
 import { IoLocationSharp } from "react-icons/io5";
+import { Helmet } from "react-helmet-async";
 
 const VendorsProfile = () => {
   const { user } = useAuth();
@@ -73,6 +74,14 @@ const VendorsProfile = () => {
 
   return (
     <section className="my-14 px-3">
+      <Helmet>
+        <title>Vendor Profile | Dashboard</title>
+        <meta
+          name="description"
+          content="Manage and update your vendor profile, including business details, contact information, and account settings to improve visibility and opportunities."
+        />
+      </Helmet>
+
       {/* Page Heading */}
       <div className="text-center mb-12">
         <h2 className="text-4xl md:text-5xl font-semibold text-headings capitalize">

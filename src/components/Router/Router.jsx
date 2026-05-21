@@ -179,7 +179,6 @@ const router = createBrowserRouter([
       },
       {
         path: "products",
-        // Component: Products,
         element: (
           <VendorsRoute>
             <Products />
@@ -188,7 +187,6 @@ const router = createBrowserRouter([
       },
       {
         path: "add-products",
-        // Component: AddProducts,
         element: (
           <VendorsRoute>
             <AddProducts />
@@ -197,7 +195,6 @@ const router = createBrowserRouter([
       },
       {
         path: "orders",
-        // Component: Orders,
         element: (
           <VendorsRoute>
             <Orders />
@@ -206,7 +203,6 @@ const router = createBrowserRouter([
       },
       {
         path: "inventory",
-        // Component: Inventory,
         element: (
           <VendorsRoute>
             <Inventory />
@@ -215,7 +211,6 @@ const router = createBrowserRouter([
       },
       {
         path: "discounts",
-        // Component: Discounts,
         element: (
           <VendorsRoute>
             <Discounts />
@@ -224,7 +219,6 @@ const router = createBrowserRouter([
       },
       {
         path: "analytics",
-        // Component: Analytics,
         element: (
           <VendorsRoute>
             <Analytics />
@@ -233,7 +227,6 @@ const router = createBrowserRouter([
       },
       {
         path: "reviews",
-        // Component: Reviews,
         element: (
           <VendorsRoute>
             <Reviews />
@@ -242,7 +235,6 @@ const router = createBrowserRouter([
       },
       {
         path: "payouts",
-        // Component: Payouts,
         element: (
           <VendorsRoute>
             <Payouts />

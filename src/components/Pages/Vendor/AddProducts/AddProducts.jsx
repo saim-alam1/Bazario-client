@@ -2,6 +2,8 @@ import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
 import useAuth from "../../../../Hooks/useAuth";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 
 const AddProducts = () => {
   const {
@@ -20,8 +22,27 @@ const AddProducts = () => {
           value !== "" && value !== undefined && !Number.isNaN(value),
       ),
     );
-    console.log(filteredData);
+    const modifiedProductData = {
+      ...filteredData,
+      vendorsName: user?.displayName,
+      vendorsEmail: user?.email,
+    };
+    addProduct(modifiedProductData);
   };
+
+  const { mutate: addProduct, isPending } = useMutation({
+    mutationFn: async (productData) => {
+      const res = await axiosSecure.post("add-product", productData);
+      return res.data;
+    },
+    onSuccess: (data) => {
+      toast.success(data.message || "Product added successfully");
+      reset();
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message);
+    },
+  });
 
   return (
     <section className="max-w-11/12 p-6 mx-auto bg-white rounded-md shadow-md my-16">
@@ -154,7 +175,7 @@ const AddProducts = () => {
               Product Image
             </label>
             <input
-              type=""
+              type="url"
               {...register("productImage", {
                 required: true,
               })}
@@ -196,7 +217,7 @@ const AddProducts = () => {
             type="submit"
             className=" text-white transition-colors duration-300 transform focus:outline-none text-[18px] font-medium bg-blue-600 hover:bg-blue-700 px-8 py-2.5 rounded-md cursor-pointer"
           >
-            Post
+            {isPending ? "Posting..." : "Post"}
           </button>
         </div>
       </form>

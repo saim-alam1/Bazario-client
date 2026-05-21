@@ -1,9 +1,16 @@
+import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import useAuth from "../../../../Hooks/useAuth";
 
 const InventoryTable = ({ productsData }) => {
+  const axiosSecure = useAxiosSecure();
   const [restockValues, setRestockValues] = useState({});
   const [discountValues, setDiscountValues] = useState({});
   const [discountDuration, setDiscountDuration] = useState({});
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   // Increase Quantity
   const handleIncrease = (id) => {
@@ -44,17 +51,37 @@ const InventoryTable = ({ productsData }) => {
 
   // Restock Product
   const handleRestock = (id) => {
-    console.log("Restock:", {
-      id,
-      quantity: restockValues[id] || 0,
-    });
+    const quantity = restockValues[id] || 0;
+
+    if (quantity <= 0) return;
+
+    restock({ id, quantity });
   };
+
+  const { mutate: restock, isPending } = useMutation({
+    mutationFn: async ({ id, quantity }) => {
+      const res = await axiosSecure.patch(`/restock/${id}`, {
+        quantity,
+      });
+
+      return res.data;
+    },
+    onSuccess: (data) => {
+      toast.success(data.message || "Product added successfully");
+      queryClient.invalidateQueries({
+        queryKey: ["my-products", user?.email],
+      });
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message);
+    },
+  });
 
   // Apply Discount
   const handleApplyDiscount = (id) => {
     console.log("Discount Applied:", {
       id,
-      discount: discountValues[id],
+      flashDiscount: discountValues[id],
       duration: discountDuration[id],
     });
   };
@@ -69,7 +96,7 @@ const InventoryTable = ({ productsData }) => {
               <th>#</th>
               <th>Product</th>
               <th>Stock Quantity</th>
-              <th>Quick Discount</th>
+              <th>Flash Discount</th>
               <th>Restock</th>
               <th>Actions</th>
             </tr>
@@ -101,7 +128,7 @@ const InventoryTable = ({ productsData }) => {
                   {/* Stock Quantity */}
                   <td>{product.stockQuantity}</td>
 
-                  {/* Quick Discount */}
+                  {/* Flash Discount */}
                   <td>
                     <div className="flex flex-col gap-2 min-w-45">
                       <input
@@ -132,7 +159,7 @@ const InventoryTable = ({ productsData }) => {
 
                       <button
                         onClick={() => handleApplyDiscount(product._id)}
-                        className="bg-amber-500 hover:bg-amber-600 text-white text-sm px-3 py-1 rounded-md"
+                        className="bg-amber-500 hover:bg-amber-600 text-white text-sm px-3 py-1 rounded-md cursor-pointer"
                         disabled={
                           !discountValues[product._id] ||
                           !discountDuration[product._id]
@@ -168,7 +195,7 @@ const InventoryTable = ({ productsData }) => {
                         onClick={() => handleRestock(product._id)}
                         className="btn bg-green-600 hover:bg-green-700 text-white"
                       >
-                        Restock
+                        {isPending ? "Restocking..." : "Restock"}
                       </button>
                     </div>
                   </td>

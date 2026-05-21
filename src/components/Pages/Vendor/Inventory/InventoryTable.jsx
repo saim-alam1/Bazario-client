@@ -292,7 +292,11 @@ const InventoryTable = ({ productsData }) => {
                     <div className="flex items-center gap-3">
                       <button
                         onClick={() => handleDecrease(product._id)}
-                        className="bg-gray-200 hover:bg-gray-300 text-black w-8 h-8 rounded-md text-lg cursor-pointer"
+                        className={`w-8 h-8 rounded-md text-lg cursor-pointer flex items-center justify-center transition-colors ${
+                          product.stockQuantity < 5
+                            ? "bg-transparent border border-white hover:bg-white/20 text-white"
+                            : "bg-gray-200 hover:bg-gray-300 text-black"
+                        }`}
                       >
                         -
                       </button>
@@ -303,7 +307,11 @@ const InventoryTable = ({ productsData }) => {
 
                       <button
                         onClick={() => handleIncrease(product._id)}
-                        className="bg-gray-200 hover:bg-gray-300 text-black w-8 h-8 rounded-md text-lg cursor-pointer"
+                        className={`w-8 h-8 rounded-md text-lg cursor-pointer flex items-center justify-center transition-colors ${
+                          product.stockQuantity < 5
+                            ? "bg-transparent border border-white hover:bg-white/20 text-white"
+                            : "bg-gray-200 hover:bg-gray-300 text-black"
+                        }`}
                       >
                         +
                       </button>

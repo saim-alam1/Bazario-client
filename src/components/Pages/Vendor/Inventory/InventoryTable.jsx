@@ -66,8 +66,16 @@ const InventoryTable = ({ productsData }) => {
 
       return res.data;
     },
-    onSuccess: (data) => {
+    onSuccess: (data, variables) => {
       toast.success(data.message || "Product added successfully");
+
+      const id = variables.id;
+
+      setRestockValues((prev) => ({
+        ...prev,
+        [id]: 0,
+      }));
+
       queryClient.invalidateQueries({
         queryKey: ["my-products", user?.email],
       });
@@ -79,12 +87,55 @@ const InventoryTable = ({ productsData }) => {
 
   // Apply Discount
   const handleApplyDiscount = (id) => {
-    console.log("Discount Applied:", {
+    const flashDiscount = Number(discountValues[id]);
+    const duration = discountDuration[id];
+
+    if (!flashDiscount || !duration) return;
+
+    applyFlashDiscount({
       id,
-      flashDiscount: discountValues[id],
-      duration: discountDuration[id],
+      flashDiscount,
+      duration,
     });
   };
+
+  const { mutate: applyFlashDiscount, isPending: isApplyingDiscount } =
+    useMutation({
+      mutationFn: async ({ id, flashDiscount, duration }) => {
+        const res = await axiosSecure.patch(`/flash-discount/${id}`, {
+          flashDiscount,
+          duration,
+        });
+
+        return res.data;
+      },
+
+      onSuccess: (data, variables) => {
+        toast.success(data.message || "Discount applied successfully");
+
+        const id = variables.id;
+
+        setDiscountValues((prev) => ({
+          ...prev,
+          [id]: "",
+        }));
+
+        setDiscountDuration((prev) => ({
+          ...prev,
+          [id]: "",
+        }));
+
+        queryClient.invalidateQueries({
+          queryKey: ["my-products", user?.email],
+        });
+      },
+
+      onError: (error) => {
+        toast.error(
+          error.response?.data?.message || "Failed to apply discount",
+        );
+      },
+    });
 
   return (
     <section>
@@ -95,6 +146,7 @@ const InventoryTable = ({ productsData }) => {
             <tr>
               <th>#</th>
               <th>Product</th>
+              <th>Discount</th>
               <th>Stock Quantity</th>
               <th>Flash Discount</th>
               <th>Restock</th>
@@ -124,6 +176,9 @@ const InventoryTable = ({ productsData }) => {
 
                   {/* Product */}
                   <td className="font-medium">{product.productName}</td>
+
+                  {/* Discount */}
+                  <td className="font-medium">{product.discount}</td>
 
                   {/* Stock Quantity */}
                   <td>{product.stockQuantity}</td>
@@ -165,7 +220,7 @@ const InventoryTable = ({ productsData }) => {
                           !discountDuration[product._id]
                         }
                       >
-                        Apply
+                        {isApplyingDiscount ? "Applying..." : "Apply"}
                       </button>
                     </div>
                   </td>

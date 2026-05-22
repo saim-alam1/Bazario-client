@@ -1,12 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import useAxios from "../../../../Hooks/useAxios";
 import Loading from "../../../UI/Loading/Loading";
-import { useState } from "react";
 import { Helmet } from "react-helmet-async";
+import { useSearchParams } from "react-router";
 
 const CustomerProducts = () => {
   const axiosInstance = useAxios();
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const selectedCategory = searchParams.get("category") || "All";
 
   const { data: categories = [], isLoading: catLoading } = useQuery({
     queryKey: ["load-categories"],
@@ -16,20 +17,17 @@ const CustomerProducts = () => {
     },
   });
 
-  const { data: products = [], isLoading: prodLoading } = useQuery({
-    queryKey: ["load-products"],
+  const { data: products = [], isLoading } = useQuery({
+    queryKey: ["load-products", selectedCategory],
     queryFn: async () => {
-      const res = await axiosInstance.get("products");
+      const res = await axiosInstance.get(
+        `/products?category=${selectedCategory}`,
+      );
       return res.data;
     },
   });
 
-  if (catLoading || prodLoading) return <Loading />;
-
-  const filtered =
-    selectedCategory === "All"
-      ? products
-      : products.filter((p) => p.category === selectedCategory);
+  if (catLoading || isLoading) return <Loading />;
 
   return (
     <section className="px-6 py-10 bg-linear-to-b from-gray-50 via-white to-gray-100 min-h-screen">
@@ -51,7 +49,7 @@ const CustomerProducts = () => {
       <div className="mb-10 overflow-hidden rounded-2xl bg-white border shadow-sm group">
         <div className="flex gap-3 whitespace-nowrap animate-ticker px-5 py-3 group-hover:[animation-play-state:paused]">
           <button
-            onClick={() => setSelectedCategory("All")}
+            onClick={() => setSearchParams({})}
             className={`px-4 py-1.5 rounded-full text-sm font-medium transition ${
               selectedCategory === "All"
                 ? "bg-black text-white shadow-md"
@@ -64,7 +62,11 @@ const CustomerProducts = () => {
           {categories.map((c, i) => (
             <button
               key={i}
-              onClick={() => setSelectedCategory(c.category)}
+              onClick={() =>
+                setSearchParams({
+                  category: c.category,
+                })
+              }
               className={`px-4 py-1.5 rounded-full text-sm font-medium transition ${
                 selectedCategory === c.category
                   ? "bg-black text-white shadow-md"
@@ -79,7 +81,7 @@ const CustomerProducts = () => {
 
       {/* PRODUCTS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {filtered.map((p) => {
+        {products.map((p) => {
           const discountedPrice = p.flashDiscount
             ? (p.price - (p.price * p.flashDiscount) / 100).toFixed(2)
             : p.price;

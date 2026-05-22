@@ -29,17 +29,17 @@ const CategoriesSection = () => {
         </p>
       </div>
 
-      <div className="my-12 grid grid-cols-3 gap-4">
+      <div className="my-12 grid md:grid-cols-3 gap-4">
         {categories.slice(0, 6).map((data, index) => (
           <div
             key={index}
             className="card bg-base-100 h-75 shadow-md transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-xl cursor-pointer"
           >
-            <figure className="w-full">
+            <figure className="w-full h-full">
               <img
                 src={data?.image}
                 alt="Shoes"
-                className="w-full object-center"
+                className="w-full object-cover object-center"
               />
             </figure>
             <div className="card-body text-center flex flex-col items-center">

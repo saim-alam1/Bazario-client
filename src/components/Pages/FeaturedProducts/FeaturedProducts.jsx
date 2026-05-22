@@ -14,7 +14,7 @@ const FeaturedProducts = () => {
     <section className="my-24 px-3">
       <div
         data-aos="fade-right"
-        className="text-center space-y-4 max-w-9/12 mx-auto"
+        className="text-center space-y-4 max-w-11/12 mx-auto"
       >
         <h1 className="text-headings font-semibold text-5xl">
           Featured Products
@@ -26,7 +26,7 @@ const FeaturedProducts = () => {
         </p>
       </div>
 
-      <div className="my-12 grid grid-cols-3 gap-3">
+      <div className="my-12 grid md:grid-cols-2 xl:grid-cols-3 gap-3">
         {/* Card 1 */}
         <div data-aos="fade-right" className="card bg-base-100 shadow-lg">
           <figure className="px-10 pt-10">

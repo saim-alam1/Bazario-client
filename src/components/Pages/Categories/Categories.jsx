@@ -17,8 +17,10 @@ const Categories = () => {
 
   return (
     <section className="my-12 px-3">
-      <div className="text-center space-y-4 max-w-9/12 mx-auto">
-        <h1 className="text-headings font-semibold text-5xl">Categories</h1>
+      <div className="text-center space-y-4 max-w-11/12 mx-auto">
+        <h1 className="text-headings font-semibold text-3xl">
+          Categories We Have
+        </h1>
         <p className="text-xl text-descriptions">
           Here you can see just all the trending categories we currently have.
           We have a vast amount of category collection in the whole Bangladesh.
@@ -26,7 +28,7 @@ const Categories = () => {
         </p>
       </div>
 
-      <div className="my-12 grid grid-cols-3 gap-4">
+      <div className="my-12 grid md:grid-cols-3 gap-4">
         {categories.map((data, index) => (
           <div
             key={index}

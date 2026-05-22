@@ -3,7 +3,7 @@ import CardsSlider from "../../Shared/CardsSlider/CardsSlider";
 const FlashSaleSection = () => {
   return (
     <section className="my-24 px-3">
-      <div className="text-center space-y-4 max-w-9/12 mx-auto">
+      <div className="text-center space-y-4 max-w-11/12 mx-auto">
         <h1 className="text-headings font-semibold text-5xl">
           Flash Sale Going One
         </h1>

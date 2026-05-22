@@ -1,4 +1,23 @@
+import { useQuery } from "@tanstack/react-query";
+import useAxios from "../../../Hooks/useAxios";
+import Loading from "../../UI/Loading/Loading";
+import { Link } from "react-router";
+
 const CategoriesSection = () => {
+  const axiosInstance = useAxios();
+
+  const { data: categories = [], isLoading } = useQuery({
+    queryKey: ["load-categories"],
+    queryFn: async () => {
+      const res = await axiosInstance.get("categories");
+      return res.data;
+    },
+  });
+
+  console.log(categories);
+
+  if (isLoading) return <Loading />;
+
   return (
     <section className="my-12 px-3">
       <div className="text-center space-y-4 max-w-9/12 mx-auto">
@@ -6,201 +25,36 @@ const CategoriesSection = () => {
           Categories Section
         </h1>
         <p className="text-xl text-descriptions">
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quisquam,
-          qui adipisci dolore ratione cum maxime, suscipit exercitationem
-          repudiandae provident blanditiis.
+          Here you can see just a glimpse of all the trending categories we
+          currently have. Also if you want you can see all the other categories
+          which we have on our collections.
         </p>
       </div>
 
-      <div className="my-12 grid grid-cols-3 gap-3">
-        {/* Card 1 */}
-        <div className="card bg-base-100 shadow-lg">
-          <figure className="px-10 pt-10">
-            <img
-              src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-              alt="Shoes"
-              className="rounded-xl"
-            />
-          </figure>
-          <div className="card-body items-center text-center">
-            <h2 className="card-title">Card Title</h2>
-            <p>
-              A card component has a figure, a body part, and inside body there
-              are title and actions parts
-            </p>
-            <div className="card-actions">
-              <button className="btn btn-primary">Buy Now</button>
+      <div className="my-12 grid grid-cols-3 gap-4">
+        {categories.slice(0, 6).map((data, index) => (
+          <div key={index} className="card bg-base-100 h-75 shadow-md">
+            <figure className="w-full">
+              <img
+                src={data?.image}
+                alt="Shoes"
+                className="w-full object-center"
+              />
+            </figure>
+            <div className="card-body text-center flex flex-col items-center">
+              <h2 className="text-2xl font-semibold">{data?.category}</h2>
             </div>
           </div>
-        </div>
+        ))}
+      </div>
 
-        {/* Card 2 */}
-        <div className="card bg-base-100 shadow-lg">
-          <figure className="px-10 pt-10">
-            <img
-              src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-              alt="Shoes"
-              className="rounded-xl"
-            />
-          </figure>
-          <div className="card-body items-center text-center">
-            <h2 className="card-title">Card Title</h2>
-            <p>
-              A card component has a figure, a body part, and inside body there
-              are title and actions parts
-            </p>
-            <div className="card-actions">
-              <button className="btn btn-primary">Buy Now</button>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 3 */}
-        <div className="card bg-base-100 shadow-lg">
-          <figure className="px-10 pt-10">
-            <img
-              src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-              alt="Shoes"
-              className="rounded-xl"
-            />
-          </figure>
-          <div className="card-body items-center text-center">
-            <h2 className="card-title">Card Title</h2>
-            <p>
-              A card component has a figure, a body part, and inside body there
-              are title and actions parts
-            </p>
-            <div className="card-actions">
-              <button className="btn btn-primary">Buy Now</button>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 4 */}
-        <div className="card bg-base-100 shadow-lg">
-          <figure className="px-10 pt-10">
-            <img
-              src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-              alt="Shoes"
-              className="rounded-xl"
-            />
-          </figure>
-          <div className="card-body items-center text-center">
-            <h2 className="card-title">Card Title</h2>
-            <p>
-              A card component has a figure, a body part, and inside body there
-              are title and actions parts
-            </p>
-            <div className="card-actions">
-              <button className="btn btn-primary">Buy Now</button>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 5 */}
-        <div className="card bg-base-100 shadow-lg">
-          <figure className="px-10 pt-10">
-            <img
-              src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-              alt="Shoes"
-              className="rounded-xl"
-            />
-          </figure>
-          <div className="card-body items-center text-center">
-            <h2 className="card-title">Card Title</h2>
-            <p>
-              A card component has a figure, a body part, and inside body there
-              are title and actions parts
-            </p>
-            <div className="card-actions">
-              <button className="btn btn-primary">Buy Now</button>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 6 */}
-        <div className="card bg-base-100 shadow-lg">
-          <figure className="px-10 pt-10">
-            <img
-              src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-              alt="Shoes"
-              className="rounded-xl"
-            />
-          </figure>
-          <div className="card-body items-center text-center">
-            <h2 className="card-title">Card Title</h2>
-            <p>
-              A card component has a figure, a body part, and inside body there
-              are title and actions parts
-            </p>
-            <div className="card-actions">
-              <button className="btn btn-primary">Buy Now</button>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 7 */}
-        <div className="card bg-base-100 shadow-lg">
-          <figure className="px-10 pt-10">
-            <img
-              src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-              alt="Shoes"
-              className="rounded-xl"
-            />
-          </figure>
-          <div className="card-body items-center text-center">
-            <h2 className="card-title">Card Title</h2>
-            <p>
-              A card component has a figure, a body part, and inside body there
-              are title and actions parts
-            </p>
-            <div className="card-actions">
-              <button className="btn btn-primary">Buy Now</button>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 8 */}
-        <div className="card bg-base-100 shadow-lg">
-          <figure className="px-10 pt-10">
-            <img
-              src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-              alt="Shoes"
-              className="rounded-xl"
-            />
-          </figure>
-          <div className="card-body items-center text-center">
-            <h2 className="card-title">Card Title</h2>
-            <p>
-              A card component has a figure, a body part, and inside body there
-              are title and actions parts
-            </p>
-            <div className="card-actions">
-              <button className="btn btn-primary">Buy Now</button>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 9 */}
-        <div className="card bg-base-100 shadow-lg">
-          <figure className="px-10 pt-10">
-            <img
-              src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-              alt="Shoes"
-              className="rounded-xl"
-            />
-          </figure>
-          <div className="card-body items-center text-center">
-            <h2 className="card-title">Card Title</h2>
-            <p>
-              A card component has a figure, a body part, and inside body there
-              are title and actions parts
-            </p>
-            <div className="card-actions">
-              <button className="btn btn-primary">Buy Now</button>
-            </div>
-          </div>
-        </div>
+      <div className="flex justify-center">
+        <Link
+          to="categories"
+          className="btn bg-amber-500 border-none hover:bg-amber-600 text-base font-semibold"
+        >
+          See More...
+        </Link>
       </div>
     </section>
   );

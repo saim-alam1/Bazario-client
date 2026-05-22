@@ -4,7 +4,6 @@ import Home from "../Pages/Home/Home";
 import Shop from "../Pages/Shop/Shop";
 import Categories from "../Pages/Categories/Categories";
 import BecomeASeller from "../Pages/BecomeASeller/BecomeASeller";
-import About from "../Pages/About/About";
 import AuthLayout from "../Layouts/AuthLayout/AuthLayout";
 import ErrorComponent from "../UI/ErrorComponent/ErrorComponent";
 import Register from "../Pages/Auth/Register/Register";
@@ -43,6 +42,7 @@ import Reports from "../Pages/Admin/Reports/Reports";
 import ForbiddenAccess from "../UI/ForbiddenAccess/ForbiddenAccess";
 import CustomerRoute from "../Pages/Auth/CustomerRoute/CustomerRoute";
 import VendorsRoute from "../Pages/Auth/VendorsRoute/VendorsRoute";
+import CustomerProducts from "../Pages/Customer/CustomerProducts/CustomerProducts";
 
 const router = createBrowserRouter([
   {
@@ -71,8 +71,8 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/about",
-        Component: About,
+        path: "/products-section",
+        Component: CustomerProducts,
       },
       {
         path: "/forbidden-access",

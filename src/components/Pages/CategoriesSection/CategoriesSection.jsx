@@ -14,8 +14,6 @@ const CategoriesSection = () => {
     },
   });
 
-  console.log(categories);
-
   if (isLoading) return <Loading />;
 
   return (
@@ -33,7 +31,10 @@ const CategoriesSection = () => {
 
       <div className="my-12 grid grid-cols-3 gap-4">
         {categories.slice(0, 6).map((data, index) => (
-          <div key={index} className="card bg-base-100 h-75 shadow-md">
+          <div
+            key={index}
+            className="card bg-base-100 h-75 shadow-md transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-xl cursor-pointer"
+          >
             <figure className="w-full">
               <img
                 src={data?.image}

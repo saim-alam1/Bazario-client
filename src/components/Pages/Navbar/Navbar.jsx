@@ -57,22 +57,22 @@ const Navbar = () => {
       </li>
       <li>
         <NavLink
+          to="/products-section"
+          className={({ isActive }) =>
+            `${isActive ? "text-[#EA580C] border-b pb-1 border-[#EA580C]" : "text-[#6B7280]"} font-semibold text-base`
+          }
+        >
+          Products
+        </NavLink>
+      </li>
+      <li>
+        <NavLink
           to="/become-a-seller"
           className={({ isActive }) =>
             `${isActive ? "text-[#EA580C] border-b pb-1 border-[#EA580C]" : "text-[#6B7280]"} font-semibold text-base`
           }
         >
           Become a Seller
-        </NavLink>
-      </li>
-      <li>
-        <NavLink
-          to="/about"
-          className={({ isActive }) =>
-            `${isActive ? "text-[#EA580C] border-b pb-1 border-[#EA580C]" : "text-[#6B7280]"} font-semibold text-base`
-          }
-        >
-          About
         </NavLink>
       </li>
     </>

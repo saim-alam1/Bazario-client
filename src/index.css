@@ -15,3 +15,22 @@ body {
 .text-descriptions {
   color: #4b5563;
 }
+
+@keyframes ticker {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-ticker {
+  display: inline-flex;
+  width: max-content;
+  animation: ticker 25s linear infinite;
+}
+
+.pause-animation {
+  animation-play-state: paused !important;
+}

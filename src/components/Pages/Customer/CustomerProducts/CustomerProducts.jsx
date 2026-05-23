@@ -69,7 +69,7 @@ const CustomerProducts = () => {
               }
               className={`px-4 py-1.5 rounded-full text-sm font-medium transition ${
                 selectedCategory === c.category
-                  ? "bg-black text-white shadow-md"
+                  ? "bg-amber-500 text-white shadow-md"
                   : "bg-gray-100 hover:bg-gray-200"
               }`}
             >

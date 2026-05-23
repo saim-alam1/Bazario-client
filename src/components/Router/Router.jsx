@@ -42,7 +42,8 @@ import Reports from "../Pages/Admin/Reports/Reports";
 import ForbiddenAccess from "../UI/ForbiddenAccess/ForbiddenAccess";
 import CustomerRoute from "../Pages/Auth/CustomerRoute/CustomerRoute";
 import VendorsRoute from "../Pages/Auth/VendorsRoute/VendorsRoute";
-import CustomerProducts from "../Pages/Customer/CustomerProducts/CustomerProducts";
+import ProductsSection from "../Pages/Customer/ProductsSection/ProductsSection";
+import ProductsDetails from "../Pages/ProductsDetails/ProductsDetails";
 
 const router = createBrowserRouter([
   {
@@ -72,7 +73,15 @@ const router = createBrowserRouter([
       },
       {
         path: "/products-section",
-        Component: CustomerProducts,
+        Component: ProductsSection,
+      },
+      {
+        path: "/products-details/:id",
+        element: (
+          <PrivateRoute>
+            <ProductsDetails />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/forbidden-access",

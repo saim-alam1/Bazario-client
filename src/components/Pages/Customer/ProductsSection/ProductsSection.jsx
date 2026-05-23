@@ -2,9 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import useAxios from "../../../../Hooks/useAxios";
 import Loading from "../../../UI/Loading/Loading";
 import { Helmet } from "react-helmet-async";
-import { useSearchParams } from "react-router";
+import { Link, useSearchParams } from "react-router";
 
-const CustomerProducts = () => {
+const ProductsSection = () => {
   const axiosInstance = useAxios();
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedCategory = searchParams.get("category") || "All";
@@ -171,9 +171,12 @@ const CustomerProducts = () => {
                     )}
                   </div>
 
-                  <button className="px-4 py-2 text-sm rounded-xl bg-amber-500 text-white hover:bg-amber-600 transition shadow-sm hover:shadow-md cursor-pointer">
+                  <Link
+                    to={`/products-details/${p._id}`}
+                    className="px-4 py-2 text-sm rounded-xl bg-amber-500 text-white hover:bg-amber-600 transition shadow-sm hover:shadow-md cursor-pointer"
+                  >
                     View
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -184,4 +187,4 @@ const CustomerProducts = () => {
   );
 };
 
-export default CustomerProducts;
+export default ProductsSection;

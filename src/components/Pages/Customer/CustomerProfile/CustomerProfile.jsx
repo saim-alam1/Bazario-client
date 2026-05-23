@@ -6,9 +6,16 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import Loading from "../../../UI/Loading/Loading";
 import { Helmet } from "react-helmet-async";
-import { MdDateRange, MdPermPhoneMsg, MdVerifiedUser } from "react-icons/md";
-import { FaLayerGroup, FaRegEdit, FaStoreAlt } from "react-icons/fa";
+import { MdDateRange, MdLocationCity, MdVerifiedUser } from "react-icons/md";
 import { IoLocationSharp } from "react-icons/io5";
+import {
+  FaBoxOpen,
+  FaHeart,
+  FaMapMarkedAlt,
+  FaPhoneAlt,
+  FaRegEdit,
+  FaShoppingCart,
+} from "react-icons/fa";
 
 const CustomerProfile = () => {
   const { user } = useAuth();
@@ -18,7 +25,7 @@ const CustomerProfile = () => {
   const queryClient = useQueryClient();
 
   const { data: customerInfo = {}, isLoading } = useQuery({
-    queryKey: ["vendor-info", user?.email],
+    queryKey: ["customer-info", user?.email],
     queryFn: async () => {
       const res = await axiosSecure(`/customer-info/${user?.email}`);
       return res.data;
@@ -34,20 +41,20 @@ const CustomerProfile = () => {
   };
 
   const { mutate: updateProfile, isPending } = useMutation({
-    mutationFn: async (vendorsInfo) => {
+    mutationFn: async (customerInfo) => {
       const res = await axiosSecure.patch(
-        `update-vendor/${user?.email}`,
-        vendorsInfo,
+        `update-customer/${user?.email}`,
+        customerInfo,
       );
       return res.data;
     },
-    onSuccess: () => {
+    onSuccess: (res) => {
       const modal = document.getElementById("my_modal_5");
       if (modal) modal.close();
 
-      toast.success("Invitation sent successfully");
+      toast.success(res.message);
       queryClient.invalidateQueries({
-        queryKey: ["vendor-info", user?.email],
+        queryKey: ["customer-info", user?.email],
       });
       reset();
     },
@@ -62,17 +69,8 @@ const CustomerProfile = () => {
 
   if (isLoading) return <Loading />;
 
-  console.log(customerInfo);
-
-  const {
-    storeName,
-    storeDescription,
-    registeredAt,
-    contactNumber,
-    businessType,
-    businessAddress,
-    role,
-  } = customerInfo;
+  const { registeredAt, contactNumber, district, division, fullAddress } =
+    customerInfo || {};
 
   return (
     <section className="my-14 px-3">
@@ -145,28 +143,26 @@ const CustomerProfile = () => {
             {/* Division */}
             <div className="bg-base-200/50 rounded-2xl p-5">
               <div className="flex items-center gap-3 mb-2">
-                <MdVerifiedUser className="text-amber-600 text-xl" />
+                <FaMapMarkedAlt className="text-amber-600 text-xl" />
                 <h4 className="text-lg font-semibold text-headings">
                   Division
                 </h4>
               </div>
               <p className="text-descriptions font-medium">
-                {/* {role || "Not Provided"} */}
-                Not Provided
+                {division || "Not Provided"}
               </p>
             </div>
 
             {/* District */}
             <div className="bg-base-200/50 rounded-2xl p-5">
               <div className="flex items-center gap-3 mb-2">
-                <MdVerifiedUser className="text-amber-600 text-xl" />
+                <MdLocationCity className="text-amber-600 text-xl" />
                 <h4 className="text-lg font-semibold text-headings">
                   District
                 </h4>
               </div>
               <p className="text-descriptions font-medium">
-                {/* {role || "Not Provided"} */}
-                Not Provided
+                {district || "Not Provided"}
               </p>
             </div>
 
@@ -179,27 +175,27 @@ const CustomerProfile = () => {
                 </h4>
               </div>
               <p className="text-descriptions font-medium break-all">
-                {/* {businessAddress || "Not Provided"} */} Not Provided
+                {fullAddress || "Not Provided"}
               </p>
             </div>
 
             {/* Contract Number */}
             <div className="bg-base-200/50 rounded-2xl p-5">
               <div className="flex items-center gap-3 mb-2">
-                <MdPermPhoneMsg className="text-amber-600 text-xl" />
+                <FaPhoneAlt className="text-amber-600 text-xl" />
                 <h4 className="text-lg font-semibold text-headings">
                   Contract Number
                 </h4>
               </div>
               <p className="text-descriptions font-medium break-all">
-                {/* {contactNumber || "Not Provided"} */} Not Provided
+                +{contactNumber || "Not Provided"}
               </p>
             </div>
 
             {/* Total Orders */}
             <div className="bg-base-200/50 rounded-2xl p-5">
               <div className="flex items-center gap-3 mb-2">
-                <MdPermPhoneMsg className="text-amber-600 text-xl" />
+                <FaBoxOpen className="text-amber-600 text-xl" />
                 <h4 className="text-lg font-semibold text-headings">
                   Total Orders
                 </h4>
@@ -212,7 +208,7 @@ const CustomerProfile = () => {
             {/* Wishlist Items */}
             <div className="bg-base-200/50 rounded-2xl p-5">
               <div className="flex items-center gap-3 mb-2">
-                <MdPermPhoneMsg className="text-amber-600 text-xl" />
+                <FaHeart className="text-amber-600 text-xl" />
                 <h4 className="text-lg font-semibold text-headings">
                   Wishlist Items
                 </h4>
@@ -225,13 +221,13 @@ const CustomerProfile = () => {
             {/* Cart Items */}
             <div className="bg-base-200/50 rounded-2xl p-5">
               <div className="flex items-center gap-3 mb-2">
-                <MdPermPhoneMsg className="text-amber-600 text-xl" />
+                <FaShoppingCart className="text-amber-600 text-xl" />
                 <h4 className="text-lg font-semibold text-headings">
                   Cart Items
                 </h4>
               </div>
               <p className="text-descriptions font-medium break-all">
-                {contactNumber || "Not Provided"}
+                {/* {contactNumber || "Not Provided"} */} Not Provided
               </p>
             </div>
 
@@ -294,7 +290,7 @@ const CustomerProfile = () => {
                   </label>
                   <input
                     type="text"
-                    {...register(" fullAddress")}
+                    {...register("fullAddress")}
                     placeholder=" Full Address"
                     className="block w-full px-5 py-3 mt-2 text-black bg-white border border-gray-200 rounded-lg focus:border-amber-400  focus:ring-amber-400 focus:outline-none focus:ring focus:ring-opacity-40"
                   />

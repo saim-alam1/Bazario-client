@@ -1,11 +1,12 @@
 import { FiHeart } from "react-icons/fi";
-import { IoCartOutline, IoSearchOutline } from "react-icons/io5";
+import { IoCartOutline } from "react-icons/io5";
 import { RiMenu2Fill } from "react-icons/ri";
 import { SiShopify } from "react-icons/si";
 import { Link, NavLink } from "react-router";
 import useAuth from "../../../Hooks/useAuth";
 import { toast } from "react-toastify";
 import useUserRole from "../../../Hooks/useUserRole";
+import Notifications from "../../UI/Notifications/Notifications";
 
 const Navbar = () => {
   const { user, logOutUser } = useAuth();
@@ -173,18 +174,8 @@ const Navbar = () => {
           <ul className="menu menu-horizontal px-1">{links}</ul>
         </div>
         <div className="navbar-end flex items-center gap-3 mr-2">
-          {/* Search Filed */}
-          <div className="hidden md:flex">
-            <label className="input bg-gray-100">
-              <IoSearchOutline size={28} />
-              <input
-                type="search"
-                required
-                placeholder="Search"
-                className="bg-gray-100 w-full"
-              />
-            </label>
-          </div>
+          {/* Notifications */}
+          <Notifications />
           {authLinks}
         </div>
       </div>

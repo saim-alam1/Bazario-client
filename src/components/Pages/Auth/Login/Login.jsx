@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import useAuth from "../../../../Hooks/useAuth";
 import Loading from "../../../UI/Loading/Loading";
+import useNotifications from "../../../../Hooks/useNotifications";
 
 const Login = () => {
   const Lottie = LottiePlayer.default || LottiePlayer;
@@ -21,6 +22,7 @@ const Login = () => {
   const { loading, loginUser } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const { addNotification } = useNotifications();
 
   const handleLogin = (data) => {
     const { email, password } = data;
@@ -30,6 +32,12 @@ const Login = () => {
       .then(async (result) => {
         const firebaseUser = result.user;
         await firebaseUser.getIdToken(true);
+
+        // Posting Data In Notification Collection
+        addNotification({
+          receiverEmail: email,
+          message: "Login successful! Welcome to Bazario.",
+        });
 
         toast.success("Login successful");
         navigate(`${location.state ? location.state : "/"}`);

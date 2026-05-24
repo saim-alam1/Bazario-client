@@ -12,6 +12,7 @@ import Loading from "../../../UI/Loading/Loading";
 import imageCompression from "browser-image-compression";
 import { Helmet } from "react-helmet-async";
 import useAxios from "../../../../Hooks/useAxios";
+import useNotifications from "../../../../Hooks/useNotifications";
 
 const Register = () => {
   const Lottie = LottiePlayer.default || LottiePlayer;
@@ -19,6 +20,7 @@ const Register = () => {
   const [profilePic, setProfilePic] = useState("");
   const [uploading, setUploading] = useState(false);
   const axiosInstance = useAxios();
+  const { addNotification } = useNotifications();
 
   const {
     register,
@@ -87,10 +89,15 @@ const Register = () => {
         const userInfo = {
           displayName: name,
           email,
-          photoURL: image,
         };
 
         const res = await axiosInstance.post("users", userInfo);
+
+        // Posting Data In Notification Collection
+        addNotification({
+          receiverEmail: email,
+          message: "Account created successfully! Welcome to Bazario.",
+        });
 
         toast.success(res?.data?.message);
         navigate(`${location.state ? location.state : "/"}`);

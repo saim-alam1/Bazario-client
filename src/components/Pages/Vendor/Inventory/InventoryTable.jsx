@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import useAuth from "../../../../Hooks/useAuth";
+import useNotifications from "../../../../Hooks/useNotifications";
 
 const InventoryTable = ({ productsData }) => {
   const axiosSecure = useAxiosSecure();
@@ -11,6 +12,7 @@ const InventoryTable = ({ productsData }) => {
   const [discountDuration, setDiscountDuration] = useState({});
   const queryClient = useQueryClient();
   const { user } = useAuth();
+  const { addNotification } = useNotifications();
 
   // Increase Quantity
   const handleIncrease = (id) => {
@@ -45,21 +47,30 @@ const InventoryTable = ({ productsData }) => {
   };
 
   // Mark Product Paused
-  const handlePause = (id) => {
-    pauseProduct(id);
+  const handlePause = (id, product) => {
+    pauseProduct({
+      id,
+      productName: product.productName,
+    });
   };
 
   const { mutate: pauseProduct, isPending: isPausing } = useMutation({
-    mutationFn: async (id) => {
+    mutationFn: async ({ id }) => {
       const res = await axiosSecure.patch(`pause-product/${id}`);
       return res.data;
     },
 
-    onSuccess: (data) => {
+    onSuccess: (data, variables) => {
       toast.success(data.message || "Product paused");
 
       queryClient.invalidateQueries({
         queryKey: ["my-products", user?.email],
+      });
+
+      // Posting Data In Notification Collection
+      addNotification({
+        receiverEmail: user?.email,
+        message: `${variables.productName} paused successfully!`,
       });
     },
 
@@ -69,21 +80,30 @@ const InventoryTable = ({ productsData }) => {
   });
 
   // Mark Product Active
-  const handleActive = (id) => {
-    activateProduct(id);
+  const handleActive = (id, product) => {
+    activateProduct({
+      id,
+      productName: product.productName,
+    });
   };
 
   const { mutate: activateProduct, isPending: isActivating } = useMutation({
-    mutationFn: async (id) => {
+    mutationFn: async ({ id }) => {
       const res = await axiosSecure.patch(`activate-product/${id}`);
       return res.data;
     },
 
-    onSuccess: (data) => {
+    onSuccess: (data, variables) => {
       toast.success(data.message || "Product activated");
 
       queryClient.invalidateQueries({
         queryKey: ["my-products", user?.email],
+      });
+
+      // Posting Data In Notification Collection
+      addNotification({
+        receiverEmail: user?.email,
+        message: `${variables.productName} activated successfully!`,
       });
     },
 
@@ -95,12 +115,16 @@ const InventoryTable = ({ productsData }) => {
   });
 
   // Restock Product
-  const handleRestock = (id) => {
+  const handleRestock = (id, product) => {
     const quantity = restockValues[id] || 0;
 
     if (quantity <= 0) return;
 
-    restock({ id, quantity });
+    restock({
+      id,
+      quantity,
+      productName: product.productName,
+    });
   };
 
   const { mutate: restock, isPending } = useMutation({
@@ -115,6 +139,11 @@ const InventoryTable = ({ productsData }) => {
       toast.success(data.message || "Product added successfully");
 
       const id = variables.id;
+
+      addNotification({
+        receiverEmail: user?.email,
+        message: `${variables.productName} restocked successfully`,
+      });
 
       setRestockValues((prev) => ({
         ...prev,
@@ -131,7 +160,7 @@ const InventoryTable = ({ productsData }) => {
   });
 
   // Apply Discount
-  const handleApplyDiscount = (id) => {
+  const handleApplyDiscount = (id, product) => {
     const flashDiscount = Number(discountValues[id]);
     const duration = discountDuration[id];
 
@@ -141,6 +170,7 @@ const InventoryTable = ({ productsData }) => {
       id,
       flashDiscount,
       duration,
+      productName: product.productName,
     });
   };
 
@@ -159,6 +189,11 @@ const InventoryTable = ({ productsData }) => {
         toast.success(data.message || "Discount applied successfully");
 
         const id = variables.id;
+
+        addNotification({
+          receiverEmail: user?.email,
+          message: `${variables.productName} discount updated successfully`,
+        });
 
         setDiscountValues((prev) => ({
           ...prev,
@@ -275,7 +310,9 @@ const InventoryTable = ({ productsData }) => {
                       </select>
 
                       <button
-                        onClick={() => handleApplyDiscount(product._id)}
+                        onClick={() =>
+                          handleApplyDiscount(product._id, product)
+                        }
                         className="bg-amber-500 hover:bg-amber-600 text-white text-sm px-3 py-1 rounded-md cursor-pointer"
                         disabled={
                           !discountValues[product._id] ||
@@ -317,7 +354,7 @@ const InventoryTable = ({ productsData }) => {
                       </button>
 
                       <button
-                        onClick={() => handleRestock(product._id)}
+                        onClick={() => handleRestock(product._id, product)}
                         className="btn border-none shadow-none bg-green-600 hover:bg-green-700 text-white"
                       >
                         {isPending ? "Restocking..." : "Restock"}
@@ -330,14 +367,14 @@ const InventoryTable = ({ productsData }) => {
                     <div className="flex items-center gap-4">
                       {product.stockStatus === "paused" ? (
                         <button
-                          onClick={() => handleActive(product._id)}
+                          onClick={() => handleActive(product._id, product)}
                           className="btn shadow-none bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-md"
                         >
                           {isActivating ? "Activating..." : "Activate"}
                         </button>
                       ) : (
                         <button
-                          onClick={() => handlePause(product._id)}
+                          onClick={() => handlePause(product._id, product)}
                           className="btn shadow-none bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md"
                         >
                           {isPausing ? "Pausing..." : "Pause"}

@@ -45,7 +45,7 @@ const AddProducts = () => {
   });
 
   return (
-    <section className="max-w-11/12 p-6 mx-auto bg-white rounded-md shadow-md my-16">
+    <section className="max-w-11/12 px-6 mx-auto bg-white rounded-md shadow-md my-14">
       {/* React Helmet */}
       <Helmet>
         <title>Add New Product | Dashboard</title>

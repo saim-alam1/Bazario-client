@@ -87,7 +87,7 @@ const Navbar = () => {
           `${isActive ? "text-[#EA580C] border-b pb-1 border-[#EA580C]" : "text-[#6B7280]"} font-semibold text-base`
         }
       >
-        <FiHeart size={25} />
+        <FiHeart className="text-2xl" />
       </NavLink>
 
       <NavLink
@@ -96,7 +96,7 @@ const Navbar = () => {
           `${isActive ? "text-[#EA580C] border-b pb-1 border-[#EA580C]" : "text-[#6B7280]"} font-semibold text-base`
         }
       >
-        <IoCartOutline size={25} />
+        <IoCartOutline className="text-3xl" />
       </NavLink>
 
       {/* Profile Dropdown */}

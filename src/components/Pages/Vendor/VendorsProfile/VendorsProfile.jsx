@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import Loading from "../../../UI/Loading/Loading";
 import { IoLocationSharp } from "react-icons/io5";
 import { Helmet } from "react-helmet-async";
+import useNotifications from "../../../../Hooks/useNotifications";
 
 const VendorsProfile = () => {
   const { user } = useAuth();
@@ -16,6 +17,7 @@ const VendorsProfile = () => {
   const { userRole } = useUserRole();
   const { register, handleSubmit, reset } = useForm();
   const queryClient = useQueryClient();
+  const { addNotification } = useNotifications();
 
   const { data: vendorInfo = {}, isLoading } = useQuery({
     queryKey: ["vendor-info", user?.email],
@@ -51,11 +53,17 @@ const VendorsProfile = () => {
       );
       return res.data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       const modal = document.getElementById("my_modal_5");
       if (modal) modal.close();
 
-      toast.success("Invitation sent successfully");
+      // Posting Data In Notification Collection
+      addNotification({
+        receiverEmail: user?.email,
+        message: "Profile updated successfully!",
+      });
+
+      toast.success(data?.message || "Profile updated successfully!");
       queryClient.invalidateQueries({
         queryKey: ["vendor-info", user?.email],
       });
@@ -97,7 +105,7 @@ const VendorsProfile = () => {
       {/* Profile Card */}
       <div className="max-w-5xl mx-auto bg-base-100 rounded-3xl shadow-xl border border-base-200 overflow-hidden">
         {/* Top Banner */}
-        <div className="h-36 bg-linear-to-r from-blue-200 via-blue-400 to-blue-600 relative">
+        <div className="h-36 bg-linear-to-r from-amber-200 via-amber-400 to-amber-600 relative">
           {/* Avatar */}
           <div className="absolute left-1/2 -bottom-16 transform -translate-x-1/2">
             <img
@@ -124,7 +132,7 @@ const VendorsProfile = () => {
               {user?.email}
             </p>
 
-            <div className="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-blue-100 text-blue-600 rounded-full text-sm font-medium capitalize">
+            <div className="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-amber-100 text-amber-600 rounded-full text-sm font-medium capitalize">
               <MdVerifiedUser className="text-lg" />
               {userRole}
             </div>
@@ -197,7 +205,7 @@ const VendorsProfile = () => {
                 </h4>
               </div>
               <p className="text-descriptions font-medium break-all">
-                {contactNumber || "Not Provided"}
+                +{contactNumber || "Not Provided"}
               </p>
             </div>
 
@@ -233,112 +241,113 @@ const VendorsProfile = () => {
 
       {/* Modal */}
 
-      <dialog id="my_modal_5" className="modal modal-bottom sm:modal-middle">
-        <div className="modal-box max-w-11/12 mx-auto">
-          <h3 className="font-bold text-2xl text-center mb-10">
+      <dialog
+        id="my_modal_5"
+        className="modal modal-bottom sm:modal-middle backdrop-blur-xs"
+      >
+        <div className="modal-box mx-auto bg-white p-6 md:p-8 rounded-2xl shadow-2xl border border-gray-50 max-w-11/12">
+          {/* Header */}
+          <h3 className="font-bold text-2xl md:text-3xl text-gray-800 text-center mb-8 tracking-tight">
             Add your business information
           </h3>
 
-          <div className="modal-action">
-            <form onSubmit={handleSubmit(handleProfileUpdate)}>
-              <div className="flex flex-col md:grid md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="block mb-2 text-[18px] text-descriptions font-medium">
-                    Store Name
-                  </label>
-                  <input
-                    {...register("storeName")}
-                    placeholder="Job Title"
-                    className="block w-full px-5 py-3 mt-2 text-black bg-white border border-gray-200 rounded-lg focus:border-amber-400  focus:ring-amber-400 focus:outline-none focus:ring focus:ring-opacity-40"
-                  />
-                </div>
-
-                {/* Business Type */}
-                <div className="space-y-2">
-                  <label className="block mb-2 text-lg text-descriptions font-medium">
-                    Business Type{" "}
-                    <span className="text-red-500 text-lg">*</span>
-                  </label>
-                  <select
-                    defaultValue=""
-                    {...register("businessType")}
-                    className="block w-full px-5 py-3 mt-2 text-black bg-white border border-gray-200 rounded-lg focus:border-amber-400  focus:ring-amber-400 focus:outline-none focus:ring focus:ring-opacity-40"
-                  >
-                    <option value="" disabled>
-                      Select Type
-                    </option>
-                    <option value="Individual">Individual</option>
-                    <option value="Company">Company</option>
-                    <option value="Brand">Brand</option>
-                  </select>
-                </div>
-
-                {/* Business Address */}
-                <div className="space-y-2">
-                  <label className="block mb-2 text-[18px] text-descriptions font-medium">
-                    Business Address
-                  </label>
-                  <input
-                    type="text"
-                    {...register("businessAddress")}
-                    placeholder="Business Address"
-                    className="block w-full px-5 py-3 mt-2 text-black bg-white border border-gray-200 rounded-lg focus:border-amber-400  focus:ring-amber-400 focus:outline-none focus:ring focus:ring-opacity-40"
-                  />
-                </div>
-
-                {/* Contract Number */}
-                <div className="space-y-2">
-                  <label className="block mb-2 text-[18px] text-descriptions font-medium">
-                    Contact Number
-                  </label>
-                  <input
-                    type="number"
-                    {...register("contactNumber")}
-                    placeholder="Contact Number"
-                    className="block w-full px-5 py-3 mt-2 text-black bg-white border border-gray-200 rounded-lg focus:border-amber-400  focus:ring-amber-400 focus:outline-none focus:ring focus:ring-opacity-40"
-                  />
-                </div>
-
-                {/* Store Descriptions */}
-                <div className="space-y-2 col-span-2">
-                  <label className="block mb-2 text-[18px] text-descriptions font-medium">
-                    Store Description
-                  </label>
-                  <textarea
-                    {...register("storeDescription")}
-                    placeholder="Store Description..."
-                    className="block w-full px-5 py-3 mt-2 text-black bg-white border border-gray-200 rounded-lg focus:border-amber-400  focus:ring-amber-400 focus:outline-none focus:ring focus:ring-opacity-40 min-h-37.5 resize-y"
-                  />
-                </div>
+          {/* Form Layout Fixed */}
+          <form
+            onSubmit={handleSubmit(handleProfileUpdate)}
+            className="space-y-6"
+          >
+            {/* Inputs Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {/* Store Name */}
+              <div className="flex flex-col">
+                <label className="mb-2 text-sm font-semibold text-gray-700">
+                  Store Name
+                </label>
+                <input
+                  {...register("storeName")}
+                  type="text"
+                  placeholder="Job Title"
+                  className="w-full px-4 py-3 text-sm text-gray-900 bg-gray-50/50 border border-gray-200 rounded-xl focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 focus:outline-none transition-all duration-200"
+                />
               </div>
 
-              <p className="text-descriptions my-6">
-                <span className="font-bold">Note:</span> The information you
-                provide here will be used to match you with relevant job
-                opportunities based on your skills, preferences, and career
-                goals. Employers can review your profile and, if they find you
-                suitable, may contact you or invite you for an interview.
-              </p>
-
-              <div className="flex justify-end gap-5">
-                <button
-                  type="submit"
-                  disabled={isPending}
-                  className="text-white transition-colors duration-300 transform focus:outline-none text-[18px] font-medium bg-amber-600 hover:bg-amber-700 px-8 py-2.5 rounded-md cursor-pointer"
+              {/* Business Type */}
+              <div className="flex flex-col">
+                <label className="mb-2 text-sm font-semibold text-gray-700">
+                  Business Type
+                </label>
+                <select
+                  defaultValue=""
+                  {...register("businessType")}
+                  className="w-full px-4 py-3 text-sm text-gray-900 bg-gray-50/50 border border-gray-200 rounded-xl focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 focus:outline-none transition-all duration-200"
                 >
-                  {isPending ? "Updating..." : "Update"}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => document.getElementById("my_modal_5").close()}
-                  className="text-white transition-colors duration-300 transform focus:outline-none text-[18px] font-medium bg-red-500 hover:bg-red-700 px-8 py-2.5 rounded-md cursor-pointer"
-                >
-                  Close
-                </button>
+                  <option value="" disabled>
+                    Select Type
+                  </option>
+                  <option value="Individual">Individual</option>
+                  <option value="Company">Company</option>
+                  <option value="Brand">Brand</option>
+                </select>
               </div>
-            </form>
-          </div>
+
+              {/* Business Address */}
+              <div className="flex flex-col">
+                <label className="mb-2 text-sm font-semibold text-gray-700">
+                  Business Address
+                </label>
+                <input
+                  type="text"
+                  {...register("businessAddress")}
+                  placeholder="Business Address"
+                  className="w-full px-4 py-3 text-sm text-gray-900 bg-gray-50/50 border border-gray-200 rounded-xl focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 focus:outline-none transition-all duration-200"
+                />
+              </div>
+
+              {/* Contact Number */}
+              <div className="flex flex-col">
+                <label className="mb-2 text-sm font-semibold text-gray-700">
+                  Contact Number
+                </label>
+                <input
+                  type="number"
+                  {...register("contactNumber")}
+                  placeholder="Contact Number"
+                  className="w-full px-4 py-3 text-sm text-gray-900 bg-gray-50/50 border border-gray-200 rounded-xl focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 focus:outline-none transition-all duration-200"
+                />
+              </div>
+
+              {/* Store Descriptions */}
+              <div className="flex flex-col col-span-1 md:col-span-2">
+                <label className="mb-2 text-sm font-semibold text-gray-700">
+                  Store Description
+                </label>
+                <textarea
+                  {...register("storeDescription")}
+                  placeholder="Store Description..."
+                  className="w-full px-4 py-3 text-sm text-gray-900 bg-gray-50/50 border border-gray-200 rounded-xl focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 focus:outline-none transition-all duration-200 min-h-30 resize-y"
+                />
+              </div>
+            </div>
+
+            {/* Action Buttons Container */}
+            <div className="modal-action pt-4 border-t border-gray-100 flex items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => document.getElementById("my_modal_5").close()}
+                className="px-5 py-2.5 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 font-medium text-sm transition-all duration-200 cursor-pointer"
+              >
+                Close
+              </button>
+
+              <button
+                type="submit"
+                disabled={isPending}
+                className="px-6 py-2.5 rounded-xl text-white font-medium text-sm bg-amber-600 hover:bg-amber-700 active:scale-[0.98] transition-all duration-200 shadow-sm shadow-amber-600/20 disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+              >
+                {isPending ? "Updating..." : "Update Details"}
+              </button>
+            </div>
+          </form>
         </div>
       </dialog>
     </section>

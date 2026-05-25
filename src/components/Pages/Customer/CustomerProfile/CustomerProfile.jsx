@@ -97,7 +97,7 @@ const CustomerProfile = () => {
       {/* Profile Card */}
       <div className="max-w-5xl mx-auto bg-base-100 rounded-3xl shadow-xl border border-base-200 overflow-hidden">
         {/* Top Banner */}
-        <div className="h-36 bg-linear-to-r from-blue-200 via-blue-400 to-blue-600 relative">
+        <div className="h-36 bg-linear-to-r from-amber-200 via-amber-400 to-amber-600 relative">
           {/* Avatar */}
           <div className="absolute left-1/2 -bottom-16 transform -translate-x-1/2">
             <img

@@ -87,7 +87,7 @@ const Register = () => {
 
         // Saving User Data In DB
         const userInfo = {
-          displayName: name,
+          fullName: name,
           email,
         };
 

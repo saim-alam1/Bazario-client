@@ -287,6 +287,10 @@ const VendorsProfile = () => {
                   <option value="Individual">Individual</option>
                   <option value="Company">Company</option>
                   <option value="Brand">Brand</option>
+                  <option value="Small Business">Small Business</option>
+                  <option value="Wholesaler">Wholesaler</option>
+                  <option value="Handmade Seller">Handmade Seller</option>
+                  <option value="Dropshipper">Dropshipper</option>
                 </select>
               </div>
 

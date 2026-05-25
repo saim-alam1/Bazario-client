@@ -1,13 +1,10 @@
-import { useQueryClient } from "@tanstack/react-query";
-import useAuth from "../../../../Hooks/useAuth";
-import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { Link } from "react-router";
 
 const ProductsTable = ({ productsData }) => {
-  const { user } = useAuth();
-  const axiosSecure = useAxiosSecure();
-  const queryClient = useQueryClient();
+  const handleDelete = (id) => {
+    console.log(id);
+  };
 
   return (
     <div className="overflow-x-auto bg-white shadow-md rounded-lg">
@@ -58,14 +55,14 @@ const ProductsTable = ({ productsData }) => {
                     {/* Actions */}
                     <td className="flex gap-3">
                       <Link
-                        to={`/job-details/${product._id}`}
+                        to={`/products-details/${product._id}`}
                         className="text-green-600 hover:text-green-800"
                       >
                         <FaEdit size={24} />
                       </Link>
 
                       <button
-                        onClick={() => handleDelete(job._id)}
+                        onClick={() => handleDelete(product._id)}
                         className="text-red-500 hover:text-red-600 cursor-pointer"
                       >
                         <FaTrash size={24} />

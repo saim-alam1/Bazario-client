@@ -4,6 +4,7 @@ import useAuth from "../../../../Hooks/useAuth";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
+import useNotifications from "../../../../Hooks/useNotifications";
 
 const AddProducts = () => {
   const {
@@ -14,6 +15,7 @@ const AddProducts = () => {
   } = useForm();
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
+  const { addNotification } = useNotifications();
 
   const handleAddProducts = (data) => {
     const filteredData = Object.fromEntries(
@@ -37,6 +39,13 @@ const AddProducts = () => {
     },
     onSuccess: (data) => {
       toast.success(data.message || "Product added successfully");
+
+      // Posting Data In Notification Collection
+      addNotification({
+        receiverEmail: user?.email,
+        message: "Added product successfully!",
+      });
+
       reset();
     },
     onError: (error) => {

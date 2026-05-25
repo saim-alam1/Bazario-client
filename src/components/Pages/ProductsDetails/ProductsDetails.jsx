@@ -1,20 +1,70 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router";
 import useAxios from "../../../Hooks/useAxios";
 import Loading from "../../UI/Loading/Loading";
 import { Helmet } from "react-helmet-async";
 import { FaStar, FaBolt, FaShoppingCart, FaHeart } from "react-icons/fa";
 import { MdOutlineInventory2, MdLocalShipping } from "react-icons/md";
+import useUserRole from "../../../Hooks/useUserRole";
+import { useForm } from "react-hook-form";
+import useNotifications from "../../../Hooks/useNotifications";
+import useAxiosSecure from "../../../Hooks/useAxiosSecure";
+import useAuth from "../../../Hooks/useAuth";
+import { toast } from "react-toastify";
 
 const ProductsDetails = () => {
   const { id } = useParams();
+  const { user } = useAuth();
   const axiosInstance = useAxios();
+  const axiosSecure = useAxiosSecure();
+  const { userRole } = useUserRole();
+  const { register, handleSubmit, reset } = useForm();
+  const queryClient = useQueryClient();
+  const { addNotification } = useNotifications();
 
   const { data: productInfo = {}, isLoading } = useQuery({
     queryKey: ["product-details", id],
     queryFn: async () => {
       const res = await axiosInstance.get(`/product-details/${id}`);
       return res.data;
+    },
+  });
+
+  const handleProductUpdate = (data) => {
+    const filteredData = Object.fromEntries(
+      Object.entries(data).filter(([, value]) => value !== ""),
+    );
+
+    updateProduct(filteredData);
+  };
+
+  const { mutate: updateProduct, isPending } = useMutation({
+    mutationFn: async (productInfo) => {
+      const res = await axiosSecure.patch(`update-product/${id}`, productInfo);
+      return res.data;
+    },
+    onSuccess: (data) => {
+      const modal = document.getElementById("my_modal_5");
+      if (modal) modal.close();
+
+      // Posting Data In Notification Collection
+      addNotification({
+        receiverEmail: user?.email,
+        message: "Profile updated successfully!",
+      });
+
+      toast.success(data?.message || "Product updated successfully!");
+      queryClient.invalidateQueries({
+        queryKey: ["product-details", id],
+      });
+      reset();
+    },
+    onError: (error) => {
+      const modal = document.getElementById("my_modal_5");
+      if (modal) modal.close();
+      toast.error(
+        error.response?.data?.message || "An unexpected error occurred",
+      );
     },
   });
 
@@ -177,15 +227,30 @@ const ProductsDetails = () => {
 
           {/* BUTTONS */}
           <div className="flex flex-wrap gap-4 pt-2">
-            <button className="flex-1 min-w-45 bg-amber-500 hover:bg-amber-600 text-white py-4 rounded-2xl font-semibold text-lg shadow-md hover:shadow-xl transition flex items-center justify-center gap-3 cursor-pointer">
-              <FaShoppingCart />
-              Add To Cart
-            </button>
+            {userRole !== "vendor" ? (
+              <>
+                {/* CUSTOMER ACTIONS */}
+                <button className="flex-1 min-w-45 bg-amber-500 hover:bg-amber-600 text-white py-4 rounded-2xl font-semibold text-lg shadow-md hover:shadow-xl transition flex items-center justify-center gap-3 cursor-pointer">
+                  <FaShoppingCart />
+                  Add To Cart
+                </button>
 
-            <button className="flex-1 min-w-45 border border-gray-300 hover:border-amber-500 hover:text-amber-500 py-4 rounded-2xl font-semibold text-lg transition flex items-center justify-center gap-3 cursor-pointer bg-white">
-              <FaHeart />
-              Wishlist
-            </button>
+                <button className="flex-1 min-w-45 border border-gray-300 hover:border-amber-500 hover:text-amber-500 py-4 rounded-2xl font-semibold text-lg transition flex items-center justify-center gap-3 bg-white cursor-pointer">
+                  <FaHeart />
+                  Wishlist
+                </button>
+              </>
+            ) : (
+              /* VENDOR ACTION */
+              <button
+                onClick={() =>
+                  document.getElementById("my_modal_5").showModal()
+                }
+                className="w-full bg-amber-600 hover:bg-amber-700 text-white py-4 rounded-2xl font-semibold text-lg shadow-md hover:shadow-xl transition flex items-center justify-center gap-3 cursor-pointer"
+              >
+                Update Product
+              </button>
+            )}
           </div>
 
           {/* EXTRA INFO */}
@@ -204,6 +269,137 @@ const ProductsDetails = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal */}
+      <dialog
+        id="my_modal_5"
+        className="modal modal-bottom sm:modal-middle backdrop-blur-xs"
+      >
+        <div className="modal-box mx-auto bg-white p-6 md:p-8 rounded-2xl shadow-2xl border border-gray-50 max-w-11/12">
+          {/* Header */}
+          <h3 className="font-bold text-2xl md:text-3xl text-gray-800 text-center mb-8 tracking-tight">
+            Add your business information
+          </h3>
+
+          {/* Form Layout Fixed */}
+          <form
+            onSubmit={handleSubmit(handleProductUpdate)}
+            className="space-y-6"
+          >
+            {/* Inputs Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {/* Product Name */}
+              <div className="flex flex-col">
+                <label className="mb-2 text-sm font-semibold text-gray-700">
+                  Product Name
+                </label>
+                <input
+                  {...register("productName")}
+                  type="text"
+                  placeholder="Product Name"
+                  className="w-full px-4 py-3 text-sm text-gray-900 bg-gray-50/50 border border-gray-200 rounded-xl focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 focus:outline-none transition-all duration-200"
+                />
+              </div>
+
+              {/* Category */}
+              <div className="flex flex-col">
+                <label className="mb-2 text-sm font-semibold text-gray-700">
+                  Category
+                </label>
+                <input
+                  {...register("category")}
+                  type="text"
+                  placeholder="Category"
+                  className="w-full px-4 py-3 text-sm text-gray-900 bg-gray-50/50 border border-gray-200 rounded-xl focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 focus:outline-none transition-all duration-200"
+                />
+              </div>
+
+              {/* Price */}
+              <div className="flex flex-col">
+                <label className="mb-2 text-sm font-semibold text-gray-700">
+                  Price
+                </label>
+                <input
+                  type="number"
+                  {...register("price")}
+                  placeholder="Business Address"
+                  className="w-full px-4 py-3 text-sm text-gray-900 bg-gray-50/50 border border-gray-200 rounded-xl focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 focus:outline-none transition-all duration-200"
+                />
+              </div>
+
+              {/* Discount (optional) */}
+              <div className="flex flex-col">
+                <label className="mb-2 text-sm font-semibold text-gray-700">
+                  Discount (optional)
+                </label>
+                <input
+                  type="number"
+                  {...register("discount")}
+                  placeholder="Discount"
+                  className="w-full px-4 py-3 text-sm text-gray-900 bg-gray-50/50 border border-gray-200 rounded-xl focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 focus:outline-none transition-all duration-200"
+                />
+              </div>
+
+              {/* Stock Quantity */}
+              <div className="flex flex-col">
+                <label className="mb-2 text-sm font-semibold text-gray-700">
+                  Stock Quantity
+                </label>
+                <input
+                  type="number"
+                  {...register("stockQuantity")}
+                  placeholder="Stock Quantity"
+                  className="w-full px-4 py-3 text-sm text-gray-900 bg-gray-50/50 border border-gray-200 rounded-xl focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 focus:outline-none transition-all duration-200"
+                />
+              </div>
+
+              {/* Product Image */}
+              <div className="flex flex-col">
+                <label className="mb-2 text-sm font-semibold text-gray-700">
+                  Product Image
+                </label>
+                <input
+                  type="url"
+                  {...register("productImage")}
+                  placeholder="Product Image"
+                  className="w-full px-4 py-3 text-sm text-gray-900 bg-gray-50/50 border border-gray-200 rounded-xl focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 focus:outline-none transition-all duration-200"
+                />
+              </div>
+
+              {/* Product Descriptions */}
+              <div className="flex flex-col col-span-1 md:col-span-2">
+                <label className="mb-2 text-sm font-semibold text-gray-700">
+                  Product Descriptions
+                </label>
+                <textarea
+                  {...register("productDescriptions")}
+                  placeholder="Product Descriptions..."
+                  className="w-full px-4 py-3 text-sm text-gray-900 bg-gray-50/50 border border-gray-200 rounded-xl focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 focus:outline-none transition-all duration-200 min-h-30 resize-y"
+                />
+              </div>
+            </div>
+
+            {/* Action Buttons Container */}
+            <div className="modal-action pt-4 border-t border-gray-100 flex items-center justify-end gap-3">
+              <button
+                type="submit"
+                disabled={isPending}
+                className="px-6 py-2.5 rounded-xl text-white font-medium text-sm bg-amber-600 hover:bg-amber-700 active:scale-[0.98] transition-all duration-200 shadow-sm shadow-amber-600/20 disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+              >
+                {isPending ? "Updating..." : "Update Details"}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => document.getElementById("my_modal_5").close()}
+                className="px-5 py-2.5 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 font-medium text-sm transition-all duration-200 cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
+          </form>
+        </div>
+      </dialog>
     </section>
   );
 };

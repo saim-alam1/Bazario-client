@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import useAuth from "../../../Hooks/useAuth";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import useNotifications from "../../../Hooks/useNotifications";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 
 const BecomeASeller = () => {
   const {
@@ -21,8 +23,32 @@ const BecomeASeller = () => {
       fullName: user?.displayName,
       email: user?.email,
     };
-    console.log(sellerInfo);
+    becomeSeller(sellerInfo);
   };
+
+  const { mutate: becomeSeller, isPending } = useMutation({
+    mutationFn: async (sellerData) => {
+      const res = await axiosSecure.patch(
+        `become-a-seller/${user?.email}`,
+        sellerData,
+      );
+      return res.data;
+    },
+    onSuccess: (data) => {
+      toast.success(data.message || "Request sent to admin!");
+
+      // Posting Data In Notification Collection
+      addNotification({
+        receiverEmail: user?.email,
+        message: `${data.message || "Request sent to admin!"}`,
+      });
+
+      reset();
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message);
+    },
+  });
 
   return (
     <section className="my-12 px-3">
@@ -248,7 +274,7 @@ const BecomeASeller = () => {
               type="submit"
               className=" text-white transition-colors duration-300 transform focus:outline-none text-[18px] font-medium bg-amber-600 hover:bg-amber-700 px-8 py-2.5 rounded-md cursor-pointer"
             >
-              {/* {isPending ? "Posting..." : "Post"} */}Apply
+              {isPending ? "Applying..." : "Apply"}
             </button>
           </div>
         </form>

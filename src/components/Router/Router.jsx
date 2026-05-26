@@ -77,11 +77,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/products-details/:id",
-        element: (
-          <PrivateRoute>
-            <ProductsDetails />
-          </PrivateRoute>
-        ),
+        Component: ProductsDetails,
       },
       {
         path: "/forbidden-access",

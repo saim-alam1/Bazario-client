@@ -22,7 +22,9 @@ const ProductsDetails = () => {
   const { register, handleSubmit, reset } = useForm();
   const queryClient = useQueryClient();
   const { addNotification } = useNotifications();
-  const { addItem } = useLocalStorage("cart-items");
+  const { addItem: addCartItem } = useLocalStorage("cart-items");
+
+  const { addItem: addWishlistItem } = useLocalStorage("wishlist-items");
 
   const { data: productInfo = {}, isLoading } = useQuery({
     queryKey: ["product-details", id],
@@ -86,12 +88,22 @@ const ProductsDetails = () => {
   } = productInfo || {};
 
   const handleAddToCart = (id) => {
-    const added = addItem(id);
+    const added = addCartItem(id);
 
     if (added) {
       toast.success("Product added to cart");
     } else {
       toast.warning("Product already exists in cart");
+    }
+  };
+
+  const handleAddToWishlist = (id) => {
+    const added = addWishlistItem(id);
+
+    if (added) {
+      toast.success("Product added to wishlist");
+    } else {
+      toast.warning("Product already exists in wishlist");
     }
   };
 
@@ -251,8 +263,11 @@ const ProductsDetails = () => {
                   Add To Cart
                 </button>
 
-                <button className="flex-1 min-w-45 border border-gray-300 hover:border-amber-500 hover:text-amber-500 py-4 rounded-2xl font-semibold text-lg transition flex items-center justify-center gap-3 bg-white cursor-pointer">
-                  <FaHeart />
+                <button
+                  onClick={() => handleAddToWishlist(_id)}
+                  className="flex-1 min-w-45 border border-gray-300 hover:border-amber-500 hover:text-amber-500 py-4 rounded-2xl font-semibold text-lg transition flex items-center justify-center gap-3 bg-white cursor-pointer"
+                >
+                  <FaHeart className="text-red-500" />
                   Wishlist
                 </button>
               </>

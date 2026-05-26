@@ -11,6 +11,7 @@ import useNotifications from "../../../Hooks/useNotifications";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import useAuth from "../../../Hooks/useAuth";
 import { toast } from "react-toastify";
+import useLocalStorage from "../../../Hooks/useLocalStorage";
 
 const ProductsDetails = () => {
   const { id } = useParams();
@@ -21,6 +22,7 @@ const ProductsDetails = () => {
   const { register, handleSubmit, reset } = useForm();
   const queryClient = useQueryClient();
   const { addNotification } = useNotifications();
+  const { addItem } = useLocalStorage("cart-items");
 
   const { data: productInfo = {}, isLoading } = useQuery({
     queryKey: ["product-details", id],
@@ -68,9 +70,8 @@ const ProductsDetails = () => {
     },
   });
 
-  if (isLoading) return <Loading />;
-
   const {
+    _id,
     addedAt,
     category,
     discount,
@@ -84,6 +85,16 @@ const ProductsDetails = () => {
     stockStatus,
   } = productInfo || {};
 
+  const handleAddToCart = (id) => {
+    const added = addItem(id);
+
+    if (added) {
+      toast.success("Product added to cart");
+    } else {
+      toast.warning("Product already exists in cart");
+    }
+  };
+
   const finalPrice = flashDiscount
     ? (price - (price * flashDiscount) / 100).toFixed(2)
     : discount
@@ -91,6 +102,8 @@ const ProductsDetails = () => {
       : price;
 
   const activeDiscount = flashDiscount || discount;
+
+  if (isLoading) return <Loading />;
 
   return (
     <section className="min-h-screen bg-linear-to-b from-gray-50 via-white to-gray-100 px-4 md:px-8 py-10">
@@ -230,7 +243,10 @@ const ProductsDetails = () => {
             {userRole !== "vendor" ? (
               <>
                 {/* CUSTOMER ACTIONS */}
-                <button className="flex-1 min-w-45 bg-amber-500 hover:bg-amber-600 text-white py-4 rounded-2xl font-semibold text-lg shadow-md hover:shadow-xl transition flex items-center justify-center gap-3 cursor-pointer">
+                <button
+                  onClick={() => handleAddToCart(_id)}
+                  className="flex-1 min-w-45 bg-amber-500 hover:bg-amber-600 text-white py-4 rounded-2xl font-semibold text-lg shadow-md hover:shadow-xl transition flex items-center justify-center gap-3 cursor-pointer"
+                >
                   <FaShoppingCart />
                   Add To Cart
                 </button>

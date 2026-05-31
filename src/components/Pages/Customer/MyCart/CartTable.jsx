@@ -1,11 +1,58 @@
-const CartTable = ({ cartData }) => {
-  const handleRemove = (id) => {
-    console.log("Remove item:", id);
+import useLocalStorage from "../../../../Hooks/useLocalStorage";
+import Swal from "sweetalert2";
+import LottiePlayer from "lottie-react";
+import noData from "../../../../assets/noData.json";
+
+const CartTable = ({ cartData, setCartIds }) => {
+  const { getItems, removeItem } = useLocalStorage("cart-items");
+  const Lottie = LottiePlayer.default || LottiePlayer;
+
+  const handleRemove = async (id) => {
+    const result = await Swal.fire({
+      title: "Remove Item?",
+      text: "Are you sure you want to remove this item from your cart?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#dc2626",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: "Yes, Remove It",
+      cancelButtonText: "Cancel",
+    });
+
+    if (result.isConfirmed) {
+      removeItem(id);
+
+      setCartIds(getItems());
+
+      Swal.fire({
+        title: "Removed!",
+        text: "The item has been removed from your cart.",
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    }
   };
 
   const handleBuyNow = (item) => {
     console.log("Buy now:", item);
   };
+
+  if (!cartData?.length) {
+    return (
+      <div className="flex flex-col items-center justify-center py-10">
+        <Lottie animationData={noData} loop={true} className="w-72 md:w-96" />
+
+        <h3 className="text-3xl font-semibold text-headings">
+          Your Cart Is Empty
+        </h3>
+
+        <p className="text-descriptions mt-2">
+          Looks like you haven't added any products to your cart yet.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="overflow-x-auto bg-white shadow-lg rounded-xl">
@@ -28,28 +75,35 @@ const CartTable = ({ cartData }) => {
           {cartData?.map((item) => (
             <tr key={item._id} className="border-b hover:bg-gray-50 transition">
               {/* Product */}
-              <td className="p-4 flex items-center gap-3">
-                <img
-                  src={item.productImage}
-                  alt={item.productName}
-                  className="w-14 h-14 rounded-md object-cover border"
-                />
-                <span className="font-medium">{item.productName}</span>
+              <td className="p-4">
+                <div className="flex items-center gap-3">
+                  <img
+                    src={item.productImage}
+                    alt={item.productName}
+                    className="w-14 h-14 rounded-md object-cover border shrink-0"
+                  />
+
+                  <div>
+                    <h4 className="font-medium truncate">{item.productName}</h4>
+                  </div>
+                </div>
               </td>
 
               {/* Category */}
-              <td className="p-4">{item.category}</td>
+              <td className="p-4 whitespace-nowrap">{item.category}</td>
 
               {/* Price */}
-              <td className="p-4 font-semibold text-green-600">
+              <td className="p-4 font-semibold text-green-600 whitespace-nowrap">
                 ৳ {item.price}
               </td>
 
               {/* Discount */}
-              <td className="p-4 text-orange-500">{item.discount}%</td>
+              <td className="p-4 text-orange-500 whitespace-nowrap">
+                {item.discount}%
+              </td>
 
               {/* Stock */}
-              <td className="p-4">
+              <td className="p-4 whitespace-nowrap">
                 <span
                   className={`px-2 py-1 rounded text-xs font-medium ${
                     item.stockQuantity < 10
@@ -62,25 +116,23 @@ const CartTable = ({ cartData }) => {
               </td>
 
               {/* Added At */}
-              <td className="p-4 text-sm text-gray-500">
+              <td className="p-4 text-sm text-gray-500 whitespace-nowrap">
                 {new Date(item.addedAt).toLocaleDateString()}
               </td>
 
               {/* Actions */}
               <td className="p-4">
-                <div className="flex gap-2 justify-center">
-                  {/* Buy Now */}
+                <div className="flex justify-center gap-2 whitespace-nowrap">
                   <button
                     onClick={() => handleBuyNow(item)}
-                    className="px-3 py-1.5 bg-green-600 text-white text-xs rounded hover:bg-green-700 transition"
+                    className="btn border-none shadow-none bg-green-600 text-white text-xs font-medium rounded-md hover:bg-green-700 transition"
                   >
                     Buy Now
                   </button>
 
-                  {/* Remove */}
                   <button
                     onClick={() => handleRemove(item._id)}
-                    className="px-3 py-1.5 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition"
+                    className="btn border-none shadow-none bg-red-500 text-white text-xs font-medium rounded-md hover:bg-red-600 transition"
                   >
                     Remove
                   </button>

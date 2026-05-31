@@ -25,8 +25,11 @@ const CustomerProfile = () => {
   const { register, handleSubmit, reset } = useForm();
   const queryClient = useQueryClient();
 
-  const { getItems } = useLocalStorage("cart-items");
-  const cartItemsCount = getItems().length;
+  const { getItems: getCartItems } = useLocalStorage("cart-items");
+  const { getItems: getWishlistItems } = useLocalStorage("wishlist-items");
+
+  const cartItemsCount = getCartItems().length;
+  const wishlistItemsCount = getWishlistItems().length;
 
   const { data: customerInfo = {}, isLoading } = useQuery({
     queryKey: ["customer-info", user?.email],
@@ -218,7 +221,9 @@ const CustomerProfile = () => {
                 </h4>
               </div>
               <p className="text-descriptions font-medium break-all">
-                {/* {contactNumber || "Not Provided"} */} Not Provided
+                {wishlistItemsCount
+                  ? `${wishlistItemsCount} items in the wish list`
+                  : "Not Provided"}
               </p>
             </div>
 

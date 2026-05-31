@@ -28,7 +28,7 @@ const Notifications = () => {
         <div className="indicator">
           <LuBell className="text-2xl text-[#6B7280]" />
           {unreadCount > 0 && (
-            <span className="badge badge-sm bg-blue-600 border-none text-white indicator-item">
+            <span className="badge badge-sm bg-amber-600 border-none text-white indicator-item">
               {unreadCount}
             </span>
           )}

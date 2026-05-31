@@ -92,6 +92,9 @@ const ProductsDetails = () => {
 
     if (added) {
       toast.success("Product added to cart");
+      queryClient.invalidateQueries({
+        queryKey: ["cart-products"],
+      });
     } else {
       toast.warning("Product already exists in cart");
     }
@@ -102,6 +105,9 @@ const ProductsDetails = () => {
 
     if (added) {
       toast.success("Product added to wishlist");
+      queryClient.invalidateQueries({
+        queryKey: ["wishlist-products"],
+      });
     } else {
       toast.warning("Product already exists in wishlist");
     }

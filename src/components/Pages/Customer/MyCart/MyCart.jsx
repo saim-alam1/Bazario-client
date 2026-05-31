@@ -14,7 +14,7 @@ const MyCart = () => {
   const { data: cartData = [], isLoading } = useQuery({
     queryKey: ["cart-products", cartIds],
     queryFn: async () => {
-      const res = await axiosInstance.post("/cart-products", {
+      const res = await axiosInstance.post("/local-products", {
         ids: cartIds,
       });
 
@@ -28,7 +28,7 @@ const MyCart = () => {
     <section className="max-w-11/12 mx-auto my-10">
       {/* Helmet */}
       <Helmet>
-        <title>My Cart | Bazario</title>
+        <title>Cart Items | Bazario</title>
         <meta
           name="description"
           content="View and manage your shopping cart items. You can buy items also you can remove them from your cart items from here."
@@ -37,7 +37,7 @@ const MyCart = () => {
 
       <div className="text-center mb-12">
         <h2 className="text-4xl md:text-5xl font-semibold text-headings capitalize">
-          My Cart
+          Cart Items
         </h2>
 
         <p className="text-lg text-descriptions mt-4">

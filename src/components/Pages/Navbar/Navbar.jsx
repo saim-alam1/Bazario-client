@@ -7,10 +7,16 @@ import useAuth from "../../../Hooks/useAuth";
 import { toast } from "react-toastify";
 import useUserRole from "../../../Hooks/useUserRole";
 import Notifications from "../../UI/Notifications/Notifications";
+import useLocalStorage from "../../../Hooks/useLocalStorage";
 
 const Navbar = () => {
   const { user, logOutUser } = useAuth();
   const { userRole } = useUserRole();
+  const { getItems: getCartItems } = useLocalStorage("cart-items");
+  const { getItems: getWishlistItems } = useLocalStorage("wishlist-items");
+
+  const cartItemsCount = getCartItems().length;
+  const wishlistItemsCount = getWishlistItems().length;
 
   console.log(userRole);
 
@@ -87,7 +93,19 @@ const Navbar = () => {
           `${isActive ? "text-[#EA580C] border-b pb-1 border-[#EA580C]" : "text-[#6B7280]"} font-semibold text-base`
         }
       >
-        <FiHeart className="text-2xl" />
+        <button
+          tabIndex={0}
+          role="button"
+          className="btn btn-ghost btn-circle relative z-50"
+        >
+          <div className="indicator">
+            <FiHeart className="text-2xl" />
+
+            <span className="badge badge-sm bg-amber-600 border-none text-white indicator-item">
+              {wishlistItemsCount}
+            </span>
+          </div>
+        </button>
       </NavLink>
 
       <NavLink
@@ -96,7 +114,19 @@ const Navbar = () => {
           `${isActive ? "text-[#EA580C] border-b pb-1 border-[#EA580C]" : "text-[#6B7280]"} font-semibold text-base`
         }
       >
-        <IoCartOutline className="text-3xl" />
+        <button
+          tabIndex={0}
+          role="button"
+          className="btn btn-ghost btn-circle relative z-50"
+        >
+          <div className="indicator">
+            <IoCartOutline className="text-3xl" />
+
+            <span className="badge badge-sm bg-amber-600 border-none text-white indicator-item">
+              {cartItemsCount}
+            </span>
+          </div>
+        </button>
       </NavLink>
 
       {/* Profile Dropdown */}

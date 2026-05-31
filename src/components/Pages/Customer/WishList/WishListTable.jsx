@@ -1,11 +1,11 @@
-import useLocalStorage from "../../../../Hooks/useLocalStorage";
-import Swal from "sweetalert2";
-import LottiePlayer from "lottie-react";
-import noData from "../../../../assets/noData.json";
 import { useQueryClient } from "@tanstack/react-query";
+import useLocalStorage from "../../../../Hooks/useLocalStorage";
+import LottiePlayer from "lottie-react";
+import Swal from "sweetalert2";
+import noData from "../../../../assets/noData.json";
 
-const CartTable = ({ cartData, setCartIds }) => {
-  const { getItems, removeItem } = useLocalStorage("cart-items");
+const WishListTable = ({ wishList, setWishIds }) => {
+  const { getItems, removeItem } = useLocalStorage("wishlist-items");
   const Lottie = LottiePlayer.default || LottiePlayer;
   const queryClient = useQueryClient();
 
@@ -24,9 +24,9 @@ const CartTable = ({ cartData, setCartIds }) => {
     if (result.isConfirmed) {
       removeItem(id);
 
-      setCartIds(getItems());
+      setWishIds(getItems());
       queryClient.invalidateQueries({
-        queryKey: ["cart-products"],
+        queryKey: ["wishlist-products"],
       });
 
       Swal.fire({
@@ -43,7 +43,7 @@ const CartTable = ({ cartData, setCartIds }) => {
     console.log("Buy now:", item);
   };
 
-  if (!cartData?.length) {
+  if (!wishList?.length) {
     return (
       <div className="flex flex-col items-center justify-center py-10">
         <Lottie animationData={noData} loop={true} className="w-72 md:w-96" />
@@ -77,7 +77,7 @@ const CartTable = ({ cartData, setCartIds }) => {
 
         {/* Table Body */}
         <tbody>
-          {cartData?.map((item) => (
+          {wishList?.map((item) => (
             <tr key={item._id} className="border-b hover:bg-gray-50 transition">
               {/* Product */}
               <td className="p-4">
@@ -151,4 +151,4 @@ const CartTable = ({ cartData, setCartIds }) => {
   );
 };
 
-export default CartTable;
+export default WishListTable;

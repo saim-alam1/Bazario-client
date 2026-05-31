@@ -16,6 +16,7 @@ import {
   FaRegEdit,
   FaShoppingCart,
 } from "react-icons/fa";
+import useLocalStorage from "../../../../Hooks/useLocalStorage";
 
 const CustomerProfile = () => {
   const { user } = useAuth();
@@ -23,6 +24,9 @@ const CustomerProfile = () => {
   const { userRole } = useUserRole();
   const { register, handleSubmit, reset } = useForm();
   const queryClient = useQueryClient();
+
+  const { getItems } = useLocalStorage("cart-items");
+  const cartItemsCount = getItems().length;
 
   const { data: customerInfo = {}, isLoading } = useQuery({
     queryKey: ["customer-info", user?.email],
@@ -227,7 +231,9 @@ const CustomerProfile = () => {
                 </h4>
               </div>
               <p className="text-descriptions font-medium break-all">
-                {/* {contactNumber || "Not Provided"} */} Not Provided
+                {cartItemsCount
+                  ? `${cartItemsCount} items in the cart`
+                  : "Not Provided"}
               </p>
             </div>
 

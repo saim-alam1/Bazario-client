@@ -13,7 +13,7 @@ const VendorApprovalTable = ({ vendorApplicants }) => {
     approveVendor(email);
   };
 
-  const { mutate: approveVendor, isPending } = useMutation({
+  const { mutate: approveVendor, isPending: isApproving } = useMutation({
     mutationFn: async (email) => {
       const res = await axiosSecure.patch(`approve-vendor/${email}`);
       return res.data;
@@ -34,8 +34,27 @@ const VendorApprovalTable = ({ vendorApplicants }) => {
 
   // Handle Reject
   const handleReject = (email) => {
-    console.log(email);
+    rejectVendor(email);
   };
+
+  const { mutate: rejectVendor, isPending: isRejecting } = useMutation({
+    mutationFn: async (email) => {
+      const res = await axiosSecure.patch(`reject-vendor/${email}`);
+      return res.data;
+    },
+    onSuccess: async (data, email) => {
+      queryClient.invalidateQueries({
+        queryKey: ["vendor-applicants"],
+      });
+      // Posting Data In Notification Collection
+      addNotification({
+        receiverEmail: email,
+        message: "Your seller application has been rejected",
+      });
+
+      toast.success(data?.message || "User appointed has been rejected");
+    },
+  });
 
   return (
     <div className="overflow-x-auto bg-base-100 rounded-xl border border-base-300">
@@ -129,14 +148,14 @@ const VendorApprovalTable = ({ vendorApplicants }) => {
                     onClick={() => handleApprove(applicant.email)}
                     className="btn btn-success"
                   >
-                    {isPending ? "Approving..." : "Approve"}
+                    {isApproving ? "Approving..." : "Approve"}
                   </button>
 
                   <button
                     onClick={() => handleReject(applicant.email)}
                     className="btn btn-error"
                   >
-                    Reject
+                    {isRejecting ? "Rejecting..." : "Reject"}
                   </button>
                 </div>
               </td>

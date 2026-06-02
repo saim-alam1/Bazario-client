@@ -156,7 +156,7 @@ const BecomeASeller = () => {
                   required: true,
                 })}
                 type="text"
-                placeholder="Job Title"
+                placeholder="Store Name"
                 className="w-full px-4 py-3 text-base text-gray-900 bg-gray-50/50 border border-gray-200 rounded-xl focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 focus:outline-none transition-all duration-200"
               />
 

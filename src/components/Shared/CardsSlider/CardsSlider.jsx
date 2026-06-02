@@ -4,6 +4,9 @@ import { motion } from "framer-motion";
 
 import "swiper/css";
 import "swiper/css/free-mode";
+import { useQuery } from "@tanstack/react-query";
+import useAxios from "../../../Hooks/useAxios";
+import Loading from "../../UI/Loading/Loading";
 
 const dummyProducts = [
   {
@@ -43,6 +46,18 @@ const dummyProducts = [
 const doubledProducts = [...dummyProducts, ...dummyProducts];
 
 const CardsSlider = () => {
+  const axiosInstance = useAxios();
+
+  const { data: flashProducts = [], isLoading } = useQuery({
+    queryKey: ["flashDiscount-products"],
+    queryFn: async () => {
+      const res = await axiosInstance("flash-discounts-products");
+      return res.data;
+    },
+  });
+
+  if (isLoading) return <Loading />;
+
   return (
     // Added explicit horizontal padding to prevent cards from hitting the absolute screen edge
     <div className="mt-16 px-6 py-10 slider-container overflow-hidden">

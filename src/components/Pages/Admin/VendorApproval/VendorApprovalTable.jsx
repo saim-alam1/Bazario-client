@@ -1,9 +1,47 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
+import useNotifications from "../../../../Hooks/useNotifications";
+import { toast } from "react-toastify";
+
 const VendorApprovalTable = ({ vendorApplicants }) => {
+  const axiosSecure = useAxiosSecure();
+  const { addNotification } = useNotifications();
+  const queryClient = useQueryClient();
+
+  // Handle Approve
+  const handleApprove = (email) => {
+    approveVendor(email);
+  };
+
+  const { mutate: approveVendor, isPending } = useMutation({
+    mutationFn: async (email) => {
+      const res = await axiosSecure.patch(`approve-vendor/${email}`);
+      return res.data;
+    },
+    onSuccess: async (data, email) => {
+      queryClient.invalidateQueries({
+        queryKey: ["vendor-applicants"],
+      });
+      // Posting Data In Notification Collection
+      addNotification({
+        receiverEmail: email,
+        message: "Your seller application has been approved",
+      });
+
+      toast.success(data?.message || "User appointed as vendor");
+    },
+  });
+
+  // Handle Reject
+  const handleReject = (email) => {
+    console.log(email);
+  };
+
   return (
     <div className="overflow-x-auto bg-base-100 rounded-xl border border-base-300">
       <table className="table">
         <thead className="bg-base-200">
-          <tr>
+          <tr className="text-lg">
             <th>Applicant</th>
             <th>Store Name</th>
             <th>Business Type</th>
@@ -87,9 +125,19 @@ const VendorApprovalTable = ({ vendorApplicants }) => {
               {/* Actions */}
               <td>
                 <div className="flex justify-center gap-2">
-                  <button className="btn btn-success">Approve</button>
+                  <button
+                    onClick={() => handleApprove(applicant.email)}
+                    className="btn btn-success"
+                  >
+                    {isPending ? "Approving..." : "Approve"}
+                  </button>
 
-                  <button className="btn btn-error">Reject</button>
+                  <button
+                    onClick={() => handleReject(applicant.email)}
+                    className="btn btn-error"
+                  >
+                    Reject
+                  </button>
                 </div>
               </td>
             </tr>

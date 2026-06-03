@@ -66,9 +66,9 @@ const router = createBrowserRouter([
       {
         path: "/become-a-seller",
         element: (
-          <PrivateRoute>
+          <CustomerRoute>
             <BecomeASeller />
-          </PrivateRoute>
+          </CustomerRoute>
         ),
       },
       {

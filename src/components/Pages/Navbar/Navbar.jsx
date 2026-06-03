@@ -72,62 +72,70 @@ const Navbar = () => {
           Products
         </NavLink>
       </li>
-      <li>
-        <NavLink
-          to="/become-a-seller"
-          className={({ isActive }) =>
-            `${isActive ? "text-[#EA580C] border-b pb-1 border-[#EA580C]" : "text-[#6B7280]"} font-semibold text-base`
-          }
-        >
-          Become a Seller
-        </NavLink>
-      </li>
+      {userRole === "customer" && (
+        <li>
+          <NavLink
+            to="/become-a-seller"
+            className={({ isActive }) =>
+              `${isActive ? "text-[#EA580C] border-b pb-1 border-[#EA580C]" : "text-[#6B7280]"} font-semibold text-base`
+            }
+          >
+            Become a Seller
+          </NavLink>
+        </li>
+      )}
     </>
   );
 
   const authLinks = user ? (
     <div className="flex items-center gap-2.5">
-      <NavLink
-        to="/dashboard-layout/wish-list"
-        className={({ isActive }) =>
-          `${isActive ? "text-[#EA580C] border-b pb-1 border-[#EA580C]" : "text-[#6B7280]"} font-semibold text-base`
-        }
-      >
-        <button
-          tabIndex={0}
-          role="button"
-          className="btn btn-ghost btn-circle relative z-50"
-        >
-          <div className="indicator">
-            <FiHeart className="text-2xl" />
+      {userRole === "customer" && (
+        <>
+          {/* Wish List */}
+          <NavLink
+            to="/dashboard-layout/wish-list"
+            className={({ isActive }) =>
+              `${isActive ? "text-[#EA580C] border-b pb-1 border-[#EA580C]" : "text-[#6B7280]"} font-semibold text-base`
+            }
+          >
+            <button
+              tabIndex={0}
+              role="button"
+              className="btn btn-ghost btn-circle relative z-50"
+            >
+              <div className="indicator">
+                <FiHeart className="text-2xl" />
 
-            <span className="badge badge-sm bg-amber-600 border-none text-white indicator-item">
-              {wishlistItemsCount}
-            </span>
-          </div>
-        </button>
-      </NavLink>
+                <span className="badge badge-sm bg-amber-600 border-none text-white indicator-item">
+                  {wishlistItemsCount}
+                </span>
+              </div>
+            </button>
+          </NavLink>
 
-      <NavLink
-        to="/dashboard-layout/my-cart"
-        className={({ isActive }) =>
-          `${isActive ? "text-[#EA580C] border-b pb-1 border-[#EA580C]" : "text-[#6B7280]"} font-semibold text-base`
-        }
-      >
-        <button
-          tabIndex={0}
-          role="button"
-          className="btn btn-ghost btn-circle relative z-50"
-        >
-          <div className="indicator">
-            <IoCartOutline className="text-3xl" />
+          {/* Cart */}
+          <NavLink
+            to="/dashboard-layout/my-cart"
+            className={({ isActive }) =>
+              `${isActive ? "text-[#EA580C] border-b pb-1 border-[#EA580C]" : "text-[#6B7280]"} font-semibold text-base`
+            }
+          >
+            <button
+              tabIndex={0}
+              role="button"
+              className="btn btn-ghost btn-circle relative z-50"
+            >
+              <div className="indicator">
+                <IoCartOutline className="text-3xl" />
 
-            <span className="badge badge-sm bg-amber-600 border-none text-white indicator-item">
-              {cartItemsCount}
-            </span>
-          </div>
-        </button>
-      </NavLink>
+                <span className="badge badge-sm bg-amber-600 border-none text-white indicator-item">
+                  {cartItemsCount}
+                </span>
+              </div>
+            </button>
+          </NavLink>
+        </>
+      )}
 
       {/* Profile Dropdown */}
       <div className="dropdown dropdown-end z-50">

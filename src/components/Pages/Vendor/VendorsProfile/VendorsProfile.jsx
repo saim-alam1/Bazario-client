@@ -34,7 +34,9 @@ const VendorsProfile = () => {
     contactNumber,
     businessType,
     businessAddress,
-    role,
+    country,
+    deliveryCapability,
+    approvedAt,
   } = vendorInfo;
 
   const handleProfileUpdate = (data) => {
@@ -174,25 +176,53 @@ const VendorsProfile = () => {
               </p>
             </div>
 
-            {/* Role */}
+            {/* Country */}
             <div className="bg-base-200/50 rounded-2xl p-5">
               <div className="flex items-center gap-3 mb-2">
                 <MdVerifiedUser className="text-amber-600 text-xl" />
-                <h4 className="text-lg font-semibold text-headings">Role</h4>
+                <h4 className="text-lg font-semibold text-headings">Country</h4>
               </div>
               <p className="text-descriptions font-medium">
-                {role || "Not Provided"}
+                {country || "Not Provided"}
               </p>
             </div>
 
-            {/* Address */}
+            {/* Business Address */}
             <div className="bg-base-200/50 rounded-2xl p-5">
               <div className="flex items-center gap-3 mb-2">
                 <IoLocationSharp className="text-amber-600 text-xl" />
-                <h4 className="text-lg font-semibold text-headings">Address</h4>
+                <h4 className="text-lg font-semibold text-headings">
+                  Business Address
+                </h4>
               </div>
               <p className="text-descriptions font-medium break-all">
                 {businessAddress || "Not Provided"}
+              </p>
+            </div>
+
+            {/* Delivery Capability */}
+            <div className="bg-base-200/50 rounded-2xl p-5">
+              <div className="flex items-center gap-3 mb-2">
+                <IoLocationSharp className="text-amber-600 text-xl" />
+                <h4 className="text-lg font-semibold text-headings">
+                  Delivery Capability
+                </h4>
+              </div>
+              <p className="text-descriptions font-medium break-all">
+                Are you Capable?{" "}
+                <span
+                  className={`font-semibold ${
+                    deliveryCapability === "Yes"
+                      ? "text-green-700"
+                      : deliveryCapability === "No"
+                        ? "text-red-500"
+                        : deliveryCapability === "Partner Courier Only"
+                          ? "text-yellow-500"
+                          : ""
+                  }`}
+                >
+                  {deliveryCapability || "Not Provided"}
+                </span>
               </p>
             </div>
 
@@ -220,6 +250,19 @@ const VendorsProfile = () => {
               <p className="text-descriptions font-medium">
                 {new Date(registeredAt).toLocaleDateString("en-GB") ||
                   "Unknown"}
+              </p>
+            </div>
+
+            {/* Vendor Since */}
+            <div className="bg-base-200/50 rounded-2xl p-5">
+              <div className="flex items-center gap-3 mb-2">
+                <MdDateRange className="text-amber-600 text-xl" />
+                <h4 className="text-lg font-semibold text-headings">
+                  Vendor Since
+                </h4>
+              </div>
+              <p className="text-descriptions font-medium">
+                {new Date(approvedAt).toLocaleDateString("en-GB") || "Unknown"}
               </p>
             </div>
 

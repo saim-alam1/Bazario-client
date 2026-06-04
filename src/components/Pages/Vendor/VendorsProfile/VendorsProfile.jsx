@@ -1,23 +1,23 @@
-import { useForm } from "react-hook-form";
+// import { useForm } from "react-hook-form";
 import useAuth from "../../../../Hooks/useAuth";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 import useUserRole from "../../../../Hooks/useUserRole";
-import { FaRegEdit, FaStoreAlt, FaLayerGroup } from "react-icons/fa";
+import { FaStoreAlt, FaLayerGroup } from "react-icons/fa";
 import { MdVerifiedUser, MdDateRange, MdPermPhoneMsg } from "react-icons/md";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "react-toastify";
+import { useQuery } from "@tanstack/react-query";
+// import { toast } from "react-toastify";
 import Loading from "../../../UI/Loading/Loading";
 import { IoLocationSharp } from "react-icons/io5";
 import { Helmet } from "react-helmet-async";
-import useNotifications from "../../../../Hooks/useNotifications";
+// import useNotifications from "../../../../Hooks/useNotifications";
 
 const VendorsProfile = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
   const { userRole } = useUserRole();
-  const { register, handleSubmit, reset } = useForm();
-  const queryClient = useQueryClient();
-  const { addNotification } = useNotifications();
+  // const { register, handleSubmit, reset } = useForm();
+  // const queryClient = useQueryClient();
+  // const { addNotification } = useNotifications();
 
   const { data: vendorInfo = {}, isLoading } = useQuery({
     queryKey: ["vendor-info", user?.email],
@@ -39,46 +39,46 @@ const VendorsProfile = () => {
     approvedAt,
   } = vendorInfo;
 
-  const handleProfileUpdate = (data) => {
-    const filteredData = Object.fromEntries(
-      Object.entries(data).filter(([, value]) => value !== ""),
-    );
+  // const handleProfileUpdate = (data) => {
+  //   const filteredData = Object.fromEntries(
+  //     Object.entries(data).filter(([, value]) => value !== ""),
+  //   );
 
-    updateProfile(filteredData);
-  };
+  //   updateProfile(filteredData);
+  // };
 
-  const { mutate: updateProfile, isPending } = useMutation({
-    mutationFn: async (vendorsInfo) => {
-      const res = await axiosSecure.patch(
-        `update-vendor/${user?.email}`,
-        vendorsInfo,
-      );
-      return res.data;
-    },
-    onSuccess: (data) => {
-      const modal = document.getElementById("my_modal_5");
-      if (modal) modal.close();
+  // const { mutate: updateProfile, isPending } = useMutation({
+  //   mutationFn: async (vendorsInfo) => {
+  //     const res = await axiosSecure.patch(
+  //       `update-vendor/${user?.email}`,
+  //       vendorsInfo,
+  //     );
+  //     return res.data;
+  //   },
+  //   onSuccess: (data) => {
+  //     const modal = document.getElementById("my_modal_5");
+  //     if (modal) modal.close();
 
-      // Posting Data In Notification Collection
-      addNotification({
-        receiverEmail: user?.email,
-        message: "Profile updated successfully!",
-      });
+  //     // Posting Data In Notification Collection
+  //     addNotification({
+  //       receiverEmail: user?.email,
+  //       message: "Profile updated successfully!",
+  //     });
 
-      toast.success(data?.message || "Profile updated successfully!");
-      queryClient.invalidateQueries({
-        queryKey: ["vendor-info", user?.email],
-      });
-      reset();
-    },
-    onError: (error) => {
-      const modal = document.getElementById("my_modal_5");
-      if (modal) modal.close();
-      toast.error(
-        error.response?.data?.message || "An unexpected error occurred",
-      );
-    },
-  });
+  //     toast.success(data?.message || "Profile updated successfully!");
+  //     queryClient.invalidateQueries({
+  //       queryKey: ["vendor-info", user?.email],
+  //     });
+  //     reset();
+  //   },
+  //   onError: (error) => {
+  //     const modal = document.getElementById("my_modal_5");
+  //     if (modal) modal.close();
+  //     toast.error(
+  //       error.response?.data?.message || "An unexpected error occurred",
+  //     );
+  //   },
+  // });
 
   if (isLoading) return <Loading />;
 
@@ -140,12 +140,12 @@ const VendorsProfile = () => {
             </div>
 
             {/* Edit Button */}
-            <button
+            {/* <button
               onClick={() => document.getElementById("my_modal_5").showModal()}
               className="absolute top-20 right-15 hover:text-amber-600 transition-colors duration-200"
             >
               <FaRegEdit size={25} className="cursor-pointer" />
-            </button>
+            </button> */}
           </div>
 
           {/* Information Grid */}
@@ -283,25 +283,24 @@ const VendorsProfile = () => {
       </div>
 
       {/* Modal */}
-
-      <dialog
+      {/* <dialog
         id="my_modal_5"
         className="modal modal-bottom sm:modal-middle backdrop-blur-xs"
       >
         <div className="modal-box mx-auto bg-white p-6 md:p-8 rounded-2xl shadow-2xl border border-gray-50 max-w-11/12">
-          {/* Header */}
+          
           <h3 className="font-bold text-2xl md:text-3xl text-gray-800 text-center mb-8 tracking-tight">
             Add your business information
           </h3>
 
-          {/* Form Layout Fixed */}
+          
           <form
             onSubmit={handleSubmit(handleProfileUpdate)}
             className="space-y-6"
           >
-            {/* Inputs Grid */}
+            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              {/* Store Name */}
+             
               <div className="flex flex-col">
                 <label className="mb-2 text-sm font-semibold text-gray-700">
                   Store Name
@@ -314,7 +313,7 @@ const VendorsProfile = () => {
                 />
               </div>
 
-              {/* Business Type */}
+              
               <div className="flex flex-col">
                 <label className="mb-2 text-sm font-semibold text-gray-700">
                   Business Type
@@ -337,7 +336,7 @@ const VendorsProfile = () => {
                 </select>
               </div>
 
-              {/* Business Address */}
+             
               <div className="flex flex-col">
                 <label className="mb-2 text-sm font-semibold text-gray-700">
                   Business Address
@@ -350,7 +349,7 @@ const VendorsProfile = () => {
                 />
               </div>
 
-              {/* Contact Number */}
+             
               <div className="flex flex-col">
                 <label className="mb-2 text-sm font-semibold text-gray-700">
                   Contact Number
@@ -363,7 +362,7 @@ const VendorsProfile = () => {
                 />
               </div>
 
-              {/* Store Descriptions */}
+             
               <div className="flex flex-col col-span-1 md:col-span-2">
                 <label className="mb-2 text-sm font-semibold text-gray-700">
                   Store Description
@@ -376,7 +375,7 @@ const VendorsProfile = () => {
               </div>
             </div>
 
-            {/* Action Buttons Container */}
+            
             <div className="modal-action pt-4 border-t border-gray-100 flex items-center justify-end gap-3">
               <button
                 type="button"
@@ -396,7 +395,7 @@ const VendorsProfile = () => {
             </div>
           </form>
         </div>
-      </dialog>
+      </dialog> */}
     </section>
   );
 };

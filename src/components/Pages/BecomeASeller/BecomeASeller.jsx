@@ -125,23 +125,23 @@ const BecomeASeller = () => {
               )}
             </div>
 
-            {/* Contact Number */}
+            {/* Business Contact Number */}
             <div className="flex flex-col">
               <label className="mb-2 text-base font-semibold text-gray-700">
-                Contact Number
+                Business Contact Number
               </label>
               <input
                 type="number"
-                {...register("contactNumber", {
+                {...register("businessContactNumber", {
                   required: true,
                 })}
-                placeholder="Contact Number"
+                placeholder="Business Contact Number"
                 className="w-full px-4 py-3 text-base text-gray-900 bg-gray-50/50 border border-gray-200 rounded-xl focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 focus:outline-none transition-all duration-200"
               />
 
-              {errors.contactNumber && (
+              {errors.businessContactNumber && (
                 <span className="text-red-500 text-[16px] mt-1">
-                  Contact Number field is required
+                  Business Contact Number field is required
                 </span>
               )}
             </div>

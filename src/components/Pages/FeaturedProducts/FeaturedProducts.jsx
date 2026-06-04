@@ -1,21 +1,7 @@
-import { useEffect } from "react";
-import AOS from "aos";
-import "aos/dist/aos.css";
-
 const FeaturedProducts = () => {
-  useEffect(() => {
-    AOS.init({
-      duration: 800,
-      once: true,
-    });
-  }, []);
-
   return (
     <section className="my-24 px-3">
-      <div
-        data-aos="fade-right"
-        className="text-center space-y-4 max-w-11/12 mx-auto"
-      >
+      <div className="text-center space-y-4 max-w-11/12 mx-auto">
         <h1 className="text-headings font-semibold text-5xl">
           Featured Products
         </h1>

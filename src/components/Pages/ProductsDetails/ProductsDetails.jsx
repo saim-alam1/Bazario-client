@@ -114,9 +114,9 @@ const ProductsDetails = () => {
   };
 
   const finalPrice = flashDiscount
-    ? (price - (price * flashDiscount) / 100).toFixed(2)
+    ? Math.ceil(price - (price * flashDiscount) / 100)
     : discount
-      ? (price - (price * discount) / 100).toFixed(2)
+      ? Math.ceil(price - (price * discount) / 100)
       : price;
 
   const activeDiscount = flashDiscount || discount;

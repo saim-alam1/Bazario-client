@@ -1,17 +1,6 @@
-import { useEffect } from "react";
-import AOS from "aos";
-import "aos/dist/aos.css";
-
 const TopVendors = () => {
-  useEffect(() => {
-    AOS.init({
-      duration: 800,
-      once: true,
-    });
-  }, []);
-
   return (
-    <section data-aos="fade-left" data-aos-delay="200" className="my-24 px-3">
+    <section className="my-24 px-3">
       <div className="text-center space-y-4 max-w-9/12 mx-auto">
         <h1 className="text-headings font-semibold text-5xl">Top Vendors</h1>
         <p className="text-xl text-descriptions">

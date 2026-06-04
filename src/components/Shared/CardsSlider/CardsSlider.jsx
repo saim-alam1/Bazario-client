@@ -7,43 +7,7 @@ import "swiper/css/free-mode";
 import { useQuery } from "@tanstack/react-query";
 import useAxios from "../../../Hooks/useAxios";
 import Loading from "../../UI/Loading/Loading";
-
-const dummyProducts = [
-  {
-    id: 1,
-    name: "Wireless Headphones",
-    price: 120,
-    discountPrice: 65,
-    stock: 5,
-    image: "https://images.unsplash.com/photo-1585386959984-a4155224a1ad",
-  },
-  {
-    id: 2,
-    name: "Smart Watch",
-    price: 180,
-    discountPrice: 99,
-    stock: 3,
-    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30",
-  },
-  {
-    id: 3,
-    name: "Gaming Mouse",
-    price: 60,
-    discountPrice: 29,
-    stock: 8,
-    image: "https://images.unsplash.com/photo-1527814050087-3793815479db",
-  },
-  {
-    id: 4,
-    name: "Sneakers",
-    price: 140,
-    discountPrice: 75,
-    stock: 2,
-    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
-  },
-];
-
-const doubledProducts = [...dummyProducts, ...dummyProducts];
+import { Link } from "react-router";
 
 const CardsSlider = () => {
   const axiosInstance = useAxios();
@@ -90,54 +54,62 @@ const CardsSlider = () => {
           1024: { slidesPerView: 3.2 },
         }}
       >
-        {doubledProducts.map((product, index) => (
+        {flashProducts.map((product, index) => (
           <SwiperSlide key={`${product.id}-${index}`} className="h-auto">
-            <motion.div
-              whileHover={{ y: -10, scale: 1.02 }}
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              className="bg-white shadow-lg rounded-2xl p-5 border cursor-pointer h-full flex flex-col justify-between"
-            >
-              <div>
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full h-44 object-cover rounded-xl mb-4"
-                />
-
-                <h2 className="text-xl font-semibold text-gray-800">
-                  {product.name}
-                </h2>
-
-                <div className="mt-2 flex gap-2 items-center">
-                  <p className="line-through text-gray-400">${product.price}</p>
-                  <p className="text-green-600 font-bold text-lg">
-                    ${product.discountPrice}
-                  </p>
-                </div>
-
-                <div className="mt-3 flex gap-2 flex-wrap">
-                  <span className="bg-red-100 text-red-600 px-2 py-1 text-xs rounded-full font-medium">
-                    🔥 Today Only
-                  </span>
-                  <span className="bg-yellow-100 text-yellow-600 px-2 py-1 text-xs rounded-full font-medium">
-                    ⏳ Ending Soon
-                  </span>
-                  <span className="bg-blue-100 text-blue-600 px-2 py-1 text-xs rounded-full font-medium">
-                    Only {product.stock} left
-                  </span>
-                </div>
-              </div>
-
-              {/* Pushes the progress bar cleanly to the bottom of the card uniformly */}
-              <div className="mt-6">
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div
-                    className="bg-green-500 h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${product.stock * 10}%` }}
+            <Link to={`/products-details/${product._id}`}>
+              <motion.div
+                whileHover={{ y: -10, scale: 1.02 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                className="bg-white shadow-lg rounded-2xl p-5 border cursor-pointer h-full flex flex-col justify-between"
+              >
+                <div>
+                  <img
+                    src={product.productImage}
+                    alt={product.productName}
+                    className="w-full h-44 object-cover rounded-xl mb-4"
                   />
+
+                  <h2 className="text-xl font-semibold text-gray-800">
+                    {product.productName}
+                  </h2>
+
+                  <div className="mt-2 flex gap-2 items-center">
+                    <p className="line-through text-gray-400">
+                      ৳{product.price}
+                    </p>
+                    <p className="text-green-600 font-bold text-lg">
+                      ৳
+                      {Math.ceil(
+                        product.price -
+                          (product.price * product.flashDiscount) / 100,
+                      )}
+                    </p>
+                  </div>
+
+                  <div className="mt-3 flex gap-2 flex-wrap">
+                    <span className="bg-red-100 text-red-600 px-2 py-1 text-sm rounded-full font-medium">
+                      🔥 {product.flashDiscount}% Discount
+                    </span>
+                    <span className="bg-yellow-100 text-yellow-600 px-2 py-1 text-sm rounded-full font-medium">
+                      ⏳ Ending in {product.discountDuration}
+                    </span>
+                    <span className="bg-blue-100 text-blue-600 px-2 py-1 text-sm rounded-full font-medium">
+                      Only {product.stockQuantity} left
+                    </span>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
+
+                {/* Pushes the progress bar cleanly to the bottom of the card uniformly */}
+                <div className="mt-6">
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div
+                      className="bg-green-500 h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${product.stock * 10}%` }}
+                    />
+                  </div>
+                </div>
+              </motion.div>
+            </Link>
           </SwiperSlide>
         ))}
       </Swiper>

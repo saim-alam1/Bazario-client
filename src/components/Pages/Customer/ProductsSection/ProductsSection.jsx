@@ -83,8 +83,8 @@ const ProductsSection = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {products.map((p) => {
           const discountedPrice = p.flashDiscount
-            ? (p.price - (p.price * p.flashDiscount) / 100).toFixed(2)
-            : p.price;
+            ? Math.ceil(p.price - (p.price * p.flashDiscount) / 100)
+            : Math.ceil(p.price);
 
           return (
             <div

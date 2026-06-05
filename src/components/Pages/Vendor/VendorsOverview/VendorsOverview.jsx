@@ -28,6 +28,16 @@ const VendorsOverview = () => {
     },
   });
 
+  const { data: flashSummary = {} } = useQuery({
+    queryKey: ["flash-summary", user?.email],
+    enabled: !!user?.email,
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/flash-deals-summary/${user?.email}`);
+
+      return res.data;
+    },
+  });
+
   if (isLoading) return <Loading />;
 
   const stats = [
@@ -179,6 +189,47 @@ const VendorsOverview = () => {
             No low-stock products right now.
           </p>
         )}
+      </div>
+
+      {/* Flash Discount Products */}
+      <div className="mt-10 rounded-xl border border-base-300 bg-base-100 p-6">
+        <h2 className="mb-5 text-xl font-semibold text-headings">
+          🔥 Flash Deals Summary
+        </h2>
+
+        <div className="space-y-4">
+          <div className="flex justify-between">
+            <span>Total Discounted Products</span>
+            <span className="font-bold">
+              {flashSummary.totalDiscountedProducts || 0}
+            </span>
+          </div>
+
+          <div className="flex justify-between">
+            <span>Active Flash Deals</span>
+            <span className="font-bold">
+              {flashSummary.activeFlashDeals || 0}
+            </span>
+          </div>
+
+          <div className="flex justify-between">
+            <span>Highest Discount</span>
+            <span className="font-bold">
+              {flashSummary.highestDiscountProduct?.productName || "N/A"}
+              {flashSummary.highestDiscountProduct &&
+                ` (${flashSummary.highestDiscountProduct.flashDiscount}%)`}
+            </span>
+          </div>
+
+          <div className="flex justify-between">
+            <span>Lowest Discount</span>
+            <span className="font-bold">
+              {flashSummary.lowestDiscountProduct?.productName || "N/A"}
+              {flashSummary.lowestDiscountProduct &&
+                ` (${flashSummary.lowestDiscountProduct.flashDiscount}%)`}
+            </span>
+          </div>
+        </div>
       </div>
     </section>
   );

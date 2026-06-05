@@ -260,7 +260,6 @@ const CustomerProfile = () => {
       </div>
 
       {/* Modal */}
-
       <dialog id="my_modal_5" className="modal modal-bottom sm:modal-middle">
         <div className="modal-box max-w-11/12 mx-auto">
           <h3 className="font-bold text-2xl text-center mb-10">

@@ -1,9 +1,18 @@
 import LottiePlayer from "lottie-react";
 import { formatDistanceToNow } from "date-fns";
 import noData from "../../../../assets/noData.json";
+import { useForm } from "react-hook-form";
+import { useState } from "react";
 
 const DiscountsTable = ({ products }) => {
   const Lottie = LottiePlayer.default || LottiePlayer;
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   if (!products?.length) {
     return (
@@ -16,6 +25,14 @@ const DiscountsTable = ({ products }) => {
       </div>
     );
   }
+
+  const handleEditDiscount = (data) => {
+    console.log({
+      productId: selectedProduct._id,
+      flashDiscount: Number(data.flashDiscount),
+      duration: data.duration,
+    });
+  };
 
   return (
     <div className="overflow-x-auto bg-white shadow-md rounded-lg">
@@ -93,7 +110,13 @@ const DiscountsTable = ({ products }) => {
 
                 <td>
                   <div className="flex gap-3">
-                    <button className="btn btn-success border-none shadow-none">
+                    <button
+                      onClick={() => {
+                        setSelectedProduct(product);
+                        document.getElementById("my_modal_5").showModal();
+                      }}
+                      className="btn btn-success border-none shadow-none"
+                    >
                       Edit Discount
                     </button>
 
@@ -107,6 +130,128 @@ const DiscountsTable = ({ products }) => {
           })}
         </tbody>
       </table>
+
+      {/* Modal */}
+      <dialog id="my_modal_5" className="modal modal-bottom sm:modal-middle">
+        <div className="modal-box">
+          <div className="mb-10 text-center">
+            <h3 className="font-bold text-2xl">Edit your discount</h3>
+            <p className="py-4">
+              Press ESC key or click the button below to close
+            </p>
+          </div>
+          <div className="w-full">
+            <form
+              method="dialog"
+              onSubmit={handleSubmit(handleEditDiscount)}
+              className="w-full"
+            >
+              <div className="flex items-center justify-center">
+                <div className="flex flex-col w-full space-y-4">
+                  {/* Discount Amount */}
+                  <label className="block mb-2 text-base text-descriptions font-medium">
+                    Discount Amount %
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="90"
+                    placeholder="Discount %"
+                    className="input input-bordered w-full"
+                    {...register("discount", {
+                      required: "Discount is required",
+                      min: {
+                        value: 1,
+                        message: "Discount must be at least 1%",
+                      },
+                      max: {
+                        value: 90,
+                        message: "Discount cannot exceed 90%",
+                      },
+                    })}
+                  />
+
+                  {errors.discount && (
+                    <p className="text-red-500 text-sm">
+                      {errors.discount.message}
+                    </p>
+                  )}
+
+                  {/* Flash Discount */}
+                  <label className="block mb-2 text-base text-descriptions font-medium">
+                    Flash Discount %
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="90"
+                    placeholder="Discount %"
+                    className="input input-bordered w-full"
+                    {...register("flashDiscount", {
+                      required: "Discount is required",
+                      min: {
+                        value: 1,
+                        message: "Discount must be at least 1%",
+                      },
+                      max: {
+                        value: 90,
+                        message: "Discount cannot exceed 90%",
+                      },
+                    })}
+                  />
+
+                  {errors.flashDiscount && (
+                    <p className="text-red-500 text-sm">
+                      {errors.flashDiscount.message}
+                    </p>
+                  )}
+
+                  <label className="block mb-2 text-base text-descriptions font-medium">
+                    Duration
+                  </label>
+                  <select
+                    className="select select-bordered w-full"
+                    {...register("duration", {
+                      required: "Please select a duration",
+                    })}
+                  >
+                    <option value="">Duration</option>
+                    <option value="24h">24 Hours</option>
+                    <option value="48h">48 Hours</option>
+                    <option value="72h">72 Hours</option>
+                    <option value="7d">7 Days</option>
+                  </select>
+
+                  {errors.duration && (
+                    <p className="text-red-500 text-sm">
+                      {errors.duration.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="w-full flex items-center justify-end gap-4 mt-4">
+                <button
+                  type="submit"
+                  className="btn shadow-none text-white bg-amber-600 hover:bg-amber-700"
+                >
+                  Update Discount
+                </button>
+
+                <button
+                  className="btn btn-error border-none shadow-none"
+                  type="button"
+                  onClick={() => {
+                    (reset(), document.getElementById("my_modal_5").close());
+                  }}
+                >
+                  Close
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </dialog>
     </div>
   );
 };

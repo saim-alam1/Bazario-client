@@ -249,7 +249,7 @@ const InventoryTable = ({ productsData }) => {
                 <tr
                   key={product._id || index}
                   className={
-                    product.stockQuantity < 5
+                    product.stockQuantity < 10
                       ? "bg-red-500 hover:bg-red-600 text-white [&_a]:text-white [&_button]:text-white"
                       : "hover:bg-gray-50"
                   }

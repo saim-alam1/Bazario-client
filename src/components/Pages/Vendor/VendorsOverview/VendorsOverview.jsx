@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import Loading from "../../../UI/Loading/Loading";
 import { Helmet } from "react-helmet-async";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import { Link } from "react-router";
 
 const VendorsOverview = () => {
   const { user } = useAuth();
@@ -14,6 +15,15 @@ const VendorsOverview = () => {
     enabled: !!user?.email,
     queryFn: async () => {
       const res = await axiosSecure(`vendor-stats/${user?.email}`);
+      return res.data;
+    },
+  });
+
+  const { data: lowStockProducts = [] } = useQuery({
+    queryKey: ["low-stock-products", user?.email],
+    enabled: !!user?.email,
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/low-stock-products/${user?.email}`);
       return res.data;
     },
   });
@@ -60,6 +70,10 @@ const VendorsOverview = () => {
       name: "Discount",
       value: productsStats.productsOnDiscount || 0,
     },
+    {
+      name: "Low Stock",
+      value: productsStats.lowStockProducts,
+    },
   ];
 
   return (
@@ -82,6 +96,7 @@ const VendorsOverview = () => {
       {/* Features: Total Sales, Revenue, Pending Orders, Low Stock Alerts, Best
       Selling, Products, Recent Orders, Performance summary */}
 
+      {/* Stats Cards */}
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
         {stats.map((stat) => (
           <div
@@ -97,6 +112,7 @@ const VendorsOverview = () => {
         ))}
       </div>
 
+      {/* Pie Chart */}
       <div className="mt-10 rounded-xl border border-base-300 bg-base-100 p-6">
         <h2 className="mb-5 text-xl font-semibold">Product Status Overview</h2>
 
@@ -107,12 +123,62 @@ const VendorsOverview = () => {
                 <Cell fill="#10B981" />
                 <Cell fill="#F59E0B" />
                 <Cell fill="#3B82F6" />
+                <Cell fill="#EF4444" />
               </Pie>
 
               <Tooltip />
             </PieChart>
           </ResponsiveContainer>
         </div>
+      </div>
+
+      {/* Low Stock Products */}
+      <div className="mt-10 rounded-xl border border-base-300 bg-base-100 p-6">
+        <h2 className="mb-5 text-xl font-semibold text-headings">
+          ⚠ Products Running Low
+        </h2>
+
+        {lowStockProducts.length ? (
+          <div className="space-y-3">
+            {lowStockProducts.map((product) => (
+              <div
+                key={product._id}
+                className="flex items-center justify-between rounded-lg border border-base-300 p-3"
+              >
+                <div className="flex items-center gap-3">
+                  <img
+                    src={product.productImage}
+                    alt={product.productName}
+                    className="h-12 w-12 rounded object-cover"
+                  />
+
+                  <div>
+                    <h3 className="font-medium text-headings">
+                      {product.productName}
+                    </h3>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-8">
+                  <p className="font-semibold text-red-500">
+                    {product.stockQuantity} left
+                  </p>
+
+                  <Link
+                    to="/dashboard-layout/inventory"
+                    className="btn btn-warning border-none shadow-none"
+                  >
+                    Go To Inventory
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-descriptions text-xl">
+            No low-stock products right now.
+          </p>
+        )}
       </div>
     </section>
   );

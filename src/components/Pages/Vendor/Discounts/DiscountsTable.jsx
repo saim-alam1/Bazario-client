@@ -3,6 +3,11 @@ import { formatDistanceToNow } from "date-fns";
 import noData from "../../../../assets/noData.json";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
+import useNotifications from "../../../../Hooks/useNotifications";
+import { toast } from "react-toastify";
+import useAuth from "../../../../Hooks/useAuth";
 
 const DiscountsTable = ({ products }) => {
   const Lottie = LottiePlayer.default || LottiePlayer;
@@ -13,6 +18,55 @@ const DiscountsTable = ({ products }) => {
     formState: { errors },
   } = useForm();
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const { user } = useAuth();
+  const axiosSecure = useAxiosSecure();
+  const { addNotification } = useNotifications();
+  const queryClient = useQueryClient();
+
+  const handleEditDiscount = (data) => {
+    editDiscountData.mutate({
+      id: selectedProduct._id,
+      ...data,
+    });
+  };
+
+  const editDiscountData = useMutation({
+    mutationFn: async ({ id, discount, flashDiscount, duration }) => {
+      const res = await axiosSecure.patch(`/flash-discount/${id}`, {
+        discount: Number(discount),
+        flashDiscount: Number(flashDiscount),
+        duration,
+      });
+
+      return res.data;
+    },
+
+    onSuccess: (res) => {
+      document.getElementById("my_modal_5")?.close();
+
+      addNotification({
+        receiverEmail: user?.email,
+        message: `${selectedProduct.productName} discount value updated`,
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["my-products", user?.email],
+      });
+
+      toast.success(res?.message || "Discounts data updated");
+
+      reset();
+      setSelectedProduct(null);
+    },
+
+    onError: (error) => {
+      document.getElementById("my_modal_5")?.close();
+
+      toast.error(
+        error.response?.data?.message || "An unexpected error occurred",
+      );
+    },
+  });
 
   if (!products?.length) {
     return (
@@ -25,14 +79,6 @@ const DiscountsTable = ({ products }) => {
       </div>
     );
   }
-
-  const handleEditDiscount = (data) => {
-    console.log({
-      productId: selectedProduct._id,
-      flashDiscount: Number(data.flashDiscount),
-      duration: data.duration,
-    });
-  };
 
   return (
     <div className="overflow-x-auto bg-white shadow-md rounded-lg">
@@ -233,9 +279,12 @@ const DiscountsTable = ({ products }) => {
               <div className="w-full flex items-center justify-end gap-4 mt-4">
                 <button
                   type="submit"
+                  disabled={editDiscountData.isPending}
                   className="btn shadow-none text-white bg-amber-600 hover:bg-amber-700"
                 >
-                  Update Discount
+                  {editDiscountData.isPending
+                    ? "Updating..."
+                    : "Update Discount"}
                 </button>
 
                 <button

@@ -6,6 +6,10 @@ import Loading from "../../../UI/Loading/Loading";
 import { FaShieldAlt } from "react-icons/fa";
 import { MdLocalShipping } from "react-icons/md";
 import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+import CheckoutForm from "./CheckoutForm";
+
+const stripePromise = loadStripe("pk_test_6pRNASCoBOKtIshFeQd4XMUh");
 
 const BuyProduct = () => {
   const { id } = useParams();
@@ -33,8 +37,6 @@ const BuyProduct = () => {
   } = productInfo;
 
   const activeDiscount = flashDiscount || discount;
-
-  const stripePromise = loadStripe("pk_test_6pRNASCoBOKtIshFeQd4XMUh"); // this is demo not real
 
   const finalPrice = activeDiscount
     ? Math.ceil(price - (price * activeDiscount) / 100)
@@ -76,22 +78,22 @@ const BuyProduct = () => {
 
               <h2 className="text-2xl font-bold mt-3">{productName}</h2>
 
-              <p className="text-gray-600 mt-3 line-clamp-4">
+              <p className="text-gray-600 text-base mt-3 line-clamp-4">
                 {productDescriptions}
               </p>
 
-              <div className="mt-5 space-y-2">
+              <div className="mt-5 space-y-2 text-lg">
                 <p>
                   <span className="font-semibold">Available Stock:</span>{" "}
                   {stockQuantity}
                 </p>
 
-                <div className="flex items-center gap-2 text-green-600">
+                <div className="flex items-center gap-2 text-green-600 text-lg">
                   <MdLocalShipping />
                   Fast Delivery Available
                 </div>
 
-                <div className="flex items-center gap-2 text-blue-600">
+                <div className="flex items-center gap-2 text-blue-600 text-lg">
                   <FaShieldAlt />
                   Secure Payment Protection
                 </div>
@@ -105,14 +107,14 @@ const BuyProduct = () => {
           <h2 className="text-xl font-bold mb-6">Order Summary</h2>
 
           <div className="space-y-4">
-            <div className="flex justify-between">
+            <div className="flex justify-between text-lg font-semibold">
               <span>Original Price</span>
 
               <span>৳{price}</span>
             </div>
 
             {activeDiscount > 0 && (
-              <div className="flex justify-between text-green-600">
+              <div className="flex justify-between text-green-600 text-lg font-semibold">
                 <span>Discount</span>
 
                 <span>-৳{savedAmount}</span>
@@ -128,18 +130,15 @@ const BuyProduct = () => {
 
           {/* STRIPE PAYMENT AREA */}
           <div className="mt-8">
-            <h3 className="font-semibold mb-4">Make Payment</h3>
+            <h3 className="font-semibold mb-4 text-lg">Make Payment</h3>
 
-            <div className="border-2 border-dashed rounded-2xl p-8 text-center">
-              <p className="text-gray-500">
-                Stripe Payment Form Will Be Added Here
-              </p>
-            </div>
+            <Elements stripe={stripePromise}>
+              <CheckoutForm
+                stockQuantity={stockQuantity}
+                finalPrice={finalPrice}
+              />
+            </Elements>
           </div>
-
-          <button className="btn bg-amber-500 hover:bg-amber-600 text-white w-full mt-6">
-            Proceed To Payment
-          </button>
         </div>
       </div>
     </section>

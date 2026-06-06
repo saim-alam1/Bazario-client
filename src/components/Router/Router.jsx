@@ -44,6 +44,7 @@ import CustomerRoute from "../Pages/Auth/CustomerRoute/CustomerRoute";
 import VendorsRoute from "../Pages/Auth/VendorsRoute/VendorsRoute";
 import ProductsSection from "../Pages/Customer/ProductsSection/ProductsSection";
 import ProductsDetails from "../Pages/ProductsDetails/ProductsDetails";
+import BuyProduct from "../Pages/Customer/BuyProduct/BuyProduct";
 
 const router = createBrowserRouter([
   {
@@ -78,6 +79,14 @@ const router = createBrowserRouter([
       {
         path: "/products-details/:id",
         Component: ProductsDetails,
+      },
+      {
+        path: "buy-product/:id",
+        element: (
+          <CustomerRoute>
+            <BuyProduct />
+          </CustomerRoute>
+        ),
       },
       {
         path: "/forbidden-access",

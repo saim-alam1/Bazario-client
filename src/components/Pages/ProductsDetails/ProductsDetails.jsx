@@ -1,9 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
 import useAxios from "../../../Hooks/useAxios";
 import Loading from "../../UI/Loading/Loading";
 import { Helmet } from "react-helmet-async";
-import { FaStar, FaBolt, FaShoppingCart, FaHeart } from "react-icons/fa";
+import {
+  FaStar,
+  FaBolt,
+  FaShoppingCart,
+  FaHeart,
+  FaArrowRight,
+} from "react-icons/fa";
 import { MdOutlineInventory2, MdLocalShipping } from "react-icons/md";
 import useUserRole from "../../../Hooks/useUserRole";
 import { useForm } from "react-hook-form";
@@ -265,17 +271,25 @@ const ProductsDetails = () => {
                   onClick={() => handleAddToCart(_id)}
                   className="flex-1 min-w-45 bg-amber-500 hover:bg-amber-600 text-white py-4 rounded-2xl font-semibold text-lg shadow-md hover:shadow-xl transition flex items-center justify-center gap-3 cursor-pointer"
                 >
-                  <FaShoppingCart />
                   Add To Cart
+                  <FaShoppingCart />
                 </button>
 
                 <button
                   onClick={() => handleAddToWishlist(_id)}
                   className="flex-1 min-w-45 border border-gray-300 hover:border-amber-500 hover:text-amber-500 py-4 rounded-2xl font-semibold text-lg transition flex items-center justify-center gap-3 bg-white cursor-pointer"
                 >
-                  <FaHeart className="text-red-500" />
                   Wishlist
+                  <FaHeart className="text-red-500" />
                 </button>
+
+                <Link
+                  to={`/buy-product/${_id}`}
+                  className="flex-1 min-w-45 bg-amber-500 hover:bg-amber-600 text-white py-4 rounded-2xl font-semibold text-lg shadow-md hover:shadow-xl transition flex items-center justify-center gap-3 cursor-pointer"
+                >
+                  Buy
+                  <FaArrowRight />
+                </Link>
               </>
             ) : (
               /* VENDOR ACTION */

@@ -1,7 +1,7 @@
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { useState } from "react";
 
-const CheckoutForm = ({ stockQuantity, finalPrice }) => {
+const CheckoutForm = ({ stockQuantity, finalPrice, quantity }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [error, setError] = useState("");

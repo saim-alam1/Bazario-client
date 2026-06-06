@@ -87,7 +87,8 @@ const ProductsSection = () => {
             : Math.ceil(p.price);
 
           return (
-            <div
+            <Link
+              to={`/products-details/${p._id}`}
               key={p._id}
               className="group relative bg-white rounded-3xl overflow-hidden border shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300"
             >
@@ -170,16 +171,9 @@ const ProductsSection = () => {
                       </p>
                     )}
                   </div>
-
-                  <Link
-                    to={`/products-details/${p._id}`}
-                    className="px-4 py-2 text-sm rounded-xl bg-amber-500 text-white hover:bg-amber-600 transition shadow-sm hover:shadow-md cursor-pointer"
-                  >
-                    View
-                  </Link>
                 </div>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>

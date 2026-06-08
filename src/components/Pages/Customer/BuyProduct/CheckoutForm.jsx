@@ -4,7 +4,7 @@ import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 import useAuth from "../../../../Hooks/useAuth";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useNotifications from "../../../../Hooks/useNotifications";
 
 const CheckoutForm = ({
@@ -91,7 +91,9 @@ const CheckoutForm = ({
           transactionId: paymentIntent.id,
         };
 
-        await axiosSecure.post("/create-order", orderData);
+        // await axiosSecure.post("/create-order", orderData);
+
+        postOrders(orderData);
 
         await queryClient.invalidateQueries({
           queryKey: ["buy-product", productId],
@@ -114,6 +116,13 @@ const CheckoutForm = ({
       }
     }
   };
+
+  const { mutate: postOrders, isPending } = useMutation({
+    mutationFn: async (ordersInfo) => {
+      const res = await await axiosSecure.post("/create-order", ordersInfo);
+      res.data;
+    },
+  });
 
   return (
     <form onSubmit={handleSubmit}>
@@ -140,7 +149,7 @@ const CheckoutForm = ({
         disabled={stockQuantity <= 0 || !stripe}
         className="btn border-none shadow-none bg-amber-500 hover:bg-amber-600 text-white w-full mt-6 text-lg"
       >
-        Pay ৳{finalPrice}
+        {isPending ? "Paying..." : `Pay ৳${finalPrice}`}
       </button>
 
       {error && (

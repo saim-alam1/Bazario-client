@@ -1,10 +1,12 @@
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { useState } from "react";
+import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 
-const CheckoutForm = ({ stockQuantity, finalPrice, quantity }) => {
+const CheckoutForm = ({ productId, stockQuantity, finalPrice, quantity }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [error, setError] = useState("");
+  const axiosSecure = useAxiosSecure();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,6 +31,37 @@ const CheckoutForm = ({ stockQuantity, finalPrice, quantity }) => {
     } else {
       setError("");
       console.log("payment method", paymentMethod);
+
+      // Create Payment Intent
+      const res = await axiosSecure.post("/create-payment-intent", {
+        productId,
+        quantity,
+      });
+
+      const clientSecret = res.data.clientSecret;
+
+      // Confirm Payment
+      const { error: confirmError, paymentIntent } =
+        await stripe.confirmCardPayment(clientSecret, {
+          payment_method: {
+            card,
+            billing_details: {
+              name: "Customer",
+            },
+          },
+        });
+
+      if (confirmError) {
+        setError(confirmError.message);
+        return;
+      }
+
+      if (paymentIntent.status === "succeeded") {
+        console.log("Payment Successful!");
+        console.log("Transaction ID:", paymentIntent.id);
+
+        // Later we'll save payment info to DB here
+      }
     }
   };
 

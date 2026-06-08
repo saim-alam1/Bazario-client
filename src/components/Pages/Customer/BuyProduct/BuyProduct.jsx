@@ -10,7 +10,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "./CheckoutForm";
 import { useState } from "react";
 
-const stripePromise = loadStripe("pk_test_6pRNASCoBOKtIshFeQd4XMUh");
+const stripePromise = loadStripe(import.meta.env.VITE_payment_key);
 
 const BuyProduct = () => {
   const { id } = useParams();
@@ -248,7 +248,7 @@ const BuyProduct = () => {
                       onClick={() =>
                         setQuantity((prev) => Math.max(1, prev - 1))
                       }
-                      className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-slate-100 transition-colors"
+                      className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
                     >
                       <FaMinus className="text-xs text-slate-600" />
                     </button>
@@ -259,7 +259,7 @@ const BuyProduct = () => {
                       onClick={() =>
                         setQuantity((prev) => Math.min(stockQuantity, prev + 1))
                       }
-                      className="w-10 h-10 flex items-center justify-center rounded-lg bg-amber-600 text-white hover:bg-amber-700 transition-colors"
+                      className="w-10 h-10 flex items-center justify-center rounded-lg bg-amber-600 text-white hover:bg-amber-700 transition-colors cursor-pointer"
                     >
                       <FaPlus className="text-xs" />
                     </button>
@@ -279,7 +279,7 @@ const BuyProduct = () => {
               <div className="mt-8">
                 <div className="flex items-center gap-2 mb-4 text-slate-400">
                   <div className="h-px flex-1 bg-slate-200"></div>
-                  <span className="text-[10px] font-bold uppercase tracking-widest">
+                  <span className="text-base font-bold uppercase tracking-widest">
                     Secure Payment
                   </span>
                   <div className="h-px flex-1 bg-slate-200"></div>
@@ -287,6 +287,7 @@ const BuyProduct = () => {
 
                 <Elements stripe={stripePromise}>
                   <CheckoutForm
+                    productId={id}
                     stockQuantity={stockQuantity}
                     finalPrice={totalPrice}
                     quantity={quantity}

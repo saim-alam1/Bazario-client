@@ -1,12 +1,25 @@
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { useState } from "react";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
+import useAuth from "../../../../Hooks/useAuth";
+import { toast } from "react-toastify";
+import { useForm } from "react-hook-form";
 
-const CheckoutForm = ({ productId, stockQuantity, finalPrice, quantity }) => {
+const CheckoutForm = ({
+  productId,
+  stockQuantity,
+  finalPrice,
+  quantity,
+  productInfo,
+}) => {
   const stripe = useStripe();
   const elements = useElements();
   const [error, setError] = useState("");
   const axiosSecure = useAxiosSecure();
+  const { user } = useAuth();
+  const { reset } = useForm();
+
+  const { productName, productImage, vendorsEmail } = productInfo;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,6 +41,7 @@ const CheckoutForm = ({ productId, stockQuantity, finalPrice, quantity }) => {
 
     if (error) {
       setError(error.message);
+      toast.error(error.message);
     } else {
       setError("");
       console.log("payment method", paymentMethod);
@@ -57,10 +71,27 @@ const CheckoutForm = ({ productId, stockQuantity, finalPrice, quantity }) => {
       }
 
       if (paymentIntent.status === "succeeded") {
-        console.log("Payment Successful!");
-        console.log("Transaction ID:", paymentIntent.id);
+        // console.log("Payment Successful!");
+        // console.log("Transaction ID:", paymentIntent.id);
 
-        // Later we'll save payment info to DB here
+        toast.success("Payment Successful!");
+
+        // save payment info to DB
+        const orderData = {
+          productId,
+          productName,
+          productImage,
+          vendorEmail: vendorsEmail,
+          buyerEmail: user?.email,
+          quantity,
+          transactionId: paymentIntent.id,
+        };
+
+        await axiosSecure.post("/create-order", orderData);
+        reset();
+
+        const card = elements.getElement(CardElement);
+        if (card) card.clear();
       }
     }
   };

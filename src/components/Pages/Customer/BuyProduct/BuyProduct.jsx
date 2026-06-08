@@ -291,6 +291,7 @@ const BuyProduct = () => {
                     stockQuantity={stockQuantity}
                     finalPrice={totalPrice}
                     quantity={quantity}
+                    productInfo={productInfo}
                   />
                 </Elements>
               </div>

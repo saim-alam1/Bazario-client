@@ -20,7 +20,7 @@ const BuyProduct = () => {
   const { data: productInfo = {}, isLoading } = useQuery({
     queryKey: ["buy-product", id],
     queryFn: async () => {
-      const res = await axiosInstance(`/product-details/${id}`);
+      const res = await axiosInstance(`product-details/${id}`);
       return res.data;
     },
   });
@@ -107,7 +107,7 @@ const BuyProduct = () => {
                     ) : (
                       <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-600 text-xs font-semibold border border-emerald-100">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                        In Stock & Ready to Ship
+                        In Stock {stockQuantity}
                       </span>
                     )}
 

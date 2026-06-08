@@ -4,6 +4,7 @@ import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 import useAuth from "../../../../Hooks/useAuth";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
+import { useQueryClient } from "@tanstack/react-query";
 
 const CheckoutForm = ({
   productId,
@@ -18,6 +19,7 @@ const CheckoutForm = ({
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
   const { reset } = useForm();
+  const queryClient = useQueryClient();
 
   const { productName, productImage, vendorsEmail } = productInfo;
 
@@ -88,6 +90,15 @@ const CheckoutForm = ({
         };
 
         await axiosSecure.post("/create-order", orderData);
+
+        await queryClient.invalidateQueries({
+          queryKey: ["buy-product", productId],
+        });
+
+        await queryClient.invalidateQueries({
+          queryKey: ["product-details", productId],
+        });
+
         reset();
 
         const card = elements.getElement(CardElement);

@@ -5,6 +5,7 @@ import useAuth from "../../../../Hooks/useAuth";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { useQueryClient } from "@tanstack/react-query";
+import useNotifications from "../../../../Hooks/useNotifications";
 
 const CheckoutForm = ({
   productId,
@@ -20,6 +21,7 @@ const CheckoutForm = ({
   const { user } = useAuth();
   const { reset } = useForm();
   const queryClient = useQueryClient();
+  const { addNotification } = useNotifications();
 
   const { productName, productImage, vendorsEmail } = productInfo;
 
@@ -97,6 +99,12 @@ const CheckoutForm = ({
 
         await queryClient.invalidateQueries({
           queryKey: ["product-details", productId],
+        });
+
+        // Posting Data In Notification Collection
+        addNotification({
+          receiverEmail: user?.email,
+          message: `${productName} purchased successfully`,
         });
 
         reset();

@@ -31,10 +31,20 @@ const CustomerProfile = () => {
   const cartItemsCount = getCartItems().length;
   const wishlistItemsCount = getWishlistItems().length;
 
+  // Loading Customer Info
   const { data: customerInfo = {}, isLoading } = useQuery({
     queryKey: ["customer-info", user?.email],
     queryFn: async () => {
       const res = await axiosSecure(`/customer-info/${user?.email}`);
+      return res.data;
+    },
+  });
+
+  // Loading Customers Orders
+  const { data: customerOrders = 0 } = useQuery({
+    queryKey: ["customers-orders", user?.email],
+    queryFn: async () => {
+      const res = await axiosSecure(`customer-orders/${user?.email}`);
       return res.data;
     },
   });
@@ -208,7 +218,7 @@ const CustomerProfile = () => {
                 </h4>
               </div>
               <p className="text-descriptions font-medium break-all">
-                {/* {contactNumber || "Not Provided"} */} Not Provided
+                {customerOrders || 0} items ordered
               </p>
             </div>
 

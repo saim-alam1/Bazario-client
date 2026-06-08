@@ -39,7 +39,7 @@ const Shop = () => {
     queryKey: ["products", currentPage, debouncedFilters],
 
     queryFn: async () => {
-      const res = await axiosInstance.get("/products", {
+      const res = await axiosInstance.get("/shop-products", {
         params: {
           page: currentPage,
           size: itemsPerPage,
@@ -307,6 +307,7 @@ const Shop = () => {
                 : Math.ceil(product.price);
               return (
                 <ShopProductCard
+                  key={product._id}
                   product={product}
                   discountedPrice={discountedPrice}
                 />

@@ -24,6 +24,7 @@ const MyOrders = () => {
     sort: "newest",
   });
 
+  // Filtering Logic
   const filteredOrders = orders
     .filter((order) =>
       order.productName.toLowerCase().includes(filters.search.toLowerCase()),
@@ -31,182 +32,129 @@ const MyOrders = () => {
     .filter((order) => {
       const min = filters.minPrice ? Number(filters.minPrice) : 0;
       const max = filters.maxPrice ? Number(filters.maxPrice) : Infinity;
-
       return order.totalPrice >= min && order.totalPrice <= max;
     })
     .sort((a, b) => {
-      console.log(a.totalPrice);
       if (filters.sort === "price-low") return a.totalPrice - b.totalPrice;
       if (filters.sort === "price-high") return b.totalPrice - a.totalPrice;
       if (filters.sort === "oldest")
         return new Date(a.orderedAt) - new Date(b.orderedAt);
-
       return new Date(b.orderedAt) - new Date(a.orderedAt);
     });
 
   if (isLoading) return <Loading />;
 
   return (
-    <section className="my-14 px-3">
+    <section className="container mx-auto py-10 px-4">
       <Helmet>
-        <title>{`${user?.displayName} Orders | Dashboard`}</title>
-        <meta
-          name="description"
-          content="See the products you ordered, your order & transaction details."
-        />
+        <title>My Orders | Dashboard</title>
       </Helmet>
 
-      <div>
-        <h2 className="text-xl font-semibold">{user?.displayName}'s orders</h2>
+      <div className="mb-8">
+        <h2 className="text-2xl font-bold text-gray-800">My Orders</h2>
+        <p className="text-gray-500">Track and manage your recent purchases.</p>
+      </div>
 
-        <div className="max-w-9/12 mx-auto my-10 bg-white p-5 rounded-lg border border-gray-200 h-fit space-y-6">
-          {/* Search */}
-          <div>
-            <label className="font-medium">Search Product</label>
-
-            <input
-              type="text"
-              placeholder="Product Name"
-              onChange={(e) =>
-                setFilters({ ...filters, search: e.target.value })
-              }
-              className="input input-bordered w-full"
-            />
-          </div>
-
-          {/* Price */}
-          <div>
-            <label className="font-medium">Price Range</label>
-
-            <div className="flex gap-2">
-              <input
-                type="number"
-                placeholder="Min"
-                onChange={(e) =>
-                  setFilters({ ...filters, minPrice: e.target.value })
-                }
-                className="input input-bordered w-full"
-              />
-
-              <input
-                type="number"
-                placeholder="Max"
-                onChange={(e) =>
-                  setFilters({ ...filters, maxPrice: e.target.value })
-                }
-                className="input input-bordered w-full"
-              />
-            </div>
-          </div>
-
-          {/* Sort */}
-          <div>
-            <label className="font-medium">Sort By</label>
-
-            <select
-              onChange={(e) => setFilters({ ...filters, sort: e.target.value })}
-              className="select select-bordered w-full"
-            >
-              <option value="newest">Newest First</option>
-
-              <option value="oldest">Oldest First</option>
-
-              <option value="price-low">Lowest Amount</option>
-
-              <option value="price-high">Highest Amount</option>
-            </select>
-          </div>
-
-          {/* Clear Filters */}
-          <button
-            onClick={() =>
-              setFilters({
-                search: "",
-                category: "",
-                minPrice: "",
-                maxPrice: "",
-                availability: "",
-                flashDiscount: false,
-                sort: "newest",
-              })
-            }
-            className="btn btn-outline w-full"
-          >
-            Clear Filters
-          </button>
+      {/* Professional Filter Toolbar */}
+      <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-wrap gap-4 mb-6 items-end">
+        <div className="flex-1 min-w-50">
+          <label className="text-xs font-semibold uppercase text-gray-400">
+            Search
+          </label>
+          <input
+            type="text"
+            value={filters.search}
+            placeholder="Product name..."
+            onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+            className="input input-sm input-bordered w-full"
+          />
         </div>
+        <div className="flex gap-2 w-full md:w-auto">
+          <input
+            type="number"
+            value={filters.minPrice}
+            placeholder="Min ৳"
+            onChange={(e) =>
+              setFilters({ ...filters, minPrice: e.target.value })
+            }
+            className="input input-sm input-bordered w-24"
+          />
+          <input
+            type="number"
+            value={filters.maxPrice}
+            placeholder="Max ৳"
+            onChange={(e) =>
+              setFilters({ ...filters, maxPrice: e.target.value })
+            }
+            className="input input-sm input-bordered w-24"
+          />
+        </div>
+        <select
+          value={filters.sort}
+          onChange={(e) => setFilters({ ...filters, sort: e.target.value })}
+          className="select select-sm select-bordered"
+        >
+          <option value="newest">Newest</option>
+          <option value="oldest">Oldest</option>
+          <option value="price-low">Price: Low to High</option>
+          <option value="price-high">Price: High to Low</option>
+        </select>
+        <button
+          onClick={() =>
+            setFilters({
+              search: "",
+              minPrice: "",
+              maxPrice: "",
+              sort: "newest",
+            })
+          }
+          className="btn btn-sm btn-ghost"
+        >
+          Reset
+        </button>
+      </div>
 
-        <div className="overflow-x-auto bg-white shadow-lg rounded-xl">
-          <table className="w-full border-collapse">
-            {/* Table Head */}
-            <thead className="bg-gray-100 text-left text-sm">
+      {/* Orders Table */}
+      {filteredOrders.length > 0 ? (
+        <div className="overflow-x-auto bg-white rounded-xl border border-gray-100 shadow-sm">
+          <table className="table w-full">
+            <thead className="bg-gray-50">
               <tr>
-                <th className="p-4">Product</th>
-                <th className="p-4">Quantity</th>
-                <th className="p-4">Total Price</th>
-                <th className="p-4">Payment Status</th>
-                <th className="p-4">Trx. Id</th>
-                <th className="p-4">Status</th>
-                <th className="p-4 text-center">Ordered At</th>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Payment</th>
+                <th>Status</th>
+                <th>Date</th>
               </tr>
             </thead>
-
-            {/* Table Body */}
             <tbody>
               {filteredOrders.map((order) => (
-                <tr
-                  key={order._id}
-                  className="border-b border-gray-300 hover:bg-gray-50 transition"
-                >
-                  {/* Product */}
-                  <td className="p-4">
+                <tr key={order._id} className="hover:bg-gray-50 transition">
+                  <td>
                     <div className="flex items-center gap-3">
-                      <img
-                        src={order.productImage}
-                        alt={order.productName}
-                        className="w-14 h-14 rounded-md object-cover shrink-0"
-                      />
-
-                      <div>
-                        <h4 className="font-medium text-headings truncate">
-                          {order.productName}
-                        </h4>
+                      <div className="avatar">
+                        <div className="mask mask-squircle w-12 h-12">
+                          <img src={order.productImage} alt="product" />
+                        </div>
                       </div>
+                      <div className="font-bold">{order.productName}</div>
                     </div>
                   </td>
-
-                  {/* Quantity */}
-                  <td className="p-4 font-medium text-headings whitespace-nowrap">
-                    {order.quantity}
+                  <td className="font-semibold">৳{order.totalPrice}</td>
+                  <td>
+                    <span
+                      className={`badge ${order.paymentStatus === "paid" ? "badge-success" : "badge-error"} text-white`}
+                    >
+                      {order.paymentStatus.charAt(0).toUpperCase() +
+                        order.paymentStatus.slice(1)}
+                    </span>
                   </td>
-
-                  {/* Total Price */}
-                  <td className="p-4 font-medium text-headings whitespace-nowrap">
-                    {order.totalPrice}৳
+                  <td>
+                    <span className="font-medium text-gray-600">
+                      {order.orderStatus}
+                    </span>
                   </td>
-
-                  {/* Payment Status */}
-                  <td
-                    className={`${order.paymentStatus === "paid" ? "text-green-600" : "text-red-500"} p-4 font-medium whitespace-nowrap`}
-                  >
-                    {order.paymentStatus.charAt(0).toUpperCase() +
-                      order.paymentStatus.slice(1)}
-                  </td>
-
-                  {/* Transaction Id */}
-                  <td className="p-4 font-medium whitespace-nowrap">
-                    {order.transactionId}
-                  </td>
-
-                  {/* Status */}
-                  <td
-                    className={`${order.orderStatus === "Delivered" ? "text-green-500" : "text-yellow-600"} p-4 font-medium whitespace-nowrap`}
-                  >
-                    {order.orderStatus}
-                  </td>
-
-                  {/* Ordered At */}
-                  <td className="p-4 font-medium text-headings whitespace-nowrap">
+                  <td className="text-gray-500">
                     {new Date(order.orderedAt).toLocaleDateString()}
                   </td>
                 </tr>
@@ -214,7 +162,11 @@ const MyOrders = () => {
             </tbody>
           </table>
         </div>
-      </div>
+      ) : (
+        <div className="text-center py-20 border-2 border-dashed rounded-xl">
+          <h3 className="text-lg font-medium text-gray-500">No orders found</h3>
+        </div>
+      )}
     </section>
   );
 };

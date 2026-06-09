@@ -19,8 +19,8 @@ const MyOrders = () => {
 
   const [filters, setFilters] = useState({
     search: "",
-    minPrice: "",
-    maxPrice: "",
+    min: "",
+    max: "",
     sort: "newest",
   });
 
@@ -30,8 +30,8 @@ const MyOrders = () => {
       order.productName.toLowerCase().includes(filters.search.toLowerCase()),
     )
     .filter((order) => {
-      const min = filters.minPrice ? Number(filters.minPrice) : 0;
-      const max = filters.maxPrice ? Number(filters.maxPrice) : Infinity;
+      const min = filters.min ? Number(filters.min) : 0;
+      const max = filters.max ? Number(filters.max) : Infinity;
       return order.totalPrice >= min && order.totalPrice <= max;
     })
     .sort((a, b) => {
@@ -64,28 +64,26 @@ const MyOrders = () => {
           <input
             type="text"
             value={filters.search}
-            placeholder="Product name..."
             onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+            placeholder="Product name..."
             className="input input-sm input-bordered w-full"
           />
         </div>
         <div className="flex gap-2 w-full md:w-auto">
+          {/* Min */}
           <input
             type="number"
-            value={filters.minPrice}
+            value={filters.min}
+            onChange={(e) => setFilters({ ...filters, min: e.target.value })}
             placeholder="Min ৳"
-            onChange={(e) =>
-              setFilters({ ...filters, minPrice: e.target.value })
-            }
             className="input input-sm input-bordered w-24"
           />
+          {/* Max */}
           <input
             type="number"
-            value={filters.maxPrice}
+            value={filters.max}
+            onChange={(e) => setFilters({ ...filters, max: e.target.value })}
             placeholder="Max ৳"
-            onChange={(e) =>
-              setFilters({ ...filters, maxPrice: e.target.value })
-            }
             className="input input-sm input-bordered w-24"
           />
         </div>
@@ -103,8 +101,8 @@ const MyOrders = () => {
           onClick={() =>
             setFilters({
               search: "",
-              minPrice: "",
-              maxPrice: "",
+              min: "",
+              max: "",
               sort: "newest",
             })
           }

@@ -19,9 +19,9 @@ const CustomerOverview = () => {
   });
 
   const { data: orderedInfo = [] } = useQuery({
-    queryKey: ["ordered-info", user?.email],
+    queryKey: ["orders", user?.email],
     queryFn: async () => {
-      const res = await axiosSecure(`ordered-info/${user?.email}`);
+      const res = await axiosSecure(`orders/${user?.email}`);
       return res.data;
     },
   });
@@ -135,7 +135,6 @@ const CustomerOverview = () => {
                 <th className="p-4">Quantity</th>
                 <th className="p-4">Total Price</th>
                 <th className="p-4">Payment Status</th>
-                <th className="p-4">Order Status</th>
                 <th className="p-4 text-center">Ordered At</th>
               </tr>
             </thead>
@@ -176,15 +175,67 @@ const CustomerOverview = () => {
 
                   {/* Total Price */}
                   <td className="p-4 font-medium text-headings whitespace-nowrap">
-                    ৳{order.totalPrice}
+                    {order.totalPrice}৳
                   </td>
 
-                  {/* Total Price */}
+                  {/* Payment Status */}
                   <td
                     className={`${order.paymentStatus === "paid" ? "text-green-600" : "text-red-500"} p-4 font-medium whitespace-nowrap`}
                   >
                     {order.paymentStatus.charAt(0).toUpperCase() +
                       order.paymentStatus.slice(1)}
+                  </td>
+
+                  {/* Ordered At */}
+                  <td className="p-4 font-medium text-headings whitespace-nowrap">
+                    {new Date(order.orderedAt).toLocaleDateString()}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Track your orders */}
+      <div className="mt-10 rounded-xl border border-base-300 bg-base-100 p-6">
+        <h2 className="mb-5 text-xl font-semibold text-headings">
+          Track your orders
+        </h2>
+
+        <div className="overflow-x-auto bg-white shadow-lg rounded-xl">
+          <table className="w-full border-collapse">
+            {/* Table Head */}
+            <thead className="bg-gray-100 text-left text-sm">
+              <tr>
+                <th className="p-4">Product</th>
+                <th className="p-4">Order Status</th>
+                <th className="p-4 text-center">Ordered At</th>
+              </tr>
+            </thead>
+
+            {/* Table Body */}
+            <tbody>
+              {orderedInfo.map((order) => (
+                <tr
+                  key={order._id}
+                  className="border-b border-gray-300 hover:bg-gray-50 transition"
+                >
+                  {/* Product */}
+                  <td className="p-4">
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={order.productImage}
+                        alt={order.productName}
+                        className="w-14 h-14 rounded-md object-cover shrink-0"
+                      />
+
+                      <div>
+                        <h4 className="font-medium text-headings truncate">
+                          {order.productName}
+                        </h4>
+                      </div>
+                    </div>
                   </td>
 
                   {/* Order Status */}
@@ -204,47 +255,6 @@ const CustomerOverview = () => {
           </table>
         </div>
       </div>
-
-      {/* Flash Discount Products */}
-      {/* <div className="mt-10 rounded-xl border border-base-300 bg-base-100 p-6">
-        <h2 className="mb-5 text-xl font-semibold text-headings">
-          🔥 Flash Deals Summary
-        </h2>
-
-        <div className="space-y-4">
-          <div className="flex justify-between">
-            <span>Total Discounted Products</span>
-            <span className="font-bold">
-              {flashSummary.totalDiscountedProducts || 0}
-            </span>
-          </div>
-
-          <div className="flex justify-between">
-            <span>Active Flash Deals</span>
-            <span className="font-bold">
-              {flashSummary.activeFlashDeals || 0}
-            </span>
-          </div>
-
-          <div className="flex justify-between">
-            <span>Highest Discount</span>
-            <span className="font-bold">
-              {flashSummary.highestDiscountProduct?.productName || "N/A"}
-              {flashSummary.highestDiscountProduct &&
-                ` (${flashSummary.highestDiscountProduct.flashDiscount}%)`}
-            </span>
-          </div>
-
-          <div className="flex justify-between">
-            <span>Lowest Discount</span>
-            <span className="font-bold">
-              {flashSummary.lowestDiscountProduct?.productName || "N/A"}
-              {flashSummary.lowestDiscountProduct &&
-                ` (${flashSummary.lowestDiscountProduct.flashDiscount}%)`}
-            </span>
-          </div>
-        </div>
-      </div> */}
     </section>
   );
 };

@@ -39,10 +39,6 @@ const CartTable = ({ cartData, setCartIds }) => {
     }
   };
 
-  const handleBuyNow = (item) => {
-    console.log("Buy now:", item);
-  };
-
   if (!cartData?.length) {
     return (
       <div className="flex flex-col items-center justify-center py-10">
@@ -60,88 +56,55 @@ const CartTable = ({ cartData, setCartIds }) => {
   }
 
   return (
-    <div className="overflow-x-auto bg-white shadow-lg rounded-xl">
-      <table className="w-full border-collapse">
-        {/* Table Head */}
-        <thead className="bg-gray-100 text-left text-sm uppercase">
+    <div className="overflow-x-auto bg-white rounded-xl border border-gray-100 shadow-sm">
+      <table className="table w-full">
+        <thead className="bg-gray-50">
           <tr>
-            <th className="p-4">Product</th>
-            <th className="p-4">Category</th>
-            <th className="p-4">Price</th>
-            <th className="p-4">Discount</th>
-            <th className="p-4">Stock</th>
-            <th className="p-4">Added At</th>
-            <th className="p-4 text-center">Actions</th>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Discount</th>
+            <th>Stock</th>
+            <th>Added At</th>
+            <th>Actions</th>
           </tr>
         </thead>
-
-        {/* Table Body */}
         <tbody>
-          {cartData?.map((item) => (
-            <tr key={item._id} className="border-b hover:bg-gray-50 transition">
-              {/* Product */}
-              <td className="p-4">
+          {cartData.map((item) => (
+            <tr key={item._id} className="hover:bg-gray-50 transition">
+              <td>
                 <div className="flex items-center gap-3">
-                  <img
-                    src={item.productImage}
-                    alt={item.productName}
-                    className="w-14 h-14 rounded-md object-cover border shrink-0"
-                  />
-
-                  <div>
-                    <h4 className="font-medium truncate">{item.productName}</h4>
+                  <div className="avatar">
+                    <div className="mask mask-squircle w-12 h-12">
+                      <img src={item.productImage} alt="product" />
+                    </div>
                   </div>
+                  <div className="font-bold">{item.productName}</div>
                 </div>
               </td>
 
-              {/* Category */}
-              <td className="p-4 whitespace-nowrap">{item.category}</td>
+              <td className="text-headings">{item.price}</td>
 
-              {/* Price */}
-              <td className="p-4 font-semibold text-green-600 whitespace-nowrap">
-                ৳ {item.price}
+              <td className="text-headings">{item.discount}%</td>
+
+              <td className="text-headings">{item.stockQuantity}</td>
+
+              <td className="text-headings">
+                {new Date(item.addedAt).toLocaleDateString("en-GB")}
               </td>
 
-              {/* Discount */}
-              <td className="p-4 text-orange-500 whitespace-nowrap">
-                {item.discount}%
+              <td>
+                <button className="btn btn-success border-none shadow-none">
+                  Buy now
+                </button>
               </td>
 
-              {/* Stock */}
-              <td className="p-4 whitespace-nowrap">
-                <span
-                  className={`px-2 py-1 rounded text-xs font-medium ${
-                    item.stockQuantity < 10
-                      ? "bg-red-100 text-red-600"
-                      : "bg-green-100 text-green-600"
-                  }`}
+              <td>
+                <button
+                  onClick={() => handleRemove(item._id)}
+                  className="btn btn-error border-none shadow-none"
                 >
-                  {item.stockQuantity}
-                </span>
-              </td>
-
-              {/* Added At */}
-              <td className="p-4 text-sm text-gray-500 whitespace-nowrap">
-                {new Date(item.addedAt).toLocaleDateString()}
-              </td>
-
-              {/* Actions */}
-              <td className="p-4">
-                <div className="flex justify-center gap-2 whitespace-nowrap">
-                  <button
-                    onClick={() => handleBuyNow(item)}
-                    className="btn border-none shadow-none bg-green-600 text-white text-xs font-medium rounded-md hover:bg-green-700 transition"
-                  >
-                    Buy Now
-                  </button>
-
-                  <button
-                    onClick={() => handleRemove(item._id)}
-                    className="btn border-none shadow-none bg-red-500 text-white text-xs font-medium rounded-md hover:bg-red-600 transition"
-                  >
-                    Remove
-                  </button>
-                </div>
+                  Remove
+                </button>
               </td>
             </tr>
           ))}

@@ -9,10 +9,19 @@ const CustomerOverview = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
 
+  // customer stats numbers
   const { data: stats = {}, isLoading } = useQuery({
     queryKey: ["customer-stats", user?.email],
     queryFn: async () => {
       const res = await axiosSecure(`customer-stats/${user?.email}`);
+      return res.data;
+    },
+  });
+
+  const { data: orderedInfo = [] } = useQuery({
+    queryKey: ["ordered-info", user?.email],
+    queryFn: async () => {
+      const res = await axiosSecure(`ordered-info/${user?.email}`);
       return res.data;
     },
   });
@@ -53,7 +62,7 @@ const CustomerOverview = () => {
     },
     {
       name: "Total Cost",
-      value: stats.totalSpent,
+      value: stats.totalSpent || 0,
     },
   ];
 
@@ -113,54 +122,88 @@ const CustomerOverview = () => {
         </div>
       </div>
 
-      {/* Low Stock Products */}
-      {/* <div className="mt-10 rounded-xl border border-base-300 bg-base-100 p-6">
-        <h2 className="mb-5 text-xl font-semibold text-headings">
-          ⚠ Products Running Low
-        </h2>
+      {/* Your last 5 orders */}
+      <div className="mt-10">
+        <h2 className="mb-5 text-xl font-semibold">Your last 5 orders</h2>
+        <div className="overflow-x-auto bg-white shadow-lg rounded-xl">
+          <table className="w-full border-collapse">
+            {/* Table Head */}
+            <thead className="bg-gray-100 text-left text-sm">
+              <tr>
+                <th className="p-4">Product</th>
+                <th className="p-4">Unit Price</th>
+                <th className="p-4">Quantity</th>
+                <th className="p-4">Total Price</th>
+                <th className="p-4">Payment Status</th>
+                <th className="p-4">Order Status</th>
+                <th className="p-4 text-center">Ordered At</th>
+              </tr>
+            </thead>
 
-        {lowStockProducts.length ? (
-          <div className="space-y-3">
-            {lowStockProducts.map((product) => (
-              <div
-                key={product._id}
-                className="flex items-center justify-between rounded-lg border border-base-300 p-3"
-              >
-                <div className="flex items-center gap-3">
-                  <img
-                    src={product.productImage}
-                    alt={product.productName}
-                    className="h-12 w-12 rounded object-cover"
-                  />
+            {/* Table Body */}
+            <tbody>
+              {orderedInfo.slice(0, 5).map((order) => (
+                <tr
+                  key={order._id}
+                  className="border-b border-gray-300 hover:bg-gray-50 transition"
+                >
+                  {/* Product */}
+                  <td className="p-4">
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={order.productImage}
+                        alt={order.productName}
+                        className="w-14 h-14 rounded-md object-cover shrink-0"
+                      />
 
-                  <div>
-                    <h3 className="font-medium text-headings">
-                      {product.productName}
-                    </h3>
-                  </div>
-                </div>
+                      <div>
+                        <h4 className="font-medium text-headings truncate">
+                          {order.productName}
+                        </h4>
+                      </div>
+                    </div>
+                  </td>
 
-                <div className="flex items-center gap-8">
-                  <p className="font-semibold text-red-500">
-                    {product.stockQuantity} left
-                  </p>
+                  {/* Unit Price */}
+                  <td className="p-4 font-medium text-headings whitespace-nowrap">
+                    {order.unitPrice}
+                  </td>
 
-                  <Link
-                    to="/dashboard-layout/inventory"
-                    className="btn btn-warning border-none shadow-none"
+                  {/* Quantity */}
+                  <td className="p-4 font-medium text-headings whitespace-nowrap">
+                    {order.quantity}
+                  </td>
+
+                  {/* Total Price */}
+                  <td className="p-4 font-medium text-headings whitespace-nowrap">
+                    ৳{order.totalPrice}
+                  </td>
+
+                  {/* Total Price */}
+                  <td
+                    className={`${order.paymentStatus === "paid" ? "text-green-600" : "text-red-500"} p-4 font-medium whitespace-nowrap`}
                   >
-                    Go To Inventory
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-descriptions text-xl">
-            No low-stock products right now.
-          </p>
-        )}
-      </div> */}
+                    {order.paymentStatus.charAt(0).toUpperCase() +
+                      order.paymentStatus.slice(1)}
+                  </td>
+
+                  {/* Order Status */}
+                  <td
+                    className={`${order.orderStatus === "Delivered" ? "text-green-600" : "text-yellow-600"} p-4 font-medium whitespace-nowrap`}
+                  >
+                    {order.orderStatus}
+                  </td>
+
+                  {/* Ordered At */}
+                  <td className="p-4 font-medium text-headings whitespace-nowrap">
+                    {new Date(order.orderedAt).toLocaleDateString()}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
 
       {/* Flash Discount Products */}
       {/* <div className="mt-10 rounded-xl border border-base-300 bg-base-100 p-6">

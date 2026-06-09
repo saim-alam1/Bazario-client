@@ -18,7 +18,7 @@ const CustomerOverview = () => {
     },
   });
 
-  const { data: orderedInfo = [] } = useQuery({
+  const { data: orders = [] } = useQuery({
     queryKey: ["orders", user?.email],
     queryFn: async () => {
       const res = await axiosSecure(`orders/${user?.email}`);
@@ -43,7 +43,7 @@ const CustomerOverview = () => {
     },
     {
       title: "Total Cost",
-      value: `৳${stats.totalSpent}`,
+      value: `${stats.totalSpent}৳`,
     },
   ];
 
@@ -141,7 +141,7 @@ const CustomerOverview = () => {
 
             {/* Table Body */}
             <tbody>
-              {orderedInfo.slice(0, 5).map((order) => (
+              {orders.slice(0, 5).map((order) => (
                 <tr
                   key={order._id}
                   className="border-b border-gray-300 hover:bg-gray-50 transition"
@@ -216,7 +216,7 @@ const CustomerOverview = () => {
 
             {/* Table Body */}
             <tbody>
-              {orderedInfo.map((order) => (
+              {orders.map((order) => (
                 <tr
                   key={order._id}
                   className="border-b border-gray-300 hover:bg-gray-50 transition"

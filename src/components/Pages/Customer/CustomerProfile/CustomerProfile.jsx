@@ -44,7 +44,7 @@ const CustomerProfile = () => {
   const { data: customerOrders = 0 } = useQuery({
     queryKey: ["customers-orders", user?.email],
     queryFn: async () => {
-      const res = await axiosSecure(`customer-orders/${user?.email}`);
+      const res = await axiosSecure(`customer-orders-count/${user?.email}`);
       return res.data;
     },
   });

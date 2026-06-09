@@ -13,9 +13,9 @@ const MyOrders = () => {
   const Lottie = LottiePlayer.default || LottiePlayer;
 
   const { data: orders = [], isLoading } = useQuery({
-    queryKey: ["customer-orders", user?.email],
+    queryKey: ["orders", user?.email],
     queryFn: async () => {
-      const res = await axiosSecure(`customer-orders/${user?.email}`);
+      const res = await axiosSecure(`orders/${user?.email}`);
       return res.data;
     },
   });

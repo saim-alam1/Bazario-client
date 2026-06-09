@@ -28,7 +28,7 @@ const WishList = () => {
     <section className="max-w-11/12 mx-auto my-10">
       {/* Helmet */}
       <Helmet>
-        <title>WishList Items | Bazario</title>
+        <title>Wish List Items | Bazario</title>
         <meta
           name="description"
           content="View and manage your shopping wish list items. You can buy items also you can remove them from your wish list items from here."
@@ -37,7 +37,7 @@ const WishList = () => {
 
       <div className="text-center mb-12">
         <h2 className="text-4xl md:text-5xl font-semibold text-headings capitalize">
-          WishList Items
+          Wish List Items
         </h2>
 
         <p className="text-lg text-descriptions mt-4">

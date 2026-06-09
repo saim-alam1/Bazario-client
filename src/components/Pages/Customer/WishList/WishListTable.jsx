@@ -3,6 +3,7 @@ import useLocalStorage from "../../../../Hooks/useLocalStorage";
 import LottiePlayer from "lottie-react";
 import Swal from "sweetalert2";
 import noData from "../../../../assets/noData.json";
+import { Link } from "react-router";
 
 const WishListTable = ({ wishList, setWishIds }) => {
   const { getItems, removeItem } = useLocalStorage("wishlist-items");
@@ -74,7 +75,7 @@ const WishListTable = ({ wishList, setWishIds }) => {
               <td>
                 <div className="flex items-center gap-3">
                   <div className="avatar">
-                    <div className="mask mask-squircle w-12 h-12">
+                    <div className="mask mask-squirrel w-12 h-12">
                       <img src={item.productImage} alt="product" />
                     </div>
                   </div>
@@ -93,9 +94,12 @@ const WishListTable = ({ wishList, setWishIds }) => {
               </td>
 
               <td>
-                <button className="btn btn-success border-none shadow-none">
+                <Link
+                  to={`/buy-product/${item._id}`}
+                  className="btn btn-success border-none shadow-none"
+                >
                   Buy now
-                </button>
+                </Link>
               </td>
 
               <td>

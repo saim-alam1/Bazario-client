@@ -3,6 +3,7 @@ import Swal from "sweetalert2";
 import LottiePlayer from "lottie-react";
 import noData from "../../../../assets/noData.json";
 import { useQueryClient } from "@tanstack/react-query";
+import { Link } from "react-router";
 
 const CartTable = ({ cartData, setCartIds }) => {
   const { getItems, removeItem } = useLocalStorage("cart-items");
@@ -93,9 +94,12 @@ const CartTable = ({ cartData, setCartIds }) => {
               </td>
 
               <td>
-                <button className="btn btn-success border-none shadow-none">
+                <Link
+                  to={`/buy-product/${item._id}`}
+                  className="btn btn-success border-none shadow-none"
+                >
                   Buy now
-                </button>
+                </Link>
               </td>
 
               <td>

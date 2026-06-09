@@ -235,7 +235,7 @@ const BecomeASeller = () => {
                   Can you handle nationwide delivery?
                 </option>
                 <option value="Yes">Yes</option>
-                <option value="No">No</option>
+                {/* <option value="No">No</option> */}
                 <option value="Partner Courier Only">
                   Partner Courier Only
                 </option>

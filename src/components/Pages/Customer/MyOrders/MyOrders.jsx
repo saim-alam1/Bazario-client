@@ -4,10 +4,13 @@ import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 import Loading from "../../../UI/Loading/Loading";
 import { useState } from "react";
+import LottiePlayer from "lottie-react";
+import noData from "../../../../assets/noData.json";
 
 const MyOrders = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
+  const Lottie = LottiePlayer.default || LottiePlayer;
 
   const { data: orders = [], isLoading } = useQuery({
     queryKey: ["customer-orders", user?.email],
@@ -161,8 +164,16 @@ const MyOrders = () => {
           </table>
         </div>
       ) : (
-        <div className="text-center py-20 border-2 border-dashed rounded-xl">
-          <h3 className="text-lg font-medium text-gray-500">No orders found</h3>
+        <div className="flex flex-col items-center justify-center py-10">
+          <Lottie animationData={noData} loop={true} className="w-72 md:w-96" />
+
+          <h3 className="text-3xl font-semibold text-headings">
+            Your order data is empty
+          </h3>
+
+          <p className="text-descriptions mt-2">
+            Looks like you haven't ordered any products yet.
+          </p>
         </div>
       )}
     </section>

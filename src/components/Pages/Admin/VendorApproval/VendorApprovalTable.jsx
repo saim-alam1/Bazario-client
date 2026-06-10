@@ -123,7 +123,7 @@ const VendorApprovalTable = ({ vendorApplicants }) => {
 
               {/* Date */}
               <td className="font-medium text-base">
-                {new Date(applicant.requestedAt).toLocaleDateString()}
+                {new Date(applicant.requestedAt).toLocaleDateString("en-GB")}
               </td>
 
               {/* Status */}

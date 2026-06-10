@@ -156,7 +156,7 @@ const MyOrders = () => {
                     </span>
                   </td>
                   <td className="text-gray-500">
-                    {new Date(order.orderedAt).toLocaleDateString()}
+                    {new Date(order.orderedAt).toLocaleDateString("en-GB")}
                   </td>
                 </tr>
               ))}

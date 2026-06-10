@@ -188,7 +188,7 @@ const CustomerOverview = () => {
 
                   {/* Ordered At */}
                   <td className="p-4 font-medium text-headings whitespace-nowrap">
-                    {new Date(order.orderedAt).toLocaleDateString()}
+                    {new Date(order.orderedAt).toLocaleDateString("en-GB")}
                   </td>
                 </tr>
               ))}
@@ -247,7 +247,7 @@ const CustomerOverview = () => {
 
                   {/* Ordered At */}
                   <td className="p-4 font-medium text-headings whitespace-nowrap">
-                    {new Date(order.orderedAt).toLocaleDateString()}
+                    {new Date(order.orderedAt).toLocaleDateString("en-GB")}
                   </td>
                 </tr>
               ))}

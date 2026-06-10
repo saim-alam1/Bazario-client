@@ -32,7 +32,7 @@ const DiscountsTable = ({ products }) => {
 
   const editDiscountData = useMutation({
     mutationFn: async ({ id, discount, flashDiscount, duration }) => {
-      const res = await axiosSecure.patch(`/flash-discount/${id}`, {
+      const res = await axiosSecure.patch(`flash-discount/${id}`, {
         discount: Number(discount),
         flashDiscount: Number(flashDiscount),
         duration,
@@ -69,8 +69,25 @@ const DiscountsTable = ({ products }) => {
   });
 
   const handleRemoveDiscount = (productId) => {
-    console.log(productId);
+    removeDiscount(productId);
   };
+
+  const { mutate: removeDiscount, isPending } = useMutation({
+    mutationFn: async (id) => {
+      const res = await axiosSecure.patch(`remove-discount/${id}`);
+      return res.data;
+    },
+    onSuccess: (res) => {
+      console.log(res);
+      toast.success(res.message || "Discount data removed");
+      queryClient.invalidateQueries(["my-products", user?.email]);
+
+      addNotification({
+        receiverEmail: user?.email,
+        message: `${selectedProduct.productName} discount data deleted`,
+      });
+    },
+  });
 
   if (!products?.length) {
     return (
@@ -174,7 +191,7 @@ const DiscountsTable = ({ products }) => {
                     onClick={() => handleRemoveDiscount(product._id)}
                     className="btn btn-error border-none shadow-none whitespace-nowrap"
                   >
-                    Remove Discount
+                    {isPending ? "Removing" : "Remove Discount"}
                   </button>
                 </td>
               </tr>

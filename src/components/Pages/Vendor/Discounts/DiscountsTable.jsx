@@ -68,6 +68,10 @@ const DiscountsTable = ({ products }) => {
     },
   });
 
+  const handleRemoveDiscount = (productId) => {
+    console.log(productId);
+  };
+
   if (!products?.length) {
     return (
       <div className="flex flex-col items-center justify-center py-10">
@@ -81,26 +85,22 @@ const DiscountsTable = ({ products }) => {
   }
 
   return (
-    <div className="overflow-x-auto bg-white shadow-md rounded-lg">
+    <div className="overflow-x-auto bg-white rounded-xl border border-gray-100 shadow-sm">
       <table className="table w-full">
-        {/* Table Head */}
-        <thead className="bg-gray-100 text-headings text-[16px] w-full">
+        <thead className="bg-gray-50">
           <tr>
-            <th>#</th>
             <th>Product Name</th>
-            <th>Original Price</th>
+            <th>Unit Price</th>
             <th>Discount</th>
             <th>Flash Discount</th>
             <th>Final Price</th>
             <th>Duration</th>
-            <th className="whitespace-nowrap">Discount Updated</th>
+            <th>Discount Updated</th>
             <th>Actions</th>
           </tr>
         </thead>
-
-        {/* Table Body */}
         <tbody>
-          {products.map((product, index) => {
+          {products.map((product) => {
             const appliedDiscount =
               product.flashDiscount != null
                 ? product.flashDiscount
@@ -112,21 +112,24 @@ const DiscountsTable = ({ products }) => {
                     product.price - (product.price * appliedDiscount) / 100,
                   )
                 : Math.ceil(product.price);
-
             return (
-              <tr
-                key={product._id || index}
-                className={
-                  product.stockQuantity < 5
-                    ? "bg-red-500 hover:bg-red-600 text-white [&_a]:text-white [&_button]:text-white"
-                    : "hover:bg-gray-50"
-                }
-              >
-                <th>{index + 1}</th>
-                <td>{product.productName}</td>
-                <td>৳{product.price}</td>
-
+              <tr key={product._id} className="hover:bg-gray-50 transition">
                 <td>
+                  <div className="flex items-center gap-3">
+                    <div className="avatar">
+                      <div className="mask mask-squirrel w-12 h-12">
+                        <img src={product.productImage} alt="product" />
+                      </div>
+                    </div>
+                    <div className="font-semibold whitespace-nowrap">
+                      {product.productName}
+                    </div>
+                  </div>
+                </td>
+
+                <td className="text-headings">{product.price}</td>
+
+                <td className="whitespace-nowrap">
                   {product.discount != null
                     ? `${product.discount}%`
                     : "No Discount"}
@@ -138,12 +141,12 @@ const DiscountsTable = ({ products }) => {
                     : "No Discount"}
                 </td>
 
-                <td>৳{finalPrice}</td>
+                <td>{finalPrice}৳</td>
 
-                <td>
-                  {product.discountDuration
-                    ? product.discountDuration
-                    : "Not Available"}
+                <td className="text-headings whitespace-nowrap">
+                  {product.discountDuration != null
+                    ? `${product.discountDuration}`
+                    : "No Duration"}
                 </td>
 
                 <td className="whitespace-nowrap">
@@ -151,25 +154,28 @@ const DiscountsTable = ({ products }) => {
                     ? formatDistanceToNow(new Date(product.discountUpdatedAt), {
                         addSuffix: true,
                       })
-                    : "Not Updated"}
+                    : "Never Updated"}
                 </td>
 
                 <td>
-                  <div className="flex gap-3">
-                    <button
-                      onClick={() => {
-                        setSelectedProduct(product);
-                        document.getElementById("my_modal_5").showModal();
-                      }}
-                      className="btn btn-success border-none shadow-none"
-                    >
-                      Edit Discount
-                    </button>
+                  <button
+                    className="btn btn-success border-none shadow-none whitespace-nowrap"
+                    onClick={() => {
+                      setSelectedProduct(product);
+                      document.getElementById("my_modal_5").showModal();
+                    }}
+                  >
+                    Edit Discount
+                  </button>
+                </td>
 
-                    <button className="btn btn-error border-none shadow-none">
-                      Remove Discount
-                    </button>
-                  </div>
+                <td>
+                  <button
+                    onClick={() => handleRemoveDiscount(product._id)}
+                    className="btn btn-error border-none shadow-none whitespace-nowrap"
+                  >
+                    Remove Discount
+                  </button>
                 </td>
               </tr>
             );

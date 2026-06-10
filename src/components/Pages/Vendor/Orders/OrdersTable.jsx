@@ -46,6 +46,7 @@ const OrdersTable = ({ orders }) => {
           <thead className="bg-gray-50">
             <tr>
               <th>Product</th>
+              <th>Buyer</th>
               <th>Price</th>
               <th>Trx. Id</th>
               <th>Payment</th>
@@ -64,8 +65,13 @@ const OrdersTable = ({ orders }) => {
                         <img src={order.productImage} alt="product" />
                       </div>
                     </div>
-                    <div className="font-bold">{order.productName}</div>
+                    <div className="font-bold whitespace-nowrap">
+                      {order.productName}
+                    </div>
                   </div>
+                </td>
+                <td className="font-semibold whitespace-nowrap">
+                  {order.buyerName}
                 </td>
                 <td className="font-semibold">৳{order.totalPrice}</td>
                 <td className="font-semibold">{order.transactionId}</td>

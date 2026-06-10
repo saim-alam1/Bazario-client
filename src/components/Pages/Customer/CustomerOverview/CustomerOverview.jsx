@@ -34,7 +34,7 @@ const CustomerOverview = () => {
       value: stats.totalOrderPlaced,
     },
     {
-      title: "Orders On Shipping",
+      title: "Orders On Transit",
       value: stats.totalOnShippingOrders,
     },
     {
@@ -53,17 +53,17 @@ const CustomerOverview = () => {
       value: stats.totalOrderPlaced || 0,
     },
     {
-      name: "Orders On Shipping",
+      name: "Orders In Transit",
       value: stats.totalOnShippingOrders || 0,
     },
     {
       name: "Products Received",
       value: stats.totalDeliveredOrders || 0,
     },
-    {
-      name: "Total Cost",
-      value: stats.totalSpent || 0,
-    },
+    // {
+    //   name: "Total Cost",
+    //   value: stats.totalSpent || 0,
+    // },
   ];
 
   return (
@@ -113,7 +113,7 @@ const CustomerOverview = () => {
                 <Cell fill="#10B981" />
                 <Cell fill="#F59E0B" />
                 <Cell fill="#3B82F6" />
-                <Cell fill="#EF4444" />
+                {/* <Cell fill="#EF4444" /> */}
               </Pie>
 
               <Tooltip />

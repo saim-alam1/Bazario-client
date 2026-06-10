@@ -58,8 +58,8 @@ const VendorsOverview = () => {
       value: productsStats.totalStockUnits,
     },
     {
-      title: "On Discount",
-      value: productsStats.productsOnDiscount,
+      title: "Products On Flash Discount",
+      value: productsStats.productsOnFlashDiscount,
     },
     {
       title: "Low Stock",
@@ -69,16 +69,20 @@ const VendorsOverview = () => {
 
   const chartData = [
     {
-      name: "Active",
+      name: "Active Products",
       value: productsStats.activeProducts || 0,
     },
     {
-      name: "Paused",
+      name: "Paused Products",
       value: productsStats.pausedProducts || 0,
     },
     {
-      name: "Discount",
-      value: productsStats.productsOnDiscount || 0,
+      name: "Discounted Products",
+      value: productsStats.productsOnDiscounts || 0,
+    },
+    {
+      name: "Flash Discounted Products",
+      value: productsStats.productsOnFlashDiscount || 0,
     },
     {
       name: "Low Stock",
@@ -102,9 +106,6 @@ const VendorsOverview = () => {
           Monitor your inventory, stock levels, and product performance.
         </p>
       </div>
-
-      {/* Features: Total Sales, Revenue, Pending Orders, Low Stock Alerts, Best
-      Selling, Products, Recent Orders, Performance summary */}
 
       {/* Stats Cards */}
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
@@ -134,6 +135,7 @@ const VendorsOverview = () => {
                 <Cell fill="#F59E0B" />
                 <Cell fill="#3B82F6" />
                 <Cell fill="#EF4444" />
+                <Cell fill="#8B5CF6" />
               </Pie>
 
               <Tooltip />

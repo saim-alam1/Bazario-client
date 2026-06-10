@@ -1,4 +1,44 @@
+import { toast } from "react-toastify";
+import useAuth from "../../../../Hooks/useAuth";
+import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import useNotifications from "../../../../Hooks/useNotifications";
+
 const OrdersTable = ({ orders }) => {
+  const { user } = useAuth();
+  const axiosSecure = useAxiosSecure();
+  const queryClient = useQueryClient();
+  const { addNotification } = useNotifications();
+
+  const handleOrderStatus = (orderId, status, buyerEmail) => {
+    orderStatus({ orderId, status, buyerEmail });
+  };
+
+  const { mutate: orderStatus, isPending } = useMutation({
+    mutationFn: async ({ orderId, status }) => {
+      const res = await axiosSecure.patch(`update-order-status/${orderId}`, {
+        status,
+      });
+      return res.data;
+    },
+    onSuccess: async (data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["orders", user?.email],
+      });
+
+      // Posting Data In Notification Collection
+      addNotification({
+        receiverEmail: variables.buyerEmail,
+        message: `Your order is now ${variables.status}`,
+      });
+
+      toast.success(data.message);
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message || error.message);
+    },
+  });
+
   return (
     <div className="overflow-x-auto bg-white rounded-xl border border-gray-100 shadow-sm">
       <div className="overflow-x-auto bg-white rounded-xl border border-gray-100 shadow-sm">
@@ -10,7 +50,7 @@ const OrdersTable = ({ orders }) => {
               <th>Trx. Id</th>
               <th>Payment</th>
               <th>Status</th>
-              <th>Date</th>
+              <th>Ordered At</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -38,23 +78,32 @@ const OrdersTable = ({ orders }) => {
                   </span>
                 </td>
                 <td>
-                  <span className="font-medium text-gray-600">
+                  <span className="font-medium text-descriptions whitespace-nowrap">
                     {order.orderStatus}
                   </span>
                 </td>
-                <td className="text-gray-500">
+                <td className="text-descriptions">
                   {new Date(order.orderedAt).toLocaleDateString("en-GB")}
                 </td>
-                <td className="text-gray-500">
+                <td className="text-descriptions">
                   <button
-                    disabled={order.orderStatus === "Delivered"}
+                    onClick={() =>
+                      handleOrderStatus(
+                        order._id,
+                        order.orderStatus === "Order Placed"
+                          ? "In Transit"
+                          : "Delivered",
+                        order.buyerEmail,
+                      )
+                    }
+                    disabled={isPending || order.orderStatus === "Delivered"}
                     className="btn btn-success border-none shadow-none whitespace-nowrap disabled:cursor-not-allowed"
                   >
-                    {order.orderStatus === "Order Placed"
-                      ? "In Transit"
-                      : order.orderStatus === "In Transit"
-                        ? "Delivered"
-                        : "Completed"}
+                    {isPending
+                      ? "Processing..."
+                      : order.orderStatus === "Order Placed"
+                        ? "In Transit"
+                        : "Delivered"}
                   </button>
                 </td>
               </tr>

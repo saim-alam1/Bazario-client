@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FiDelete } from "react-icons/fi";
 import { RiEditBoxLine } from "react-icons/ri";
+import useAuth from "../../../../Hooks/useAuth";
 
 const MyReviewsTable = ({ products }) => {
   const {
@@ -9,9 +11,19 @@ const MyReviewsTable = ({ products }) => {
     reset,
     formState: { errors },
   } = useForm();
+  const { user } = useAuth();
+
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const handleReviews = (data) => {
-    console.log(data);
+    const reviewData = {
+      buyerEmail: user?.email,
+      ...data,
+      productId: selectedProduct.productId,
+      orderId: selectedProduct._id,
+    };
+
+    console.log(reviewData);
   };
 
   return (
@@ -54,7 +66,7 @@ const MyReviewsTable = ({ products }) => {
                 <button
                   className="btn"
                   onClick={() => {
-                    // setSelectedProduct(product);
+                    setSelectedProduct(product);
                     document.getElementById("my_modal_5").showModal();
                   }}
                 >
@@ -96,7 +108,7 @@ const MyReviewsTable = ({ products }) => {
                   <input
                     type="number"
                     min="1"
-                    max="90"
+                    max="5"
                     placeholder="Ratings..."
                     className="input input-bordered w-full"
                     {...register("ratings", {
@@ -106,8 +118,8 @@ const MyReviewsTable = ({ products }) => {
                         message: "Ratings must be at least 1",
                       },
                       max: {
-                        value: 10,
-                        message: "Discount cannot exceed 10",
+                        value: 5,
+                        message: "Discount cannot exceed 5",
                       },
                     })}
                   />

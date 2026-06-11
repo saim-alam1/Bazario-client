@@ -3,6 +3,10 @@ import { useForm } from "react-hook-form";
 import { FiDelete } from "react-icons/fi";
 import { RiEditBoxLine } from "react-icons/ri";
 import useAuth from "../../../../Hooks/useAuth";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
+import useNotifications from "../../../../Hooks/useNotifications";
+import { toast } from "react-toastify";
 
 const MyReviewsTable = ({ products }) => {
   const {
@@ -12,10 +16,15 @@ const MyReviewsTable = ({ products }) => {
     formState: { errors },
   } = useForm();
   const { user } = useAuth();
+  const axiosSecure = useAxiosSecure();
+  const { addNotification } = useNotifications();
+  const queryClient = useQueryClient();
 
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   const handleReviews = (data) => {
+    if (!selectedProduct) return;
+
     const reviewData = {
       buyerEmail: user?.email,
       ...data,
@@ -23,8 +32,41 @@ const MyReviewsTable = ({ products }) => {
       orderId: selectedProduct._id,
     };
 
-    console.log(reviewData);
+    postReview(reviewData);
   };
+
+  const { mutate: postReview, isPending } = useMutation({
+    mutationFn: async (review) => {
+      const res = await axiosSecure.post("review", review);
+      return res.data;
+    },
+    onSuccess: (res) => {
+      document.getElementById("my_modal_5")?.close();
+
+      // queryClient.invalidateQueries(["my-reviews", user?.email]);
+
+      addNotification({
+        receiverEmail: user?.email,
+        message: `Your review for ${selectedProduct.productName} has been posted successfully`,
+      });
+
+      toast.success(
+        res?.message ||
+          `Your review for ${selectedProduct.productName} has been posted successfully`,
+      );
+
+      reset();
+      setSelectedProduct(null);
+    },
+
+    onError: (error) => {
+      document.getElementById("my_modal_5")?.close();
+
+      toast.error(
+        error.response?.data?.message || "An unexpected error occurred",
+      );
+    },
+  });
 
   return (
     <div className="overflow-x-auto bg-white rounded-xl border border-gray-100 shadow-sm">
@@ -113,6 +155,7 @@ const MyReviewsTable = ({ products }) => {
                     className="input input-bordered w-full"
                     {...register("ratings", {
                       required: "Ratings is required",
+                      valueAsNumber: true,
                       min: {
                         value: 1,
                         message: "Ratings must be at least 1",
@@ -145,7 +188,7 @@ const MyReviewsTable = ({ products }) => {
 
                     {errors.reviewMessage && (
                       <span className="text-red-500 text-[16px] mt-1">
-                        reviewMessage field is required
+                        Review Message field is required
                       </span>
                     )}
                   </div>
@@ -157,12 +200,13 @@ const MyReviewsTable = ({ products }) => {
                   type="submit"
                   className="btn shadow-none text-white bg-amber-600 hover:bg-amber-700"
                 >
-                  Update
+                  {isPending ? "Submitting..." : "Submit"}
                 </button>
 
                 <button
                   className="btn btn-error border-none shadow-none"
                   type="button"
+                  disabled={isPending}
                   onClick={() => {
                     (reset(), document.getElementById("my_modal_5").close());
                   }}

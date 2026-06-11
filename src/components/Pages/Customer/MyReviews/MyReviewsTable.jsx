@@ -3,10 +3,12 @@ import { useForm } from "react-hook-form";
 import { FiDelete } from "react-icons/fi";
 import { RiEditBoxLine } from "react-icons/ri";
 import useAuth from "../../../../Hooks/useAuth";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 import useNotifications from "../../../../Hooks/useNotifications";
 import { toast } from "react-toastify";
+import Loading from "../../../UI/Loading/Loading";
+import { FaStar } from "react-icons/fa";
 
 const MyReviewsTable = ({ products }) => {
   const {
@@ -21,6 +23,16 @@ const MyReviewsTable = ({ products }) => {
   const queryClient = useQueryClient();
 
   const [selectedProduct, setSelectedProduct] = useState(null);
+
+  const { data: myReviews = [], isLoading } = useQuery({
+    queryKey: ["my-reviews", user?.email],
+    queryFn: async () => {
+      const res = await axiosSecure(`my-reviews/${user?.email}`);
+      return res.data;
+    },
+  });
+
+  console.log(myReviews);
 
   const handleReviews = (data) => {
     if (!selectedProduct) return;
@@ -43,7 +55,7 @@ const MyReviewsTable = ({ products }) => {
     onSuccess: (res) => {
       document.getElementById("my_modal_5")?.close();
 
-      // queryClient.invalidateQueries(["my-reviews", user?.email]);
+      queryClient.invalidateQueries(["my-reviews", user?.email]);
 
       addNotification({
         receiverEmail: user?.email,
@@ -67,6 +79,8 @@ const MyReviewsTable = ({ products }) => {
       );
     },
   });
+
+  if (isLoading) return <Loading />;
 
   return (
     <div className="overflow-x-auto bg-white rounded-xl border border-gray-100 shadow-sm">
@@ -94,9 +108,33 @@ const MyReviewsTable = ({ products }) => {
                 </div>
               </td>
 
-              <td className="text-headings">Not Rated Yet</td>
+              <td className="text-headings">
+                {(() => {
+                  const review = myReviews.find(
+                    (r) => r.productId === product.productId,
+                  );
 
-              <td className="text-headings">Not Reviewed Yet</td>
+                  if (!review) return "Not Rated Yet";
+
+                  return (
+                    <div className="flex">
+                      {[...Array(Math.floor(review.ratings))].map((_, i) => (
+                        <FaStar key={i} className="text-amber-600" />
+                      ))}
+                    </div>
+                  );
+                })()}
+              </td>
+
+              <td className="text-headings">
+                {(() => {
+                  const review = myReviews.find(
+                    (r) => r.productId === product.productId,
+                  );
+
+                  return review ? review.reviewMessage : "Not Reviewed Yet";
+                })()}
+              </td>
 
               <td className="text-headings font-medium">
                 <span className="badge badge-success">

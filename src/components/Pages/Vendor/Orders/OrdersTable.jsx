@@ -65,16 +65,12 @@ const OrdersTable = ({ orders }) => {
                         <img src={order.productImage} alt="product" />
                       </div>
                     </div>
-                    <div className="font-bold whitespace-nowrap">
-                      {order.productName}
-                    </div>
+                    <div className="whitespace-nowrap">{order.productName}</div>
                   </div>
                 </td>
-                <td className="font-semibold whitespace-nowrap">
-                  {order.buyerName}
-                </td>
-                <td className="font-semibold">৳{order.totalPrice}</td>
-                <td className="font-semibold">{order.transactionId}</td>
+                <td className="whitespace-nowrap">{order.buyerName}</td>
+                <td>৳{order.totalPrice}</td>
+                <td>{order.transactionId}</td>
                 <td>
                   <span
                     className={`badge ${order.paymentStatus === "paid" ? "badge-success" : "badge-error"} text-white`}

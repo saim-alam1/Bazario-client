@@ -30,6 +30,10 @@ const CustomerOverview = () => {
 
   const statsInfo = [
     {
+      title: "Total Orders",
+      value: stats.totalOrders,
+    },
+    {
       title: "Products Ordered",
       value: stats.totalOrderPlaced,
     },
@@ -49,7 +53,11 @@ const CustomerOverview = () => {
 
   const chartData = [
     {
-      name: "Products Ordered",
+      name: "Total Orders",
+      value: stats.totalOrders || 0,
+    },
+    {
+      name: "Order On Placed",
       value: stats.totalOrderPlaced || 0,
     },
     {
@@ -113,7 +121,7 @@ const CustomerOverview = () => {
                 <Cell fill="#10B981" />
                 <Cell fill="#F59E0B" />
                 <Cell fill="#3B82F6" />
-                {/* <Cell fill="#EF4444" /> */}
+                <Cell fill="#EF4444" />
               </Pie>
 
               <Tooltip />

@@ -32,8 +32,6 @@ const MyReviewsTable = ({ products }) => {
     },
   });
 
-  console.log(myReviews);
-
   const handleReviews = (data) => {
     if (!selectedProduct) return;
 
@@ -47,7 +45,7 @@ const MyReviewsTable = ({ products }) => {
     postReview(reviewData);
   };
 
-  const { mutate: postReview, isPending } = useMutation({
+  const { mutate: postReview, isPending: reviewPending } = useMutation({
     mutationFn: async (review) => {
       const res = await axiosSecure.post("review", review);
       return res.data;
@@ -80,6 +78,45 @@ const MyReviewsTable = ({ products }) => {
     },
   });
 
+  const deleteReview = (id, productName) => {
+    deleteCustomerReview({
+      reviewId: id,
+      buyerEmail: user?.email,
+      productName,
+    });
+  };
+
+  const { mutate: deleteCustomerReview, isPending: reviewDeleting } =
+    useMutation({
+      mutationFn: async ({ reviewId, buyerEmail }) => {
+        const res = await axiosSecure.delete(`delete-review/${reviewId}`, {
+          data: { buyerEmail },
+        });
+        return res.data;
+      },
+      onSuccess: (res, variables) => {
+        queryClient.invalidateQueries({
+          queryKey: ["my-reviews", user?.email],
+        });
+
+        addNotification({
+          receiverEmail: user?.email,
+          message: `Your review for ${variables.productName} has been deleted successfully`,
+        });
+
+        toast.success(
+          res?.message ||
+            `Your review for ${variables.productName} has been deleted successfully`,
+        );
+      },
+
+      onError: (error) => {
+        toast.error(
+          error.response?.data?.message || "An unexpected error occurred",
+        );
+      },
+    });
+
   if (isLoading) return <Loading />;
 
   return (
@@ -95,72 +132,82 @@ const MyReviewsTable = ({ products }) => {
           </tr>
         </thead>
         <tbody>
-          {products.map((product) => (
-            <tr key={product._id} className="hover:bg-gray-50 transition">
-              <td>
-                <div className="flex items-center gap-3">
-                  <div className="avatar">
-                    <div className="mask mask-squirrel w-12 h-12">
-                      <img src={product.productImage} alt="product" />
+          {products.map((product) => {
+            const review = myReviews.find(
+              (r) => r.productId === product.productId,
+            );
+
+            return (
+              <tr key={product._id} className="hover:bg-gray-50 transition">
+                <td>
+                  <div className="flex items-center gap-3">
+                    <div className="avatar">
+                      <div className="mask mask-squirrel w-12 h-12">
+                        <img src={product.productImage} alt="product" />
+                      </div>
                     </div>
+                    <div className="font-bold">{product.productName}</div>
                   </div>
-                  <div className="font-bold">{product.productName}</div>
-                </div>
-              </td>
+                </td>
 
-              <td className="text-headings">
-                {(() => {
-                  const review = myReviews.find(
-                    (r) => r.productId === product.productId,
-                  );
+                <td className="text-headings">
+                  {(() => {
+                    const review = myReviews.find(
+                      (r) => r.productId === product.productId,
+                    );
 
-                  if (!review) return "Not Rated Yet";
+                    if (!review) return "Not Rated Yet";
 
-                  return (
-                    <div className="flex">
-                      {[...Array(Math.floor(review.ratings))].map((_, i) => (
-                        <FaStar key={i} className="text-amber-600" />
-                      ))}
-                    </div>
-                  );
-                })()}
-              </td>
+                    return (
+                      <div className="flex">
+                        {[...Array(Math.floor(review.ratings))].map((_, i) => (
+                          <FaStar key={i} className="text-amber-600" />
+                        ))}
+                      </div>
+                    );
+                  })()}
+                </td>
 
-              <td className="text-headings">
-                {(() => {
-                  const review = myReviews.find(
-                    (r) => r.productId === product.productId,
-                  );
+                <td className="text-headings">
+                  {review ? review.reviewMessage : "Not Reviewed Yet"}
+                </td>
 
-                  return review ? review.reviewMessage : "Not Reviewed Yet";
-                })()}
-              </td>
+                <td className="text-headings font-medium">
+                  <span className="badge badge-success">
+                    {product.orderStatus}
+                  </span>
+                </td>
 
-              <td className="text-headings font-medium">
-                <span className="badge badge-success">
-                  {product.orderStatus}
-                </span>
-              </td>
+                <td>
+                  <button
+                    className="btn"
+                    onClick={() => {
+                      setSelectedProduct(product);
+                      document.getElementById("my_modal_5").showModal();
+                    }}
+                  >
+                    <RiEditBoxLine className="text-2xl" />
+                  </button>
+                </td>
 
-              <td>
-                <button
-                  className="btn"
-                  onClick={() => {
-                    setSelectedProduct(product);
-                    document.getElementById("my_modal_5").showModal();
-                  }}
-                >
-                  <RiEditBoxLine className="text-2xl" />
-                </button>
-              </td>
-
-              <td>
-                <button className="btn">
-                  <FiDelete className="text-2xl" />
-                </button>
-              </td>
-            </tr>
-          ))}
+                <td>
+                  <button
+                    className="btn"
+                    disabled={!review || reviewDeleting}
+                    onClick={() =>
+                      deleteReview(review._id, product.productName)
+                    }
+                  >
+                    {reviewDeleting ? (
+                      "Deleting..."
+                    ) : (
+                      <FiDelete className="text-2xl" />
+                    )}
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
 
@@ -238,13 +285,13 @@ const MyReviewsTable = ({ products }) => {
                   type="submit"
                   className="btn shadow-none text-white bg-amber-600 hover:bg-amber-700"
                 >
-                  {isPending ? "Submitting..." : "Submit"}
+                  {reviewPending ? "Submitting..." : "Submit"}
                 </button>
 
                 <button
                   className="btn btn-error border-none shadow-none"
                   type="button"
-                  disabled={isPending}
+                  disabled={reviewPending}
                   onClick={() => {
                     (reset(), document.getElementById("my_modal_5").close());
                   }}

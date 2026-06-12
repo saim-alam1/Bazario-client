@@ -43,27 +43,43 @@ const VendorsOverview = () => {
   const stats = [
     {
       title: "Total Products",
-      value: productsStats.totalProducts,
+      value: productsStats.totalProducts || 0,
     },
     {
       title: "Active Products",
-      value: productsStats.activeProducts,
+      value: productsStats.activeProducts || 0,
     },
     {
       title: "Paused Products",
-      value: productsStats.pausedProducts,
+      value: productsStats.pausedProducts || 0,
     },
     {
       title: "Total Stock Units",
-      value: productsStats.totalStockUnits,
+      value: productsStats.totalStockUnits || 0,
+    },
+    {
+      title: "Products On Discount",
+      value: productsStats.productsOnDiscount || 0,
     },
     {
       title: "Products On Flash Discount",
-      value: productsStats.productsOnFlashDiscount,
+      value: productsStats.productsOnFlashDiscount || 0,
     },
     {
       title: "Low Stock",
-      value: productsStats.lowStockProducts,
+      value: productsStats.lowStockProducts || 0,
+    },
+    {
+      title: "Total Orders",
+      value: productsStats.totalOrders || 0,
+    },
+    {
+      title: "Orders In Transit",
+      value: productsStats.totalProductsInTransit || 0,
+    },
+    {
+      title: "Orders Delivered",
+      value: productsStats.productsDelivered || 0,
     },
   ];
 
@@ -86,7 +102,19 @@ const VendorsOverview = () => {
     },
     {
       name: "Low Stock",
-      value: productsStats.lowStockProducts,
+      value: productsStats.lowStockProducts || 0,
+    },
+    {
+      name: "Total Orders",
+      value: productsStats.totalOrders || 0,
+    },
+    {
+      name: "Orders In Transit",
+      value: productsStats.totalProductsInTransit || 0,
+    },
+    {
+      name: "Orders Delivered",
+      value: productsStats.productsDelivered || 0,
     },
   ];
 
@@ -112,7 +140,7 @@ const VendorsOverview = () => {
         {stats.map((stat) => (
           <div
             key={stat.title}
-            className="rounded-xl border border-base-300 bg-base-100 p-6 shadow-sm"
+            className="rounded-xl border border-base-300 bg-base-100 p-6 shadow-sm hover:shadow-md"
           >
             <p className="text-base text-headings">{stat.title}</p>
 
@@ -125,7 +153,9 @@ const VendorsOverview = () => {
 
       {/* Pie Chart */}
       <div className="mt-10 rounded-xl border border-base-300 bg-base-100 p-6">
-        <h2 className="mb-5 text-xl font-semibold">Product Status Overview</h2>
+        <h2 className="mb-5 text-xl font-semibold">
+          Vendors Stats (Pie Chart)
+        </h2>
 
         <div className="h-80">
           <ResponsiveContainer width="100%" height="100%">
@@ -136,6 +166,9 @@ const VendorsOverview = () => {
                 <Cell fill="#3B82F6" />
                 <Cell fill="#EF4444" />
                 <Cell fill="#8B5CF6" />
+                <Cell fill="#EC4899" />
+                <Cell fill="#14B8A6" />
+                <Cell fill="#F97316" />
               </Pie>
 
               <Tooltip />

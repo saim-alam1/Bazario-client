@@ -329,7 +329,7 @@ const ProductsDetails = () => {
         <div className="modal-box mx-auto bg-white p-6 md:p-8 rounded-2xl shadow-2xl border border-gray-50 max-w-11/12">
           {/* Header */}
           <h3 className="font-bold text-2xl md:text-3xl text-gray-800 text-center mb-8 tracking-tight">
-            Add your business information
+            Update your product information
           </h3>
 
           {/* Form Layout Fixed */}

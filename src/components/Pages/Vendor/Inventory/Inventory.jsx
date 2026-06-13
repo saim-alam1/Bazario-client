@@ -31,11 +31,9 @@ const Inventory = () => {
         />
       </Helmet>
 
-      <div className="mb-16 space-y-4 px-3">
-        <h1 className="text-3xl md:text-5xl font-bold text-headings capitalize text-center">
-          My Inventory's
-        </h1>
-        <p className="text-center text-descriptions">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-headings">My Inventory's</h1>
+        <p className="text-descriptions mt-2 max-w-10/12">
           Manage your inventory, restock products, apply quick discounts, and
           monitor low stock items from your vendor dashboard.
         </p>

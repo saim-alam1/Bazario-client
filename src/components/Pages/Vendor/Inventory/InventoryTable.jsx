@@ -257,7 +257,9 @@ const InventoryTable = ({ productsData }) => {
                   <th>{index + 1}</th>
 
                   {/* Product */}
-                  <td className="font-medium">{product.productName}</td>
+                  <td className="font-medium whitespace-nowrap">
+                    {product.productName}
+                  </td>
 
                   {/* Discount */}
                   <td className="font-medium">

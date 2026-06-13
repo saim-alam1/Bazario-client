@@ -20,7 +20,7 @@ const Products = () => {
   if (isLoading) return <Loading />;
 
   return (
-    <section className="my-16 px-3 w-full">
+    <section className="my-14 px-3">
       <Helmet>
         <title>My Products | Vendor Dashboard</title>
         <meta
@@ -29,11 +29,9 @@ const Products = () => {
         />
       </Helmet>
 
-      <div className="mb-16 space-y-4 px-3">
-        <h1 className="text-3xl md:text-5xl font-bold text-headings capitalize text-center">
-          My Products
-        </h1>
-        <p className="text-center text-descriptions">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-headings">My Products</h1>
+        <p className="text-descriptions mt-2 max-w-10/12">
           Manage all your uploaded products in your vendor dashboard. View,
           edit, and delete items, track stock levels, and keep your store
           updated easily.

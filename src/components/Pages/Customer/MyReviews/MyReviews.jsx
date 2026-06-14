@@ -33,7 +33,8 @@ const MyReviews = () => {
         <h1 className="text-3xl font-bold text-headings">
           {user?.displayName} Review's
         </h1>
-        <p className="text-descriptions mt-2">
+        <p className="text-descriptions mt-2 max-w-9/12">
+          Here you can give reviews to those products who are delivered to you.
           Give your products vendor your reviews about the product you have
           purchased from him.
         </p>

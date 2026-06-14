@@ -25,7 +25,7 @@ const WishList = () => {
   if (isLoading) return <Loading />;
 
   return (
-    <section className="max-w-11/12 mx-auto my-10">
+    <section className="my-14 px-3">
       {/* Helmet */}
       <Helmet>
         <title>Wish List Items | Bazario</title>
@@ -35,12 +35,9 @@ const WishList = () => {
         />
       </Helmet>
 
-      <div className="text-center mb-12">
-        <h2 className="text-4xl md:text-5xl font-semibold text-headings capitalize">
-          Wish List Items
-        </h2>
-
-        <p className="text-lg text-descriptions mt-4">
+      <div className="mb-8">
+        <h2 className="text-3xl font-bold text-headings">Wish List Items</h2>
+        <p className="text-descriptions mt-2 max-w-9/12">
           In this section you can see the items, products details you have added
           to the wish list. You can go for buy option or remove them from here
           easily.

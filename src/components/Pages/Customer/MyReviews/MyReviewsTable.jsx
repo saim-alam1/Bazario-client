@@ -40,8 +40,8 @@ const MyReviewsTable = ({ products }) => {
       ...data,
       productId: selectedProduct.productId,
       orderId: selectedProduct._id,
+      vendorEmail: selectedProduct.vendorEmail,
     };
-
     postReview(reviewData);
   };
 
@@ -146,11 +146,13 @@ const MyReviewsTable = ({ products }) => {
                         <img src={product.productImage} alt="product" />
                       </div>
                     </div>
-                    <div className="font-bold">{product.productName}</div>
+                    <div className="font-bold whitespace-nowrap">
+                      {product.productName}
+                    </div>
                   </div>
                 </td>
 
-                <td className="text-headings">
+                <td className="text-headings whitespace-nowrap">
                   {(() => {
                     const review = myReviews.find(
                       (r) => r.productId === product.productId,
@@ -168,7 +170,7 @@ const MyReviewsTable = ({ products }) => {
                   })()}
                 </td>
 
-                <td className="text-headings">
+                <td className="text-headings whitespace-nowrap">
                   {review ? review.reviewMessage : "Not Reviewed Yet"}
                 </td>
 

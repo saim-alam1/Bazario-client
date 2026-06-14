@@ -41,6 +41,8 @@ const MyReviewsTable = ({ products }) => {
       productId: selectedProduct.productId,
       orderId: selectedProduct._id,
       vendorEmail: selectedProduct.vendorEmail,
+      productName: selectedProduct.productName,
+      productImage: selectedProduct.productImage,
     };
     postReview(reviewData);
   };

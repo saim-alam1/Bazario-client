@@ -9,12 +9,8 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 
 const ReviewsTable = ({ reviews }) => {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm();
+  const reportForm = useForm();
+  const replyForm = useForm();
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
   const { addNotification } = useNotifications();
@@ -59,21 +55,61 @@ const ReviewsTable = ({ reviews }) => {
         message: `${data.message || "Report sent to admin!"}`,
       });
 
-      reset();
+      reportForm.reset();
     },
     onError: (error) => {
       const modal = document.getElementById("my_modal_5");
       if (modal) modal.close();
 
-      reset();
+      reportForm.reset();
 
       toast.error(error.response?.data?.message);
     },
   });
 
   const handleReply = (data) => {
-    console.log(data);
+    const replyData = {
+      ...data,
+      reviewId: reviewData._id,
+    };
+    replyCustomer(replyData);
   };
+
+  const { mutate: replyCustomer, isPending: replyPending } = useMutation({
+    mutationFn: async (replyInfo) => {
+      const res = await axiosSecure.patch(
+        `reply-to-customer/${user?.email}`,
+        replyInfo,
+      );
+      return res.data;
+    },
+    onSuccess: (data) => {
+      const modal = document.getElementById("my_modal_6");
+      if (modal) modal.close();
+
+      queryClient.invalidateQueries({
+        queryKey: ["reviews", user?.email],
+      });
+
+      toast.success(data.message || "Reply sent to customer!");
+
+      // Posting Data In Notification Collection
+      addNotification({
+        receiverEmail: user?.email,
+        message: `${data.message || "Report sent to customer!"}`,
+      });
+
+      replyForm.reset();
+    },
+    onError: (error) => {
+      const modal = document.getElementById("my_modal_6");
+      if (modal) modal.close();
+
+      replyForm.reset();
+
+      toast.error(error.response?.data?.message);
+    },
+  });
 
   return (
     <div>
@@ -172,7 +208,7 @@ const ReviewsTable = ({ reviews }) => {
                       }}
                       className="btn btn-info border-none shadow-none"
                     >
-                      Reply
+                      {replyPending ? "Replying..." : "Reply"}
                     </button>
                   </td>
                 </tr>
@@ -193,7 +229,10 @@ const ReviewsTable = ({ reviews }) => {
           </div>
 
           <div>
-            <form className="fieldset" onSubmit={handleSubmit(handleReport)}>
+            <form
+              className="fieldset"
+              onSubmit={reportForm.handleSubmit(handleReport)}
+            >
               {/* Subject */}
               <div>
                 <label className="mb-2 text-base font-semibold text-gray-700">
@@ -204,9 +243,9 @@ const ReviewsTable = ({ reviews }) => {
                   placeholder="Subject..."
                   className="block placeholder:text-sm
       placeholder:font-medium w-full px-3 py-3 text-black bg-white border border-gray-200 text-sm rounded-lg focus:border-amber-400 focus:ring-amber-400 focus:outline-none focus:ring focus:ring-opacity-40 mt-2 mb-1"
-                  {...register("subject", { required: true })}
+                  {...reportForm.register("subject", { required: true })}
                 />
-                {errors.subject && (
+                {reportForm.formState.errors.subject && (
                   <span className="text-red-500 text-[16px] mt-2">
                     Subject field is required
                   </span>
@@ -219,14 +258,14 @@ const ReviewsTable = ({ reviews }) => {
                   Message
                 </label>
                 <textarea
-                  {...register("message", {
+                  {...reportForm.register("message", {
                     required: true,
                   })}
                   placeholder="Review Message..."
                   className="w-full px-4 py-3 text-base text-gray-900 bg-gray-50/50 border border-gray-200 rounded-xl focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 focus:outline-none transition-all duration-200 min-h-30 resize-y"
                 />
 
-                {errors.message && (
+                {reportForm.formState.errors.message && (
                   <span className="text-red-500 text-[16px] mt-1">
                     Message field is required
                   </span>
@@ -244,9 +283,87 @@ const ReviewsTable = ({ reviews }) => {
                 <button
                   className="btn btn-error border-none shadow-none"
                   type="button"
-                  // disabled={reviewPending}
                   onClick={() => {
-                    (reset(), document.getElementById("my_modal_5").close());
+                    (reportForm.reset(),
+                      document.getElementById("my_modal_5").close());
+                  }}
+                >
+                  Close
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </dialog>
+
+      {/* Modal For Reply To Customer */}
+      <dialog id="my_modal_6" className="modal modal-bottom sm:modal-middle">
+        <div className="modal-box">
+          <div className="mb-10 text-center">
+            <h3 className="font-bold text-2xl">Reply to customer</h3>
+            <p className="py-4">
+              Press ESC key or click the button below to close
+            </p>
+          </div>
+
+          <div>
+            <form
+              className="fieldset"
+              onSubmit={replyForm.handleSubmit(handleReply)}
+            >
+              {/* Subject */}
+              <div>
+                <label className="mb-2 text-base font-semibold text-gray-700">
+                  Subject
+                </label>
+                <input
+                  type="text"
+                  placeholder="Subject..."
+                  className="block placeholder:text-sm
+      placeholder:font-medium w-full px-3 py-3 text-black bg-white border border-gray-200 text-sm rounded-lg focus:border-amber-400 focus:ring-amber-400 focus:outline-none focus:ring focus:ring-opacity-40 mt-2 mb-1"
+                  {...replyForm.register("subject", { required: true })}
+                />
+                {replyForm.formState.errors.subject && (
+                  <span className="text-red-500 text-[16px] mt-2">
+                    Subject field is required
+                  </span>
+                )}
+              </div>
+
+              {/* Message */}
+              <div className="flex flex-col col-span-1 md:col-span-2">
+                <label className="mb-2 text-base font-semibold text-gray-700">
+                  Message
+                </label>
+                <textarea
+                  {...replyForm.register("vendorMessage", {
+                    required: true,
+                  })}
+                  placeholder="Review Message..."
+                  className="w-full px-4 py-3 text-base text-gray-900 bg-gray-50/50 border border-gray-200 rounded-xl focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 focus:outline-none transition-all duration-200 min-h-30 resize-y"
+                />
+
+                {replyForm.formState.errors.vendorMessage && (
+                  <span className="text-red-500 text-[16px] mt-1">
+                    Vendor Message field is required
+                  </span>
+                )}
+              </div>
+
+              <div className="w-full flex items-center justify-end gap-4 mt-4">
+                <button
+                  type="submit"
+                  className="btn shadow-none text-white bg-amber-600 hover:bg-amber-700"
+                >
+                  {replyPending ? "Replying..." : "Post"}
+                </button>
+
+                <button
+                  className="btn btn-error border-none shadow-none"
+                  type="button"
+                  onClick={() => {
+                    (replyForm.reset(),
+                      document.getElementById("my_modal_6").close());
                   }}
                 >
                   Close

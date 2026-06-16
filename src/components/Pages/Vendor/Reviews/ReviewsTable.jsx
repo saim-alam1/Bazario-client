@@ -47,12 +47,16 @@ const ReviewsTable = ({ reviews }) => {
       const modal = document.getElementById("my_modal_5");
       if (modal) modal.close();
 
-      toast.success(data.message || "Reported sent to admin!");
+      queryClient.invalidateQueries({
+        queryKey: ["reviews", user?.email],
+      });
+
+      toast.success(data.message || "Report sent to admin!");
 
       // Posting Data In Notification Collection
       addNotification({
         receiverEmail: user?.email,
-        message: `${data.message || "Reported sent to admin!"}`,
+        message: `${data.message || "Report sent to admin!"}`,
       });
 
       reset();
@@ -60,6 +64,8 @@ const ReviewsTable = ({ reviews }) => {
     onError: (error) => {
       const modal = document.getElementById("my_modal_5");
       if (modal) modal.close();
+
+      reset();
 
       toast.error(error.response?.data?.message);
     },
@@ -77,8 +83,9 @@ const ReviewsTable = ({ reviews }) => {
             <tr>
               <th>Product</th>
               <th>Rating</th>
-              <th>Comment text</th>
-              <th>Reviewed At</th>
+              <th>Comment</th>
+              <th>Date</th>
+              <th>Reported</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -119,11 +126,26 @@ const ReviewsTable = ({ reviews }) => {
                     ).toLocaleDateString("en-GB")}
                   </td>
 
+                  <td className="text-headings whitespace-nowrap">
+                    <span
+                      className={`${
+                        review?.reportStatus === "pending"
+                          ? "badge badge-error"
+                          : "badge badge-success"
+                      } font-semibold`}
+                    >
+                      {review?.reportStatus
+                        ? review.reportStatus.charAt(0).toUpperCase() +
+                          review.reportStatus.slice(1)
+                        : "Not Reported"}
+                    </span>
+                  </td>
+
                   <td>
                     <button
-                      disabled={reporting}
+                      disabled={reporting || review?.reportStatus}
                       title="Report to Admin"
-                      className="btn border-none shadow-none whitespace-nowrap"
+                      className={`btn border-none shadow-none whitespace-nowrap ${review?.reportStatus ? "cursor-not-allowed" : ""}`}
                       onClick={() => {
                         setReviewData(review);
                         document.getElementById("my_modal_5").showModal();
@@ -133,8 +155,10 @@ const ReviewsTable = ({ reviews }) => {
                         "Sending Report..."
                       ) : (
                         <>
-                          <IoFlag className="text-2xl text-red-500" /> Report
-                          admin
+                          <IoFlag
+                            className={`text-2xl ${review?.reportStatus ? "" : "text-red-500"}`}
+                          />{" "}
+                          Report admin
                         </>
                       )}
                     </button>

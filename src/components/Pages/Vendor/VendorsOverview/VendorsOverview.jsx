@@ -5,10 +5,12 @@ import Loading from "../../../UI/Loading/Loading";
 import { Helmet } from "react-helmet-async";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { Link } from "react-router";
+import useUserRole from "../../../../Hooks/useUserRole";
 
 const VendorsOverview = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
+  const { userRole, roleLoading } = useUserRole();
 
   const { data: productsStats = {}, isLoading } = useQuery({
     queryKey: ["vendor-stats", user?.email],
@@ -38,7 +40,7 @@ const VendorsOverview = () => {
     },
   });
 
-  if (isLoading) return <Loading />;
+  if (isLoading || roleLoading) return <Loading />;
 
   const stats = [
     {
@@ -187,7 +189,7 @@ const VendorsOverview = () => {
 
       {/* Low Stock Products */}
       <div className="mt-10 rounded-xl border border-base-300 bg-base-100 p-6">
-        <h2 className="mb-5 text-xl font-semibold text-headings">
+        <h2 className="mb-5 text-xl font-semibold text-red-500">
           ⚠ Products Running Low
         </h2>
 
@@ -232,6 +234,33 @@ const VendorsOverview = () => {
             No low-stock products right now.
           </p>
         )}
+      </div>
+
+      {/* Platform Fee Paid */}
+      <div className="mt-10 rounded-xl border border-base-300 bg-base-100 p-6">
+        <h2 className="mb-5 text-xl font-semibold text-red-500">
+          ⚠ Platform Fee To Be Paid
+        </h2>
+
+        <div className="space-y-3">
+          <div className="flex items-center justify-between rounded-lg border border-base-300 p-3">
+            <div>
+              <h3 className="font-medium text-headings">{user?.displayName}</h3>
+            </div>
+
+            <div>
+              <h3 className="font-medium text-headings">{user?.email}</h3>
+            </div>
+
+            <div className="flex items-center gap-8">
+              <p className="font-semibold text-amber-600">{userRole}</p>
+
+              <button className="btn btn-warning border-none shadow-none">
+                Pay
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Flash Discount Products */}

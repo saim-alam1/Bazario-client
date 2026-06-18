@@ -81,6 +81,14 @@ const VendorsOverview = () => {
       title: "Orders Delivered",
       value: productsStats.productsDelivered || 0,
     },
+    {
+      title: "Platform Fee Due",
+      value: `${productsStats.platformFeeDue || 0}৳`,
+    },
+    {
+      title: "Platform Fee Paid",
+      value: `${productsStats.totalPlatformFeePaid || 0}৳`,
+    },
   ];
 
   const chartData = [

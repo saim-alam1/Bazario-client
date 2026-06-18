@@ -110,14 +110,14 @@ const VendorApprovalTable = ({ vendorApplicants }) => {
 
               {/* Contact */}
               <td className="font-medium text-base">
-                +{applicant.contactNumber}
+                +{applicant.businessContactNumber}
               </td>
 
               {/* Country */}
               <td className="font-medium text-base">{applicant.country}</td>
 
               {/* Delivery */}
-              <td className="font-medium text-base">
+              <td className="font-medium text-base whitespace-nowrap">
                 {applicant.deliveryCapability}
               </td>
 

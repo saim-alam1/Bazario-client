@@ -121,7 +121,7 @@ const ReviewsTable = ({ reviews }) => {
               <th>Rating</th>
               <th>Comment</th>
               <th>Date</th>
-              <th>Reported</th>
+              <th>Report</th>
               <th>Actions</th>
             </tr>
           </thead>

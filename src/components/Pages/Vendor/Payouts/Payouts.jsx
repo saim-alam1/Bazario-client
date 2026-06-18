@@ -3,10 +3,12 @@ import useAuth from "../../../../Hooks/useAuth";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 import Loading from "../../../UI/Loading/Loading";
 import { Helmet } from "react-helmet-async";
+import useUserRole from "../../../../Hooks/useUserRole";
 
 const Payouts = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
+  const { userRole, roleLoading } = useUserRole();
 
   const { data: currencyStats = {}, isLoading } = useQuery({
     queryKey: ["vendors-currency-stats", user?.email],
@@ -16,7 +18,7 @@ const Payouts = () => {
     },
   });
 
-  if (isLoading) return <Loading />;
+  if (isLoading || roleLoading) return <Loading />;
 
   const formattedStats = {
     monthly: `${currencyStats.monthlyRevenue?.toLocaleString() || 0} ৳`,
@@ -44,7 +46,7 @@ const Payouts = () => {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-gray-200 pb-5 mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 tracking-tight sm:text-3xl">
+          <h1 className="text-2xl font-bold text-headings tracking-tight sm:text-3xl">
             Payout & Financial Overview
           </h1>
           <p className="mt-2 text-sm text-gray-500">
@@ -106,7 +108,7 @@ const Payouts = () => {
                 Mtd
               </span>
             </div>
-            <h3 className="mt-2 text-2xl font-bold text-gray-900">
+            <h3 className="mt-2 text-2xl font-bold text-headings">
               {formattedStats.monthly}
             </h3>
             <p className="text-sm text-gray-400 mt-1">
@@ -120,11 +122,11 @@ const Payouts = () => {
               <span className="text-sm font-medium text-gray-500">
                 Lifetime Gross Revenue
               </span>
-              <span className="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600">
+              <span className="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-headings">
                 Total
               </span>
             </div>
-            <h3 className="mt-2 text-2xl font-bold text-gray-900">
+            <h3 className="mt-2 text-2xl font-bold text-headings">
               {formattedStats.total}
             </h3>
             <p className="text-sm text-gray-400 mt-1">
@@ -160,7 +162,7 @@ const Payouts = () => {
                 Settled
               </span>
             </div>
-            <h3 className="mt-2 text-2xl font-bold text-gray-900">
+            <h3 className="mt-2 text-2xl font-bold text-headings">
               {formattedStats.paid}
             </h3>
             <p className="text-sm text-gray-400 mt-1">
@@ -176,16 +178,16 @@ const Payouts = () => {
           <div className="border-b border-gray-100 bg-gray-50 px-5 py-4 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="text-red-500">⚠️</span>
-              <h2 className="font-semibold text-gray-900">
+              <h2 className="font-semibold text-headings">
                 Outstanding Commission Fees
               </h2>
             </div>
-            <span className="text-xs font-mono text-gray-500">
+            <span className="text-sm font-mono text-descriptions">
               {user?.email}
             </span>
           </div>
           <div className="p-6">
-            <p className="text-sm text-gray-600 mb-4">
+            <p className="text-sm text-descriptions mb-4">
               Clear your pending platform fees promptly to guarantee
               uninterrupted storefront visibility and avoid payout freezes.
             </p>
@@ -213,16 +215,16 @@ const Payouts = () => {
           <div className="border-b border-gray-100 bg-gray-50 px-5 py-4 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="text-emerald-500">💳</span>
-              <h2 className="font-semibold text-gray-900">
+              <h2 className="font-semibold text-headings">
                 Disbursement Preferences
               </h2>
             </div>
-            <span className="text-xs font-mono text-gray-500">
-              Merchant Account
+            <span className="text-sm font-mono text-gray-500">
+              {userRole} Account
             </span>
           </div>
           <div className="p-6">
-            <p className="text-sm text-gray-600 mb-4">
+            <p className="text-sm text-headings mb-4">
               Withdrawals are processed into your verified business bank account
               or local digital wallet within 2-3 enterprise banking days.
             </p>

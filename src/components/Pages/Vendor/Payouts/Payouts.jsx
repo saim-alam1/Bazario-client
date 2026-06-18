@@ -211,7 +211,9 @@ const Payouts = () => {
                 Clear Platform Fees
               </button>
             </div>
-            <div className={`${hideCommissionForm ? "flex" : "hidden"} w-full`}>
+            <div
+              className={`${hideCommissionForm ? "flex items-center justify-center" : "hidden"} w-full`}
+            >
               <PayCommission />
             </div>
           </div>

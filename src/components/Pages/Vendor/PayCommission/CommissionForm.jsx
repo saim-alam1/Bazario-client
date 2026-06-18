@@ -1,11 +1,27 @@
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import useAuth from "../../../../Hooks/useAuth";
+import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
+import Loading from "../../../UI/Loading/Loading";
 
 const CommissionForm = () => {
+  const { user } = useAuth();
   const stripe = useStripe();
   const elements = useElements();
   const [error, setError] = useState("");
   const [processing, setProcessing] = useState(false);
+  const axiosSecure = useAxiosSecure();
+
+  const { data: commission = {}, isLoading } = useQuery({
+    queryKey: ["commission-amount", user?.email],
+    queryFn: async () => {
+      const res = await axiosSecure(`commission-amount/${user?.email}`);
+      return res.data;
+    },
+  });
+
+  if (isLoading) return <Loading />;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -90,7 +106,7 @@ const CommissionForm = () => {
         <button
           type="submit"
           disabled={!stripe || processing}
-          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-4 rounded-lg transition duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center"
+          className="btn w-full border-none bg-indigo-600 hover:bg-indigo-700 text-white font-medium transition duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center"
         >
           {processing ? (
             <span className="flex items-center gap-2">
@@ -116,7 +132,7 @@ const CommissionForm = () => {
               Processing...
             </span>
           ) : (
-            "Pay Now"
+            `Pay ${commission?.platformFeeDue} BDT`
           )}
         </button>
       </form>

@@ -4,11 +4,14 @@ import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 import Loading from "../../../UI/Loading/Loading";
 import { Helmet } from "react-helmet-async";
 import useUserRole from "../../../../Hooks/useUserRole";
+import PayCommission from "../PayCommission/PayCommission";
+import { useState } from "react";
 
 const Payouts = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
   const { userRole, roleLoading } = useUserRole();
+  const [hideCommissionForm, setHideCommissionForm] = useState(false);
 
   const { data: currencyStats = {}, isLoading } = useQuery({
     queryKey: ["vendors-currency-stats", user?.email],
@@ -172,7 +175,8 @@ const Payouts = () => {
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      {/* <div className="grid gap-6 lg:grid-cols-2"> */}
+      <div className="flex flex-col gap-6  items-start lg:flex-row">
         {/* Platform Fee Clearances */}
         <div className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
           <div className="border-b border-gray-100 bg-gray-50 px-5 py-4 flex items-center justify-between">
@@ -201,11 +205,14 @@ const Payouts = () => {
                 </span>
               </div>
               <button
-                disabled={currencyStats.platformFeeDue <= 0}
-                className="w-full sm:w-auto bg-gray-900 hover:bg-gray-800 disabled:bg-gray-200 disabled:text-gray-400 text-white font-medium text-sm py-2 px-5 rounded-lg shadow-sm transition active:scale-[0.99]"
+                onClick={() => setHideCommissionForm(!hideCommissionForm)}
+                className="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 disabled:bg-gray-200 disabled:text-gray-400 text-white font-medium text-sm py-2 px-5 rounded-lg shadow-sm transition active:scale-[0.99] cursor-pointer"
               >
-                Clear Outstanding Fees
+                Clear Platform Fees
               </button>
+            </div>
+            <div className={`${hideCommissionForm ? "flex" : "hidden"} w-full`}>
+              <PayCommission />
             </div>
           </div>
         </div>

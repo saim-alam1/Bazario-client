@@ -45,6 +45,7 @@ import VendorsRoute from "../Pages/Auth/VendorsRoute/VendorsRoute";
 import ProductsSection from "../Pages/Customer/ProductsSection/ProductsSection";
 import ProductsDetails from "../Pages/ProductsDetails/ProductsDetails";
 import BuyProduct from "../Pages/Customer/BuyProduct/BuyProduct";
+import AdminRoute from "../Pages/Auth/AdminRoute/AdminRoute";
 
 const router = createBrowserRouter([
   {
@@ -249,51 +250,99 @@ const router = createBrowserRouter([
       // Admin Routes
       {
         path: "admin-profile",
-        Component: AdminProfile,
+        element: (
+          <AdminRoute>
+            <AdminProfile />
+          </AdminRoute>
+        ),
       },
       {
         path: "admin-overview",
-        Component: AdminOverview,
+        element: (
+          <AdminRoute>
+            <AdminOverview />
+          </AdminRoute>
+        ),
       },
       {
         path: "manage-users",
-        Component: ManageUsers,
+        element: (
+          <AdminRoute>
+            <ManageUsers />
+          </AdminRoute>
+        ),
       },
       {
         path: "manage-vendors",
-        Component: ManageVendors,
+        element: (
+          <AdminRoute>
+            <ManageVendors />
+          </AdminRoute>
+        ),
       },
       {
         path: "vendor-approval",
-        Component: VendorApproval,
+        element: (
+          <AdminRoute>
+            <VendorApproval />
+          </AdminRoute>
+        ),
       },
       {
         path: "manage-products",
-        Component: ManageProducts,
+        element: (
+          <AdminRoute>
+            <ManageProducts />
+          </AdminRoute>
+        ),
       },
       {
         path: "manage-orders",
-        Component: ManageOrders,
+        element: (
+          <AdminRoute>
+            <ManageOrders />
+          </AdminRoute>
+        ),
       },
       {
         path: "categories",
-        Component: CategoriesByAdmin,
+        element: (
+          <AdminRoute>
+            <CategoriesByAdmin />
+          </AdminRoute>
+        ),
       },
       {
         path: "flash-sales",
-        Component: FlashSales,
+        element: (
+          <AdminRoute>
+            <FlashSales />
+          </AdminRoute>
+        ),
       },
       {
         path: "admin-analytics",
-        Component: AdminAnalytics,
+        element: (
+          <AdminRoute>
+            <AdminAnalytics />
+          </AdminRoute>
+        ),
       },
       {
         path: "admin-payouts",
-        Component: PayoutsSection,
+        element: (
+          <AdminRoute>
+            <PayoutsSection />
+          </AdminRoute>
+        ),
       },
       {
         path: "reports",
-        Component: Reports,
+        element: (
+          <AdminRoute>
+            <Reports />
+          </AdminRoute>
+        ),
       },
     ],
   },

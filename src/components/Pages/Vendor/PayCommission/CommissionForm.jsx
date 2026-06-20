@@ -4,6 +4,7 @@ import { useState } from "react";
 import useAuth from "../../../../Hooks/useAuth";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 import Loading from "../../../UI/Loading/Loading";
+import { toast } from "react-toastify";
 
 const CommissionForm = () => {
   const { user } = useAuth();
@@ -23,12 +24,16 @@ const CommissionForm = () => {
 
   if (isLoading) return <Loading />;
 
+  const dueAmount = commission?.platformFeeDue;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!stripe || !elements) return;
 
     setProcessing(true);
+    setError("");
+
     const card = elements.getElement(CardElement);
 
     if (!card) {
@@ -43,11 +48,44 @@ const CommissionForm = () => {
 
     if (error) {
       setError(error.message);
-      setProcessing(false);
+      toast.error(error.message);
     } else {
       setError("");
-      console.log("payment method", paymentMethod);
       setProcessing(false);
+      // console.log("payment method", paymentMethod);
+
+      // Create Payment Intent
+      const res = await axiosSecure.post("/create-commission-payment-intent", {
+        email: user?.email,
+        amountToPay: dueAmount,
+      });
+
+      const clientSecret = res.data.clientSecret;
+      const cardType = paymentMethod.card.brand;
+
+      // Confirm Payment
+      const { error: confirmError, paymentIntent } =
+        await stripe.confirmCardPayment(clientSecret, {
+          payment_method: {
+            card,
+            billing_details: {
+              name: "Customer",
+            },
+          },
+        });
+
+      if (confirmError) {
+        setError(confirmError.message);
+        toast.error(error);
+        setProcessing(false);
+        return;
+      }
+
+      console.log(paymentIntent);
+
+      if (paymentIntent.status === "succeeded") {
+        toast.success("Platform due cleared successfully!");
+      }
     }
   };
 
@@ -132,7 +170,7 @@ const CommissionForm = () => {
               Processing...
             </span>
           ) : (
-            `Pay ${commission?.platformFeeDue} BDT`
+            `Pay ${dueAmount} BDT`
           )}
         </button>
       </form>

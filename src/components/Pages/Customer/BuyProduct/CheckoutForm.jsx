@@ -48,7 +48,7 @@ const CheckoutForm = ({
       toast.error(error.message);
     } else {
       setError("");
-      console.log("payment method", paymentMethod);
+      // console.log("payment method", paymentMethod);
 
       // Create Payment Intent
       const res = await axiosSecure.post("/create-payment-intent", {
@@ -90,8 +90,6 @@ const CheckoutForm = ({
           quantity,
           transactionId: paymentIntent.id,
         };
-
-        // await axiosSecure.post("/create-order", orderData);
 
         postOrders(orderData);
 

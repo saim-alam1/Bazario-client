@@ -75,6 +75,15 @@ const Payouts = () => {
     },
   });
 
+  // Loading Withdrawal Request Status
+  const { data: withdrawalReqStatus } = useQuery({
+    queryKey: ["withdrawal-request-status", user?.email],
+    queryFn: async () => {
+      const res = await axiosSecure(`withdrawal-request-status/${user?.email}`);
+      return res.data;
+    },
+  });
+
   if (isLoading || roleLoading) return <Loading />;
 
   return (
@@ -139,11 +148,6 @@ const Payouts = () => {
           <p className="mt-1 text-xs text-orange-100 opacity-90">
             Available for immediate settlement
           </p>
-          <div className="mt-6">
-            <button className="w-full sm:w-auto bg-white text-orange-600 font-semibold px-5 py-2.5 rounded-lg text-sm transition hover:bg-orange-50 active:scale-[0.98] shadow-sm">
-              Request Withdrawal
-            </button>
-          </div>
         </div>
 
         <div className="md:col-span-2 grid gap-4 sm:grid-cols-2">
@@ -293,11 +297,16 @@ const Payouts = () => {
                 </span>
               </div>
               <button
-                disabled={currencyStats.netRevenue <= 0}
+                disabled={
+                  currencyStats.netRevenue <= 0 ||
+                  withdrawalReqStatus?.status === "requested"
+                }
                 onClick={() => setShowAmountField(!showAmountField)}
-                className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-200 disabled:text-gray-400 text-white font-medium text-sm py-2 px-5 rounded-lg shadow-sm transition active:scale-[0.99] cursor-pointer"
+                className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-200 disabled:text-gray-400 text-white font-medium text-sm py-2 px-5 rounded-lg shadow-sm transition active:scale-[0.99] cursor-pointer disabled:cursor-not-allowed"
               >
-                Request Withdrawal
+                {withdrawalReqStatus?.status === "requested"
+                  ? `Requested ${withdrawalReqStatus?.amount}৳`
+                  : "Request Withdrawal"}
               </button>
             </div>
           </div>

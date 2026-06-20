@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import useAuth from "../../../../Hooks/useAuth";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 import Loading from "../../../UI/Loading/Loading";
@@ -6,12 +6,23 @@ import { Helmet } from "react-helmet-async";
 import useUserRole from "../../../../Hooks/useUserRole";
 import PayCommission from "../PayCommission/PayCommission";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import useNotifications from "../../../../Hooks/useNotifications";
 
 const Payouts = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
   const { userRole, roleLoading } = useUserRole();
   const [hideCommissionForm, setHideCommissionForm] = useState(false);
+  const [showAmountField, setShowAmountField] = useState(false);
+  const { addNotification } = useNotifications();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm();
 
   const { data: currencyStats = {}, isLoading } = useQuery({
     queryKey: ["vendors-currency-stats", user?.email],
@@ -21,8 +32,6 @@ const Payouts = () => {
     },
   });
 
-  if (isLoading || roleLoading) return <Loading />;
-
   const formattedStats = {
     monthly: `${currencyStats.monthlyRevenue?.toLocaleString() || 0} ৳`,
     net: `${currencyStats.netRevenue?.toLocaleString() || 0} ৳`,
@@ -30,6 +39,43 @@ const Payouts = () => {
     paid: `${currencyStats.totalPlatformFeePaid?.toLocaleString() || 0} ৳`,
     total: `${currencyStats.totalRevenue?.toLocaleString() || 0} ৳`,
   };
+
+  const handleWithdrawRequest = (data) => {
+    const withdrawalReq = {
+      vendorEmail: user?.email,
+      amount: data.amount,
+    };
+
+    requestWithdrawal(withdrawalReq);
+  };
+
+  const { mutate: requestWithdrawal, isPending } = useMutation({
+    mutationFn: async (requestInfo) => {
+      const res = await axiosSecure.post(
+        `vendor-earning-withdraw-request/${user?.email}`,
+        requestInfo,
+      );
+      return res.data;
+    },
+    onSuccess: async (data, variables) => {
+      // Posting Data In Notification Collection
+      addNotification({
+        receiverEmail: user?.email,
+        message: `Request sent to admin for ${variables.amount}৳ withdrawal`,
+      });
+
+      toast.success(
+        data?.message ||
+          `Request sent to admin for ${variables.amount}৳ withdrawal`,
+      );
+      reset();
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message);
+    },
+  });
+
+  if (isLoading || roleLoading) return <Loading />;
 
   return (
     <section className="mx-auto max-w-7xl my-8 px-4 sm:px-6 lg:px-8 font-sans antialiased text-gray-800">
@@ -248,11 +294,52 @@ const Payouts = () => {
               </div>
               <button
                 disabled={currencyStats.netRevenue <= 0}
-                className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-200 disabled:text-gray-400 text-white font-medium text-sm py-2 px-5 rounded-lg shadow-sm transition active:scale-[0.99]"
+                onClick={() => setShowAmountField(!showAmountField)}
+                className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-200 disabled:text-gray-400 text-white font-medium text-sm py-2 px-5 rounded-lg shadow-sm transition active:scale-[0.99] cursor-pointer"
               >
-                Trigger Payout Request
+                Request Withdrawal
               </button>
             </div>
+          </div>
+
+          <div
+            className={`${showAmountField ? "flex items-center justify-center w-full" : "hidden"} p-6`}
+          >
+            <form
+              className="fieldset w-full"
+              onSubmit={handleSubmit(handleWithdrawRequest)}
+            >
+              <div className="space-y-2">
+                <label className="block mb-2 text-[18px] text-descriptions">
+                  Amount
+                </label>
+                <input
+                  type="number"
+                  placeholder="Withdraw Amount"
+                  className="block placeholder:text-sm
+      placeholder:font-medium w-full px-3 py-3 text-black bg-white border border-gray-200 text-sm rounded-lg focus:border-amber-400 focus:ring-amber-400 focus:outline-none focus:ring focus:ring-opacity-40"
+                  {...register("amount", {
+                    required: "Amount is required",
+                    valueAsNumber: true,
+                    min: {
+                      value: 1,
+                      message: "Amount must be at least 1৳",
+                    },
+                  })}
+                />
+                {errors.amount && (
+                  <span className="text-red-500 text-[16px] mt-2">
+                    {errors.amount.message}
+                  </span>
+                )}
+              </div>
+              <button
+                disabled={isPending}
+                className="btn bg-[#F59E0B] hover:bg-[#D97706] text-white font-semibold mt-4"
+              >
+                {isPending ? "Sending Request..." : "Send Request"}
+              </button>
+            </form>
           </div>
         </div>
       </div>

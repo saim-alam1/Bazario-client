@@ -32,12 +32,22 @@ const Payouts = () => {
     },
   });
 
+  // Loading Withdrawal Request Status
+  const { data: withdrawalReqStatus } = useQuery({
+    queryKey: ["withdrawal-request-status", user?.email],
+    queryFn: async () => {
+      const res = await axiosSecure(`withdrawal-request-status/${user?.email}`);
+      return res.data;
+    },
+  });
+
   const formattedStats = {
     monthly: `${currencyStats.monthlyRevenue?.toLocaleString() || 0} ৳`,
     net: `${currencyStats.netRevenue?.toLocaleString() || 0} ৳`,
     due: `${currencyStats.platformFeeDue?.toLocaleString() || 0} ৳`,
     paid: `${currencyStats.totalPlatformFeePaid?.toLocaleString() || 0} ৳`,
     total: `${currencyStats.totalRevenue?.toLocaleString() || 0} ৳`,
+    // withdrawn: `${withdrawalReqStatus.amount?.toLocaleString() || 0} ৳`,
   };
 
   const handleWithdrawRequest = (data) => {
@@ -72,15 +82,6 @@ const Payouts = () => {
     },
     onError: (error) => {
       toast.error(error.response?.data?.message);
-    },
-  });
-
-  // Loading Withdrawal Request Status
-  const { data: withdrawalReqStatus } = useQuery({
-    queryKey: ["withdrawal-request-status", user?.email],
-    queryFn: async () => {
-      const res = await axiosSecure(`withdrawal-request-status/${user?.email}`);
-      return res.data;
     },
   });
 
@@ -124,7 +125,7 @@ const Payouts = () => {
 
       {/* Main Financial Highlights */}
       <div className="grid gap-6 md:grid-cols-3 mb-8">
-        <div className="relative overflow-hidden rounded-xl bg-linear-to-br from-orange-500 to-amber-600 p-6 text-white shadow-sm transition hover:shadow-md md:col-span-1">
+        <div className="h-fit relative overflow-hidden rounded-xl bg-linear-to-br from-orange-500 to-amber-600 p-6 text-white shadow-sm transition hover:shadow-md">
           <div className="absolute right-0 bottom-0 opacity-10 translate-x-4 translate-y-4">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -150,78 +151,94 @@ const Payouts = () => {
           </p>
         </div>
 
-        <div className="md:col-span-2 grid gap-4 sm:grid-cols-2">
-          {/* Monthly Revenue */}
-          <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-500">
-                This Month's Revenue
-              </span>
-              <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700">
-                Mtd
-              </span>
-            </div>
-            <h3 className="mt-2 text-2xl font-bold text-headings">
-              {formattedStats.monthly}
-            </h3>
-            <p className="text-sm text-gray-400 mt-1">
-              Gross sales generated this month
-            </p>
+        {/* Monthly Revenue */}
+        <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-gray-500">
+              This Month's Revenue
+            </span>
+            <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700">
+              Mtd
+            </span>
           </div>
+          <h3 className="mt-2 text-2xl font-bold text-headings">
+            {formattedStats.monthly}
+          </h3>
+          <p className="text-sm text-gray-400 mt-1">
+            Gross sales generated this month
+          </p>
+        </div>
 
-          {/* Total Revenue */}
-          <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-500">
-                Lifetime Gross Revenue
-              </span>
-              <span className="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-headings">
-                Total
-              </span>
-            </div>
-            <h3 className="mt-2 text-2xl font-bold text-headings">
-              {formattedStats.total}
-            </h3>
-            <p className="text-sm text-gray-400 mt-1">
-              Cumulative sales platform-wide
-            </p>
+        {/* Total Revenue */}
+        <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-gray-500">
+              Lifetime Gross Revenue
+            </span>
+            <span className="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-headings">
+              Total
+            </span>
           </div>
+          <h3 className="mt-2 text-2xl font-bold text-headings">
+            {formattedStats.total}
+          </h3>
+          <p className="text-sm text-gray-400 mt-1">
+            Cumulative sales platform-wide
+          </p>
+        </div>
 
-          {/* Platform Fee Due */}
-          <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-500">
-                Platform Commission Due
-              </span>
-              <span className="inline-flex items-center rounded-full bg-red-50 px-2 py-1 text-xs font-medium text-red-700">
-                Action Required
-              </span>
-            </div>
-            <h3 className="mt-2 text-2xl font-bold text-red-600">
-              {formattedStats.due}
-            </h3>
-            <p className="text-sm text-gray-400 mt-1">
-              Pending fees to keep store active
-            </p>
+        {/* Platform Fee Due */}
+        <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-gray-500">
+              Platform Commission Due
+            </span>
+            <span className="inline-flex items-center rounded-full bg-red-50 px-2 py-1 text-xs font-medium text-red-700">
+              Action Required
+            </span>
           </div>
+          <h3 className="mt-2 text-2xl font-bold text-red-600">
+            {formattedStats.due}
+          </h3>
+          <p className="text-sm text-gray-400 mt-1">
+            Pending fees to keep store active
+          </p>
+        </div>
 
-          {/* Total Platform Fee Paid */}
-          <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-gray-500">
-                Total Commissions Paid
-              </span>
-              <span className="inline-flex items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700">
-                Settled
-              </span>
-            </div>
-            <h3 className="mt-2 text-2xl font-bold text-headings">
-              {formattedStats.paid}
-            </h3>
-            <p className="text-sm text-gray-400 mt-1">
-              Cleared invoices historical data
-            </p>
+        {/* Total Platform Fee Paid */}
+        <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-gray-500">
+              Total Commissions Paid
+            </span>
+            <span className="inline-flex items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700">
+              Settled
+            </span>
           </div>
+          <h3 className="mt-2 text-2xl font-bold text-headings">
+            {formattedStats.paid}
+          </h3>
+          <p className="text-sm text-gray-400 mt-1">
+            Cleared invoices historical data
+          </p>
+        </div>
+
+        {/* Total Withdrew Money */}
+        <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-gray-500">
+              Total Withdrawn Amount
+            </span>
+            <span className="inline-flex items-center rounded-full bg-purple-50 px-2 py-1 text-xs font-medium text-purple-700">
+              Disbursed
+            </span>
+          </div>
+          <h3 className="mt-2 text-2xl font-bold text-headings">
+            {/* {formattedStats.withdrawn} */} Work Later
+          </h3>
+          <p className="text-sm text-gray-400 mt-1">
+            Successfully transferred to your accounts
+          </p>
         </div>
       </div>
 

@@ -1,10 +1,11 @@
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import useAuth from "../../../../Hooks/useAuth";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 import Loading from "../../../UI/Loading/Loading";
 import { toast } from "react-toastify";
+import useNotifications from "../../../../Hooks/useNotifications";
 
 const CommissionForm = () => {
   const { user } = useAuth();
@@ -13,6 +14,8 @@ const CommissionForm = () => {
   const [error, setError] = useState("");
   const [processing, setProcessing] = useState(false);
   const axiosSecure = useAxiosSecure();
+  const { addNotification } = useNotifications();
+  const queryClient = useQueryClient();
 
   const { data: commission = {}, isLoading } = useQuery({
     queryKey: ["commission-amount", user?.email],
@@ -21,8 +24,6 @@ const CommissionForm = () => {
       return res.data;
     },
   });
-
-  if (isLoading) return <Loading />;
 
   const dueAmount = commission?.platformFeeDue;
 
@@ -62,6 +63,7 @@ const CommissionForm = () => {
 
       const clientSecret = res.data.clientSecret;
       const cardType = paymentMethod.card.brand;
+      const cardLast4Digit = paymentMethod.card.last4;
 
       // Confirm Payment
       const { error: confirmError, paymentIntent } =
@@ -81,13 +83,48 @@ const CommissionForm = () => {
         return;
       }
 
-      console.log(paymentIntent);
-
+      // If Payment Is Paid Successfully
       if (paymentIntent.status === "succeeded") {
         toast.success("Platform due cleared successfully!");
+
+        const paymentInfo = {
+          vendorEmail: user?.email,
+          paidAmount: dueAmount,
+          transactionId: paymentIntent.id,
+          cardType,
+          cardLast4Digit,
+        };
+
+        postPaymentHistory(paymentInfo);
+
+        if (card) {
+          card.clear();
+        }
+
+        await queryClient.invalidateQueries({
+          queryKey: ["commission-amount", user?.email],
+        });
+
+        // Posting Data In Notification Collection
+        addNotification({
+          receiverEmail: user?.email,
+          message: `Platform due fee paid successfully`,
+        });
       }
     }
   };
+
+  const { mutate: postPaymentHistory } = useMutation({
+    mutationFn: async (historyData) => {
+      const res = await axiosSecure.post(
+        `pay-platform-fee/${user?.email}`,
+        historyData,
+      );
+      return res.data;
+    },
+  });
+
+  if (isLoading) return <Loading />;
 
   const iframeStyles = {
     base: {
@@ -143,7 +180,7 @@ const CommissionForm = () => {
 
         <button
           type="submit"
-          disabled={!stripe || processing}
+          disabled={!stripe || processing || dueAmount <= 0}
           className="btn w-full border-none bg-indigo-600 hover:bg-indigo-700 text-white font-medium transition duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center"
         >
           {processing ? (

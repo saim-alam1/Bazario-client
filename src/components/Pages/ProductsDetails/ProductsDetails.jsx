@@ -60,7 +60,7 @@ const ProductsDetails = () => {
       // Posting Data In Notification Collection
       addNotification({
         receiverEmail: user?.email,
-        message: "Profile updated successfully!",
+        message: "Product updated successfully!",
       });
 
       toast.success(data?.message || "Product updated successfully!");

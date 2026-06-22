@@ -1,22 +1,67 @@
 import LottiePlayer from "lottie-react";
 import noData from "../../../../assets/noData.json";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 import useAuth from "../../../../Hooks/useAuth";
 import Loading from "../../../UI/Loading/Loading";
+import { toast } from "react-toastify";
+import useNotifications from "../../../../Hooks/useNotifications";
 
 const MangeUsersTable = () => {
   const Lottie = LottiePlayer.default || LottiePlayer;
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
+  const { addNotification } = useNotifications();
+  const queryClient = useQueryClient();
 
   const { data: customers = [], isLoading } = useQuery({
     queryKey: ["Load-customers", user?.email],
+    enabled: !!user?.email,
     queryFn: async () => {
       const res = await axiosSecure("/manage-customers");
       return res.data;
     },
   });
+
+  const handleSuspend = (customerId, customerName, customerEmail) => {
+    suspendCustomer({
+      customerId,
+      customerName,
+      customerEmail,
+    });
+  };
+
+  const { mutate: suspendCustomer, isPending: suspendingCustomer } =
+    useMutation({
+      mutationFn: async ({ customerId }) => {
+        const res = await axiosSecure.patch(`customers/${customerId}/suspend`);
+        return res.data;
+      },
+      onSuccess: (data, variable) => {
+        toast.success(
+          data?.message || `${variable.customerName} suspended successfully`,
+        );
+
+        queryClient.invalidateQueries({
+          queryKey: ["Load-customers", user?.email],
+        });
+
+        // Posting Data In Notification Collection
+        addNotification({
+          receiverEmail: variable.customerEmail,
+          message: `Dear ${variable.customerName}, your customer account on Bazario platform has been temporarily suspended.`,
+        });
+      },
+      onError: (error) => {
+        toast.error(
+          error.response?.data?.message || "An unexpected error occurred",
+        );
+      },
+    });
+
+  const handleReactivate = (customerId, customerName, customerEmail) => {
+    console.log(customerId, customerName, customerEmail);
+  };
 
   if (isLoading) return <Loading />;
 
@@ -26,11 +71,11 @@ const MangeUsersTable = () => {
         <Lottie animationData={noData} loop={true} className="w-72 md:w-96" />
 
         <h3 className="text-3xl font-semibold text-headings">
-          Your Cart Is Empty
+          No Customers Found
         </h3>
 
         <p className="text-descriptions mt-2">
-          Looks like you haven't added any products to your cart yet.
+          There are currently no registered customers on the platform.
         </p>
       </div>
     );
@@ -53,7 +98,7 @@ const MangeUsersTable = () => {
           {customers.map((customer) => (
             <tr key={customer._id} className="hover:bg-gray-50 transition">
               <td>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 whitespace-nowrap">
                   <div className="text-headings">{customer.fullName}</div>
                 </div>
               </td>
@@ -62,16 +107,49 @@ const MangeUsersTable = () => {
 
               <td className="text-headings">+{customer.contactNumber}</td>
 
-              <td className="text-headings">{customer.stockQuantity}</td>
+              <td className="text-headings">
+                <span
+                  className={`font-medium ${
+                    customer.status === "suspended"
+                      ? "text-red-500"
+                      : "text-green-500"
+                  }`}
+                >
+                  {customer.status === "suspended" ? "Suspended" : "Active"}
+                </span>
+              </td>
 
               <td className="text-headings">
                 {new Date(customer.registeredAt).toLocaleDateString("en-GB")}
               </td>
-
               <td>
-                <button className="btn btn-warning border-none shadow-none">
-                  Suspend
-                </button>
+                {customer.status === "suspended" ? (
+                  <button
+                    className="btn btn-success border-none shadow-none"
+                    onClick={() =>
+                      handleReactivate(
+                        customer._id,
+                        customer.fullName,
+                        customer.email,
+                      )
+                    }
+                  >
+                    Reactivate
+                  </button>
+                ) : (
+                  <button
+                    className="btn btn-warning border-none shadow-none"
+                    onClick={() =>
+                      handleSuspend(
+                        customer._id,
+                        customer.fullName,
+                        customer.email,
+                      )
+                    }
+                  >
+                    {suspendingCustomer ? "Suspending..." : "Suspend"}
+                  </button>
+                )}
               </td>
 
               <td>

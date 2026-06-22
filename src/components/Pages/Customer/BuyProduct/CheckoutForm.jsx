@@ -57,6 +57,8 @@ const CheckoutForm = ({
       });
 
       const clientSecret = res.data.clientSecret;
+      const cardType = paymentMethod.card.brand;
+      const cardLast4Digit = paymentMethod.card.last4;
 
       // Confirm Payment
       const { error: confirmError, paymentIntent } =
@@ -88,6 +90,8 @@ const CheckoutForm = ({
           vendorEmail: vendorsEmail,
           buyerEmail: user?.email,
           quantity,
+          cardType,
+          cardLast4Digit,
           transactionId: paymentIntent.id,
         };
 

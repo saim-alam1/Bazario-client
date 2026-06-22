@@ -68,7 +68,7 @@ const AdminOverview = () => {
     },
     {
       title: "Revenue (This Month)",
-      value: overview.totalRevenueThisMonth || 0,
+      value: overview.platformRevenueThisMonth || 0,
       isCurrency: true,
       icon: FaBangladeshiTakaSign,
       color: "text-purple-600 bg-purple-50 border-purple-100",
@@ -122,14 +122,8 @@ const AdminOverview = () => {
     { name: "Delivered", count: overview.TotalOrdersDelivered || 0 },
   ];
 
-  const lineData = [
-    { month: "Jan", revenue: 12000 },
-    { month: "Feb", revenue: 18000 },
-    { month: "Mar", revenue: 15000 },
-    { month: "Apr", revenue: 22000 },
-    { month: "May", revenue: 28000 },
-    { month: "Jun", revenue: overview.totalRevenueThisMonth || 0 },
-  ];
+  // Line Chart
+  const lineData = overview.revenueByMonth || [];
 
   const pieData = [
     { name: "Placed", value: overview.totalOrderPlaced || 0, color: "#3B82F6" },
@@ -157,7 +151,12 @@ const AdminOverview = () => {
   return (
     <section className="min-h-screen bg-slate-50/50 py-8 px-4 sm:px-6 lg:px-8 font-sans antialiased">
       <Helmet>
-        <title>Admin Dashboard Overview | Bazario Platform</title>
+        <title>Admin Overview | Bazario Platform</title>
+
+        <meta
+          name="description"
+          content="Monitor platform-wide analytics including users, vendors, orders, revenue, and performance insights from the Bazario admin dashboard."
+        />
       </Helmet>
 
       {/* Top Header */}
@@ -177,9 +176,9 @@ const AdminOverview = () => {
         </div>
       </div>
 
-      {/* SECTION 1: FINANCIAL CARDS (Highlight Hero Row) */}
+      {/* FINANCIAL CARDS (Highlight Hero Row) */}
       <div className="mb-8">
-        <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
+        <h3 className="text-base font-semibold text-slate-400 uppercase tracking-wider mb-3">
           Financial Performance
         </h3>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -211,7 +210,7 @@ const AdminOverview = () => {
       <div className="grid gap-6 lg:grid-cols-2 mb-10">
         {/* Operations */}
         <div className="bg-white rounded-xl border border-slate-200/80 p-5 shadow-sm">
-          <h3 className="text-sm font-semibold text-slate-800 border-b pb-3 mb-4">
+          <h3 className="text-base font-semibold text-headings border-b pb-3 mb-4">
             Fulfillment & Operations
           </h3>
           <div className="grid grid-cols-2 gap-4">
@@ -223,10 +222,10 @@ const AdminOverview = () => {
                   className="p-4 rounded-lg bg-slate-50/50 border border-slate-100 flex items-start justify-between"
                 >
                   <div>
-                    <span className="text-xs font-medium text-slate-500">
+                    <span className="text-base font-medium text-descriptions">
                       {stat.title}
                     </span>
-                    <p className="text-xl font-bold text-slate-900 mt-1">
+                    <p className="text-xl font-bold text-headings mt-1">
                       {stat.value.toLocaleString()}
                     </p>
                   </div>
@@ -239,7 +238,7 @@ const AdminOverview = () => {
 
         {/* User Statistics */}
         <div className="bg-white rounded-xl border border-slate-200/80 p-5 shadow-sm">
-          <h3 className="text-sm font-semibold text-slate-800 border-b pb-3 mb-4">
+          <h3 className="text-base font-semibold text-headings border-b pb-3 mb-4">
             Accounts & Ecosystem
           </h3>
           <div className="grid grid-cols-2 gap-4">
@@ -251,10 +250,10 @@ const AdminOverview = () => {
                   className="p-4 rounded-lg bg-slate-50/50 border border-slate-100 flex items-start justify-between"
                 >
                   <div>
-                    <span className="text-xs font-medium text-slate-500">
+                    <span className="text-base font-medium text-descriptions">
                       {stat.title}
                     </span>
-                    <p className="text-xl font-bold text-slate-900 mt-1">
+                    <p className="text-xl font-bold text-headings mt-1">
                       {stat.value.toLocaleString()}
                     </p>
                   </div>
@@ -275,7 +274,7 @@ const AdminOverview = () => {
               <h3 className="text-base font-semibold text-slate-900">
                 Revenue Velocity
               </h3>
-              <p className="text-xs text-slate-400">
+              <p className="text-sm text-slate-400">
                 Monthly trajectory overview
               </p>
             </div>
@@ -306,8 +305,10 @@ const AdminOverview = () => {
                   fontSize={12}
                   tickLine={false}
                   axisLine={false}
+                  tickFormatter={(value) => `৳${value}`} // Adds currency symbol to Y-Axis lines
                 />
                 <Tooltip
+                  formatter={(value) => [formatBDT(value), "Platform Revenue"]}
                   contentStyle={{
                     backgroundColor: "#0F172A",
                     borderRadius: "8px",
@@ -332,10 +333,10 @@ const AdminOverview = () => {
         {/* Pie Chart (Order Distribution) */}
         <div className="bg-white rounded-xl border border-slate-200/80 p-5 shadow-sm flex flex-col justify-between">
           <div>
-            <h3 className="text-base font-semibold text-slate-900">
+            <h3 className="text-base font-semibold text-headings">
               Order Allocation
             </h3>
-            <p className="text-xs text-slate-400">
+            <p className="text-sm text-slate-400">
               Breakdown by transit fulfillment state
             </p>
           </div>
@@ -361,10 +362,10 @@ const AdminOverview = () => {
           <div className="grid grid-cols-3 text-center border-t border-slate-100 pt-4 mt-2">
             {pieData.map((d) => (
               <div key={d.name}>
-                <span className="text-[10px] font-medium text-slate-400 uppercase tracking-tight block">
+                <span className="text-base font-medium text-descriptions tracking-tight block">
                   {d.name}
                 </span>
-                <span className="text-sm font-bold text-slate-800 mt-0.5 block">
+                <span className="text-sm font-bold text-headings mt-0.5 block">
                   {d.value}
                 </span>
               </div>
@@ -378,7 +379,7 @@ const AdminOverview = () => {
             <h3 className="text-base font-semibold text-slate-900">
               Ecosystem Distribution
             </h3>
-            <p className="text-xs text-slate-400 mb-6">
+            <p className="text-sm text-slate-400 mb-6">
               Comparative balance between vendors, clients, and conversions
             </p>
           </div>

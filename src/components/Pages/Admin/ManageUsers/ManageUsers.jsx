@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet-async";
+import MangeUsersTable from "./MangeUsersTable";
 
 const ManageUsers = () => {
   return (
@@ -25,6 +26,7 @@ const ManageUsers = () => {
           </p>
         </div>
       </div>
+      <MangeUsersTable />
     </section>
   );
 };

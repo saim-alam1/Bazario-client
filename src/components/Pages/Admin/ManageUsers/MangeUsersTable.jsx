@@ -60,8 +60,35 @@ const MangeUsersTable = () => {
     });
 
   const handleReactivate = (customerId, customerName, customerEmail) => {
-    console.log(customerId, customerName, customerEmail);
+    reactivateCustomer({ customerId, customerName, customerEmail });
   };
+
+  const { mutate: reactivateCustomer, isPending: reactivating } = useMutation({
+    mutationFn: async ({ customerId }) => {
+      const res = await axiosSecure.patch(`customers/${customerId}/reactivate`);
+      return res.data;
+    },
+    onSuccess: (data, variable) => {
+      toast.success(
+        data?.message || `${variable.customerName} reactivated successfully`,
+      );
+
+      queryClient.invalidateQueries({
+        queryKey: ["Load-customers", user?.email],
+      });
+
+      // Posting Data In Notification Collection
+      addNotification({
+        receiverEmail: variable.customerEmail,
+        message: `Dear ${variable.customerName}, your customer account on Bazario platform has been reactivated successfully.`,
+      });
+    },
+    onError: (error) => {
+      toast.error(
+        error.response?.data?.message || "An unexpected error occurred",
+      );
+    },
+  });
 
   if (isLoading) return <Loading />;
 
@@ -134,7 +161,7 @@ const MangeUsersTable = () => {
                       )
                     }
                   >
-                    Reactivate
+                    {reactivating ? "Reactivating..." : "Reactivate"}
                   </button>
                 ) : (
                   <button

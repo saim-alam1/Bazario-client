@@ -6,6 +6,7 @@ import useAuth from "../../../../Hooks/useAuth";
 import Loading from "../../../UI/Loading/Loading";
 import { toast } from "react-toastify";
 import useNotifications from "../../../../Hooks/useNotifications";
+import Swal from "sweetalert2";
 
 const MangeUsersTable = () => {
   const Lottie = LottiePlayer.default || LottiePlayer;
@@ -24,10 +25,22 @@ const MangeUsersTable = () => {
   });
 
   const handleSuspend = (customerId, customerName, customerEmail) => {
-    suspendCustomer({
-      customerId,
-      customerName,
-      customerEmail,
+    Swal.fire({
+      title: "Are you sure?",
+      text: `Suspend ${customerName}?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, suspend it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        suspendCustomer({
+          customerId,
+          customerName,
+          customerEmail,
+        });
+      }
     });
   };
 
@@ -60,7 +73,23 @@ const MangeUsersTable = () => {
     });
 
   const handleReactivate = (customerId, customerName, customerEmail) => {
-    reactivateCustomer({ customerId, customerName, customerEmail });
+    Swal.fire({
+      title: "Reactivate account?",
+      text: `Reactivate ${customerName}?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#16a34a",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, reactivate!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        reactivateCustomer({
+          customerId,
+          customerName,
+          customerEmail,
+        });
+      }
+    });
   };
 
   const { mutate: reactivateCustomer, isPending: reactivating } = useMutation({
@@ -81,6 +110,53 @@ const MangeUsersTable = () => {
       addNotification({
         receiverEmail: variable.customerEmail,
         message: `Dear ${variable.customerName}, your customer account on Bazario platform has been reactivated successfully.`,
+      });
+    },
+    onError: (error) => {
+      toast.error(
+        error.response?.data?.message || "An unexpected error occurred",
+      );
+    },
+  });
+
+  const handleRemove = (customerId, customerName, customerEmail) => {
+    Swal.fire({
+      title: "Danger!",
+      text: `This will permanently delete ${customerName}.`,
+      icon: "error",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        removeCustomer({
+          customerId,
+          customerName,
+          customerEmail,
+        });
+      }
+    });
+  };
+
+  const { mutate: removeCustomer, isPending: removingCustomer } = useMutation({
+    mutationFn: async ({ customerId }) => {
+      const res = await axiosSecure.delete(`customers/${customerId}/delete`);
+      return res.data;
+    },
+    onSuccess: (data, variable) => {
+      toast.success(
+        data?.message || `${variable.customerName} removed successfully`,
+      );
+
+      queryClient.invalidateQueries({
+        queryKey: ["Load-customers", user?.email],
+      });
+
+      // Posting Data In Notification Collection
+      addNotification({
+        receiverEmail: variable.customerEmail,
+        message: `Dear ${variable.customerName}, your customer account on Bazario platform has been deleted for violations of rules & regulations.`,
       });
     },
     onError: (error) => {
@@ -152,6 +228,7 @@ const MangeUsersTable = () => {
               <td>
                 {customer.status === "suspended" ? (
                   <button
+                    disabled={reactivating}
                     className="btn btn-success border-none shadow-none"
                     onClick={() =>
                       handleReactivate(
@@ -165,6 +242,7 @@ const MangeUsersTable = () => {
                   </button>
                 ) : (
                   <button
+                    disabled={suspendingCustomer}
                     className="btn btn-warning border-none shadow-none"
                     onClick={() =>
                       handleSuspend(
@@ -180,8 +258,18 @@ const MangeUsersTable = () => {
               </td>
 
               <td>
-                <button className="btn btn-error border-none shadow-none">
-                  Remove
+                <button
+                  disabled={removingCustomer}
+                  onClick={() =>
+                    handleRemove(
+                      customer._id,
+                      customer.fullName,
+                      customer.email,
+                    )
+                  }
+                  className="btn btn-error border-none shadow-none"
+                >
+                  {removingCustomer ? "Removing..." : "Remove"}
                 </button>
               </td>
             </tr>

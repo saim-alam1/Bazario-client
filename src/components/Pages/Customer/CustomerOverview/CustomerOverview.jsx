@@ -139,10 +139,11 @@ const CustomerOverview = () => {
             <thead className="bg-gray-100 text-left text-sm">
               <tr>
                 <th className="p-4">Product</th>
-                <th className="p-4">Unit Price</th>
+                <th className="p-4 whitespace-nowrap">Unit Price</th>
                 <th className="p-4">Quantity</th>
-                <th className="p-4">Total Price</th>
-                <th className="p-4">Payment Status</th>
+                <th className="p-4 whitespace-nowrap">Total Price</th>
+                <th className="p-4 whitespace-nowrap">Status</th>
+                <th className="p-4 whitespace-nowrap">Via</th>
                 <th className="p-4 text-center">Ordered At</th>
               </tr>
             </thead>
@@ -192,6 +193,12 @@ const CustomerOverview = () => {
                   >
                     {order.paymentStatus.charAt(0).toUpperCase() +
                       order.paymentStatus.slice(1)}
+                  </td>
+
+                  {/* Card Type */}
+                  <td className="p-4 font-medium text-headings whitespace-nowrap">
+                    {order.cardType.charAt(0).toUpperCase() +
+                      order.cardType.slice(1)}
                   </td>
 
                   {/* Ordered At */}

@@ -5,12 +5,11 @@ import Loading from "../../../UI/Loading/Loading";
 import { Helmet } from "react-helmet-async";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { Link } from "react-router";
-import useUserRole from "../../../../Hooks/useUserRole";
+import { FaChevronRight } from "react-icons/fa";
 
 const VendorsOverview = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
-  const { userRole, roleLoading } = useUserRole();
 
   const { data: productsStats = {}, isLoading } = useQuery({
     queryKey: ["vendor-stats", user?.email],
@@ -40,7 +39,15 @@ const VendorsOverview = () => {
     },
   });
 
-  if (isLoading || roleLoading) return <Loading />;
+  const { data: currencyStats = {} } = useQuery({
+    queryKey: ["vendors-currency-stats", user?.email],
+    queryFn: async () => {
+      const res = await axiosSecure(`vendors-currency-stats/${user?.email}`);
+      return res.data;
+    },
+  });
+
+  if (isLoading) return <Loading />;
 
   const stats = [
     {
@@ -245,19 +252,24 @@ const VendorsOverview = () => {
         <div className="space-y-3">
           <div className="flex items-center justify-between rounded-lg border border-base-300 p-3">
             <div>
-              <h3 className="font-medium text-headings">{user?.displayName}</h3>
+              <h3 className="font-medium text-headings">
+                Platform Commission Due
+              </h3>
             </div>
 
             <div>
-              <h3 className="font-medium text-headings">{user?.email}</h3>
+              <h3 className="font-bold text-red-500">
+                {currencyStats?.platformFeeDue}৳
+              </h3>
             </div>
 
             <div className="flex items-center gap-8">
-              <p className="font-semibold text-amber-600">{userRole}</p>
-
-              <button className="btn btn-warning border-none shadow-none">
-                Pay
-              </button>
+              <Link
+                to="/dashboard-layout/payouts"
+                className="btn btn-warning border-none shadow-none"
+              >
+                Pay <FaChevronRight />
+              </Link>
             </div>
           </div>
         </div>

@@ -22,7 +22,7 @@ const Products = () => {
   return (
     <section className="my-14 px-3">
       <Helmet>
-        <title>My Products | Vendor Dashboard</title>
+        <title>Products | Vendor Dashboard</title>
         <meta
           name="description"
           content="Manage all your uploaded products in your vendor dashboard. View, edit, and delete items, track stock levels, and keep your store updated easily."
@@ -30,7 +30,9 @@ const Products = () => {
       </Helmet>
 
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-headings">My Products</h1>
+        <h1 className="text-3xl font-bold text-headings">
+          Products Added By You
+        </h1>
         <p className="text-descriptions mt-2 max-w-10/12">
           Manage all your uploaded products in your vendor dashboard. View,
           edit, and delete items, track stock levels, and keep your store

@@ -10,6 +10,12 @@ const OrdersTable = ({ orders }) => {
   const queryClient = useQueryClient();
   const { addNotification } = useNotifications();
 
+  const getNextStatus = (status) => {
+    if (status === "Order Placed") return "In Transit";
+    if (status === "In Transit") return "Delivered";
+    return "Delivered";
+  };
+
   const handleOrderStatus = (orderId, status, buyerEmail) => {
     orderStatus({ orderId, status, buyerEmail });
   };
@@ -21,12 +27,12 @@ const OrdersTable = ({ orders }) => {
       });
       return res.data;
     },
-    onSuccess: async (data, variables) => {
+
+    onSuccess: (data, variables) => {
       queryClient.invalidateQueries({
         queryKey: ["orders", user?.email],
       });
 
-      // Posting Data In Notification Collection
       addNotification({
         receiverEmail: variables.buyerEmail,
         message: `Your order is now ${variables.status}`,
@@ -34,6 +40,7 @@ const OrdersTable = ({ orders }) => {
 
       toast.success(data.message);
     },
+
     onError: (error) => {
       toast.error(error.response?.data?.message || error.message);
     },
@@ -41,22 +48,25 @@ const OrdersTable = ({ orders }) => {
 
   return (
     <div className="overflow-x-auto bg-white rounded-xl border border-gray-100 shadow-sm">
-      <div className="overflow-x-auto bg-white rounded-xl border border-gray-100 shadow-sm">
-        <table className="table w-full">
-          <thead className="bg-gray-50">
-            <tr>
-              <th>Product</th>
-              <th>Buyer</th>
-              <th>Price</th>
-              <th>Trx. Id</th>
-              <th>Payment</th>
-              <th>Status</th>
-              <th>Ordered At</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders.map((order) => (
+      <table className="table w-full">
+        <thead className="bg-gray-50">
+          <tr>
+            <th>Product</th>
+            <th>Buyer</th>
+            <th>Price</th>
+            <th>Trx. Id</th>
+            <th>Payment</th>
+            <th>Status</th>
+            <th>Ordered At</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {orders.map((order) => {
+            const nextStatus = getNextStatus(order.orderStatus);
+
+            return (
               <tr key={order._id} className="hover:bg-gray-50 transition">
                 <td>
                   <div className="flex items-center gap-3">
@@ -68,35 +78,38 @@ const OrdersTable = ({ orders }) => {
                     <div className="whitespace-nowrap">{order.productName}</div>
                   </div>
                 </td>
+
                 <td className="whitespace-nowrap">{order.buyerName}</td>
+
                 <td>৳{order.totalPrice}</td>
+
                 <td>{order.transactionId}</td>
+
                 <td>
                   <span
-                    className={`badge ${order.paymentStatus === "paid" ? "badge-success" : "badge-error"} text-white`}
+                    className={`badge ${
+                      order.paymentStatus === "paid"
+                        ? "badge-success"
+                        : "badge-error"
+                    } text-white`}
                   >
-                    {order.paymentStatus.charAt(0).toUpperCase() +
-                      order.paymentStatus.slice(1)}
+                    {(order.paymentStatus || "").charAt(0).toUpperCase() +
+                      order.paymentStatus?.slice(1)}
                   </span>
                 </td>
-                <td>
-                  <span className="font-medium text-descriptions whitespace-nowrap">
-                    {order.orderStatus}
-                  </span>
+
+                <td className="font-medium text-descriptions whitespace-nowrap">
+                  {order.orderStatus}
                 </td>
+
                 <td className="text-descriptions">
                   {new Date(order.orderedAt).toLocaleDateString("en-GB")}
                 </td>
-                <td className="text-descriptions">
+
+                <td>
                   <button
                     onClick={() =>
-                      handleOrderStatus(
-                        order._id,
-                        order.orderStatus === "Order Placed"
-                          ? "In Transit"
-                          : "Delivered",
-                        order.buyerEmail,
-                      )
+                      handleOrderStatus(order._id, nextStatus, order.buyerEmail)
                     }
                     disabled={isPending || order.orderStatus === "Delivered"}
                     className="btn btn-success border-none shadow-none whitespace-nowrap disabled:cursor-not-allowed"
@@ -105,14 +118,16 @@ const OrdersTable = ({ orders }) => {
                       ? "Processing..."
                       : order.orderStatus === "Order Placed"
                         ? "In Transit"
-                        : "Delivered"}
+                        : order.orderStatus === "In Transit"
+                          ? "Deliver"
+                          : "Delivered"}
                   </button>
                 </td>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 };

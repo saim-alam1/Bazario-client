@@ -170,9 +170,10 @@ const AdminOverview = () => {
             summaries for Bazario.
           </p>
         </div>
-        <div className="mt-4 md:mt-0 text-xs text-slate-400 font-medium bg-white px-3 py-2 rounded-lg border shadow-sm self-start">
+        <div className="mt-4 md:mt-0 text-sm text-slate-400 font-medium bg-white px-3 py-2 rounded-lg border shadow-sm self-start flex items-center">
           Status:{" "}
-          <span className="text-emerald-500 font-semibold">● Live Sync</span>
+          <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-ping mx-2" />
+          <span className="text-emerald-500 font-semibold">Live Sync</span>
         </div>
       </div>
 

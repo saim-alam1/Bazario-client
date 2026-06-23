@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { FiDelete } from "react-icons/fi";
-import { RiEditBoxLine } from "react-icons/ri";
 import useAuth from "../../../../Hooks/useAuth";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
@@ -9,6 +7,7 @@ import useNotifications from "../../../../Hooks/useNotifications";
 import { toast } from "react-toastify";
 import Loading from "../../../UI/Loading/Loading";
 import { FaStar } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 const MyReviewsTable = ({ products }) => {
   const {
@@ -81,10 +80,22 @@ const MyReviewsTable = ({ products }) => {
   });
 
   const deleteReview = (id, productName) => {
-    deleteCustomerReview({
-      reviewId: id,
-      buyerEmail: user?.email,
-      productName,
+    Swal.fire({
+      title: "Are you sure?",
+      text: `Delete review for ${productName}?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteCustomerReview({
+          reviewId: id,
+          buyerEmail: user?.email,
+          productName,
+        });
+      }
     });
   };
 
@@ -129,7 +140,6 @@ const MyReviewsTable = ({ products }) => {
             <th>Product</th>
             <th>Rating</th>
             <th>Review</th>
-            <th>Status</th>
             <th>Edit / Delete</th>
           </tr>
         </thead>
@@ -176,37 +186,39 @@ const MyReviewsTable = ({ products }) => {
                   {review ? review.reviewMessage : "Not Reviewed Yet"}
                 </td>
 
-                <td className="text-headings font-medium">
-                  <span className="badge badge-success">
-                    {product.orderStatus}
-                  </span>
-                </td>
-
                 <td>
                   <button
-                    className="btn"
+                    className="btn btn-warning whitespace-nowrap"
                     onClick={() => {
                       setSelectedProduct(product);
                       document.getElementById("my_modal_5").showModal();
                     }}
                   >
-                    <RiEditBoxLine className="text-2xl" />
+                    Product Review
                   </button>
                 </td>
 
                 <td>
                   <button
-                    className="btn"
+                    className="btn btn-warning whitespace-nowrap"
+                    onClick={() => {
+                      setSelectedProduct(product);
+                      document.getElementById("my_modal_6").showModal();
+                    }}
+                  >
+                    Report Admin
+                  </button>
+                </td>
+
+                <td>
+                  <button
+                    className="btn btn-error whitespace-nowrap"
                     disabled={!review || reviewDeleting}
                     onClick={() =>
                       deleteReview(review._id, product.productName)
                     }
                   >
-                    {reviewDeleting ? (
-                      "Deleting..."
-                    ) : (
-                      <FiDelete className="text-2xl" />
-                    )}
+                    {reviewDeleting ? "Deleting..." : "Delete"}
                   </button>
                 </td>
               </tr>
@@ -215,7 +227,7 @@ const MyReviewsTable = ({ products }) => {
         </tbody>
       </table>
 
-      {/* Modal */}
+      {/* Product Reviews Modal */}
       <dialog id="my_modal_5" className="modal modal-bottom sm:modal-middle">
         <div className="modal-box">
           <div className="mb-10 text-center">
@@ -226,7 +238,7 @@ const MyReviewsTable = ({ products }) => {
           </div>
           <div className="w-full">
             <form
-              method="dialog"
+              noValidate
               onSubmit={handleSubmit(handleReviews)}
               className="w-full"
             >

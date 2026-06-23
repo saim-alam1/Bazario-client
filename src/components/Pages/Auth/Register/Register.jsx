@@ -202,7 +202,7 @@ const Register = () => {
                   <input
                     type="text"
                     placeholder="Your name"
-                    className="block placeholder:text-sm placeholder:font-medium w-full px-3 py-3 text-black bg-white border border-gray-200 text-sm rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+                    className="block placeholder:text-sm placeholder:font-medium w-full px-3 py-3 text-black bg-white border border-gray-200 text-sm rounded-lg focus:border-amber-400 focus:ring-amber-400 focus:outline-none focus:ring focus:ring-opacity-40"
                     {...register("name", { required: true })}
                   />
                   {errors.name && (
@@ -220,7 +220,7 @@ const Register = () => {
                   <input
                     type="email"
                     placeholder="Your email"
-                    className="block placeholder:text-sm placeholder:font-medium w-full px-3 py-3 text-black bg-white border border-gray-200 text-sm rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+                    className="block placeholder:text-sm placeholder:font-medium w-full px-3 py-3 text-black bg-white border border-gray-200 text-sm rounded-lg focus:border-amber-400 focus:ring-amber-400 focus:outline-none focus:ring focus:ring-opacity-40"
                     {...register("email", { required: true })}
                   />
                   {errors.email && (
@@ -238,7 +238,7 @@ const Register = () => {
                   <input
                     type={show ? "text" : "password"}
                     placeholder="********"
-                    className="block w-full px-5 py-3 mt-2 text-black bg-white border border-gray-200 rounded-lg focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
+                    className="block w-full px-5 py-3 mt-2 text-black bg-white border border-gray-200 rounded-lg focus:border-amber-400 dark:focus:border-amber-400 focus:ring-amber-400 focus:outline-none focus:ring focus:ring-opacity-40"
                     {...register("password", {
                       required: "Password field is required",
                       minLength: {

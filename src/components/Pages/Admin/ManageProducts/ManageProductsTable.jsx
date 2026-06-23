@@ -121,6 +121,53 @@ const ManageProductsTable = () => {
       },
     });
 
+  const handleDeleteProduct = (productId, productName, vendorsEmail) => {
+    Swal.fire({
+      title: "Danger!",
+      text: `This will permanently delete ${productName}.`,
+      icon: "error",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteProduct({
+          productId,
+          productName,
+          vendorsEmail,
+        });
+      }
+    });
+  };
+
+  const { mutate: deleteProduct, isPending: deletingProduct } = useMutation({
+    mutationFn: async ({ productId }) => {
+      const res = await axiosSecure.delete(`product/${productId}/delete`);
+      return res.data;
+    },
+    onSuccess: (data, variable) => {
+      toast.success(
+        data?.message || `${variable.productName} deleted successfully`,
+      );
+
+      queryClient.invalidateQueries({
+        queryKey: ["all-products", user?.email],
+      });
+
+      // Posting Data In Notification Collection
+      addNotification({
+        receiverEmail: variable.vendorsEmail,
+        message: `Dear vendor, your product ${variable.productName} on Bazario platform has been deleted due to violations of platform rules & regulations`,
+      });
+    },
+    onError: (error) => {
+      toast.error(
+        error.response?.data?.message || "An unexpected error occurred",
+      );
+    },
+  });
+
   if (isLoading) return <Loading />;
 
   const filteredProducts = products.filter((product) =>
@@ -207,6 +254,7 @@ const ManageProductsTable = () => {
                   <td>
                     {product.productStatus === "suspended" ? (
                       <button
+                        disabled={reactivatingProduct}
                         onClick={() =>
                           handleReactivateProduct(
                             product._id,
@@ -240,8 +288,18 @@ const ManageProductsTable = () => {
                   </td>
 
                   <td>
-                    <button className="btn btn-error border-none shadow-none">
-                      Remove
+                    <button
+                      disabled={deletingProduct}
+                      onClick={() =>
+                        handleDeleteProduct(
+                          product._id,
+                          product.productName,
+                          product.vendorsEmail,
+                        )
+                      }
+                      className="btn btn-error border-none shadow-none"
+                    >
+                      {deletingProduct ? "Deleting..." : "Delete"}
                     </button>
                   </td>
                 </tr>

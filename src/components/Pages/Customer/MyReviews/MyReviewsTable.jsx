@@ -11,11 +11,19 @@ import Swal from "sweetalert2";
 
 const MyReviewsTable = ({ products }) => {
   const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
+    register: registerReview,
+    handleSubmit: handleSubmitReview,
+    reset: resetReview,
+    formState: { errors: reviewErrors },
   } = useForm();
+
+  const {
+    register: registerReport,
+    handleSubmit: handleSubmitReport,
+    reset: resetReport,
+    formState: { errors: reportErrors },
+  } = useForm();
+
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
   const { addNotification } = useNotifications();
@@ -66,7 +74,7 @@ const MyReviewsTable = ({ products }) => {
           `Your review for ${selectedProduct.productName} has been posted successfully`,
       );
 
-      reset();
+      resetReview();
       setSelectedProduct(null);
     },
 
@@ -129,6 +137,10 @@ const MyReviewsTable = ({ products }) => {
         );
       },
     });
+
+  const handleReportToAdmin = (data) => {
+    console.log(data);
+  };
 
   if (isLoading) return <Loading />;
 
@@ -239,7 +251,7 @@ const MyReviewsTable = ({ products }) => {
           <div className="w-full">
             <form
               noValidate
-              onSubmit={handleSubmit(handleReviews)}
+              onSubmit={handleSubmitReview(handleReviews)}
               className="w-full"
             >
               <div className="flex items-center justify-center">
@@ -254,23 +266,17 @@ const MyReviewsTable = ({ products }) => {
                     max="5"
                     placeholder="Ratings..."
                     className="input input-bordered w-full"
-                    {...register("ratings", {
+                    {...registerReview("ratings", {
                       required: "Ratings is required",
                       valueAsNumber: true,
-                      min: {
-                        value: 1,
-                        message: "Ratings must be at least 1",
-                      },
-                      max: {
-                        value: 5,
-                        message: "Discount cannot exceed 5",
-                      },
+                      min: { value: 1, message: "Ratings must be at least 1" },
+                      max: { value: 5, message: "Ratings cannot exceed 5" },
                     })}
                   />
 
-                  {errors.ratings && (
+                  {reviewErrors.ratings && (
                     <p className="text-red-500 text-sm">
-                      {errors.ratings.message}
+                      {reviewErrors.ratings.message}
                     </p>
                   )}
 
@@ -280,15 +286,13 @@ const MyReviewsTable = ({ products }) => {
                       Review Message
                     </label>
                     <textarea
-                      {...register("reviewMessage", {
-                        required: true,
-                      })}
+                      {...registerReview("reviewMessage", { required: true })}
                       placeholder="Review Message..."
                       className="w-full px-4 py-3 text-base text-gray-900 bg-gray-50/50 border border-gray-200 rounded-xl focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 focus:outline-none transition-all duration-200 min-h-30 resize-y"
                     />
 
-                    {errors.reviewMessage && (
-                      <span className="text-red-500 text-[16px] mt-1">
+                    {reviewErrors.reviewMessage && (
+                      <span className="text-red-500 text-sm">
                         Review Message field is required
                       </span>
                     )}
@@ -309,7 +313,89 @@ const MyReviewsTable = ({ products }) => {
                   type="button"
                   disabled={reviewPending}
                   onClick={() => {
-                    (reset(), document.getElementById("my_modal_5").close());
+                    resetReview();
+                    document.getElementById("my_modal_5").close();
+                  }}
+                >
+                  Close
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </dialog>
+
+      {/* Report To Admin Modal */}
+      <dialog id="my_modal_6" className="modal modal-bottom sm:modal-middle">
+        <div className="modal-box">
+          <div className="mb-10 text-center">
+            <h3 className="font-bold text-2xl">Write your issue</h3>
+            <p className="py-4">
+              Press ESC key or click the button below to close
+            </p>
+          </div>
+          <div className="w-full">
+            <form
+              noValidate
+              onSubmit={handleSubmitReport(handleReportToAdmin)}
+              className="w-full"
+            >
+              <div className="flex items-center justify-center">
+                <div className="flex flex-col w-full space-y-4">
+                  {/* Subject */}
+                  <div>
+                    <label className="mb-2 text-base font-semibold text-gray-700">
+                      Subject
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Subject..."
+                      className="block placeholder:text-sm
+      placeholder:font-medium w-full px-3 py-3 text-black bg-white border border-gray-200 text-sm rounded-lg focus:border-amber-400 focus:ring-amber-400 focus:outline-none focus:ring focus:ring-opacity-40 mt-2 mb-1"
+                      {...registerReport("subject", { required: true })}
+                    />
+                    {reportErrors.subject && (
+                      <span className="text-red-500 text-sm">
+                        Subject field is required
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Review Message */}
+                  <div className="flex flex-col col-span-1 md:col-span-2">
+                    <label className="mb-2 text-base font-semibold text-gray-700">
+                      Review Message
+                    </label>
+                    <textarea
+                      {...registerReport("reportMessage", { required: true })}
+                      placeholder="Review Message..."
+                      className="w-full px-4 py-3 text-base text-gray-900 bg-gray-50/50 border border-gray-200 rounded-xl focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 focus:outline-none transition-all duration-200 min-h-30 resize-y"
+                    />
+
+                    {reportErrors?.reportMessage && (
+                      <span className="text-red-500 text-sm">
+                        Report message is required
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="w-full flex items-center justify-end gap-4 mt-4">
+                <button
+                  type="submit"
+                  className="btn shadow-none text-white bg-amber-600 hover:bg-amber-700"
+                >
+                  {reviewPending ? "Submitting..." : "Submit"}
+                </button>
+
+                <button
+                  className="btn btn-error border-none shadow-none"
+                  type="button"
+                  disabled={reviewPending}
+                  onClick={() => {
+                    resetReport();
+                    document.getElementById("my_modal_6").close();
                   }}
                 >
                   Close

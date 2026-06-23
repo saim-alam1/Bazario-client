@@ -26,8 +26,6 @@ const ManageProductsTable = () => {
     },
   });
 
-  console.log(products);
-
   const handleSuspendProduct = (productId, productName, vendorsEmail) => {
     Swal.fire({
       title: "Are you sure?",
@@ -74,6 +72,54 @@ const ManageProductsTable = () => {
       );
     },
   });
+
+  const handleReactivateProduct = (productId, productName, vendorsEmail) => {
+    Swal.fire({
+      title: "Reactivate account?",
+      text: `Reactivate ${productName}?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#16a34a",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, reactivate!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        reactivateProduct({
+          productId,
+          productName,
+          vendorsEmail,
+        });
+      }
+    });
+  };
+
+  const { mutate: reactivateProduct, isPending: reactivatingProduct } =
+    useMutation({
+      mutationFn: async ({ productId }) => {
+        const res = await axiosSecure.patch(`product/${productId}/reactivate`);
+        return res.data;
+      },
+      onSuccess: (data, variable) => {
+        toast.success(
+          data?.message || `${variable.productName} reactivated successfully`,
+        );
+
+        queryClient.invalidateQueries({
+          queryKey: ["all-products", user?.email],
+        });
+
+        // Posting Data In Notification Collection
+        addNotification({
+          receiverEmail: variable.vendorsEmail,
+          message: `Dear vendor, your product ${variable.productName} on Bazario platform has been reactivated successfully.`,
+        });
+      },
+      onError: (error) => {
+        toast.error(
+          error.response?.data?.message || "An unexpected error occurred",
+        );
+      },
+    });
 
   if (isLoading) return <Loading />;
 
@@ -160,11 +206,23 @@ const ManageProductsTable = () => {
                   </td>
                   <td>
                     {product.productStatus === "suspended" ? (
-                      <button className="btn btn-success border-none shadow-none whitespace-nowrap">
-                        Restore Product
+                      <button
+                        onClick={() =>
+                          handleReactivateProduct(
+                            product._id,
+                            product.productName,
+                            product.vendorsEmail,
+                          )
+                        }
+                        className="btn btn-success border-none shadow-none whitespace-nowrap"
+                      >
+                        {reactivatingProduct
+                          ? "Reactivating..."
+                          : "Reactivate Product"}
                       </button>
                     ) : (
                       <button
+                        disabled={suspendingProduct}
                         onClick={() =>
                           handleSuspendProduct(
                             product._id,

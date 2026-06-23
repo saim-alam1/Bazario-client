@@ -139,8 +139,53 @@ const MyReviewsTable = ({ products }) => {
     });
 
   const handleReportToAdmin = (data) => {
-    console.log(data);
+    if (!selectedProduct) return;
+
+    const reportData = {
+      buyerEmail: user?.email,
+      ...data,
+      productId: selectedProduct.productId,
+      orderId: selectedProduct._id,
+      vendorEmail: selectedProduct.vendorEmail,
+      productName: selectedProduct.productName,
+      productImage: selectedProduct.productImage,
+    };
+
+    reportToAdmin(reportData);
   };
+
+  const { mutate: reportToAdmin, isPending: reporting } = useMutation({
+    mutationFn: async (report) => {
+      const res = await axiosSecure.post("report-to-admin", report);
+      return res.data;
+    },
+    onSuccess: (res) => {
+      document.getElementById("my_modal_6")?.close();
+
+      queryClient.invalidateQueries(["my-reviews", user?.email]);
+
+      addNotification({
+        receiverEmail: user?.email,
+        message: `Your report for ${selectedProduct.productName} has been submitted to admin successfully`,
+      });
+
+      toast.success(
+        res?.message ||
+          `Your report for ${selectedProduct.productName} has been submitted to admin successfully`,
+      );
+
+      resetReport();
+      setSelectedProduct(null);
+    },
+
+    onError: (error) => {
+      document.getElementById("my_modal_6")?.close();
+
+      toast.error(
+        error.response?.data?.message || "An unexpected error occurred",
+      );
+    },
+  });
 
   if (isLoading) return <Loading />;
 
@@ -151,14 +196,22 @@ const MyReviewsTable = ({ products }) => {
           <tr>
             <th>Product</th>
             <th>Rating</th>
-            <th>Review</th>
-            <th>Edit / Delete</th>
+            <th>Review Message</th>
+            <th>Admin Report</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {products.map((product) => {
-            const review = myReviews.find(
-              (r) => r.productId === product.productId,
+            const vendorReview = myReviews.find(
+              (r) =>
+                r.productId === product.productId && r.reviewFor === "vendor",
+            );
+
+            // Find the separate admin report item
+            const adminReport = myReviews.find(
+              (r) =>
+                r.productId === product.productId && r.reviewFor === "admin",
             );
 
             return (
@@ -177,25 +230,49 @@ const MyReviewsTable = ({ products }) => {
                 </td>
 
                 <td className="text-headings whitespace-nowrap">
-                  {(() => {
-                    const review = myReviews.find(
-                      (r) => r.productId === product.productId,
-                    );
-
-                    if (!review) return "Not Rated Yet";
-
-                    return (
-                      <div className="flex">
-                        {[...Array(Math.floor(review.ratings))].map((_, i) => (
+                  {vendorReview && vendorReview.ratings ? (
+                    <div className="flex">
+                      {[...Array(Math.floor(vendorReview.ratings) || 0)].map(
+                        (_, i) => (
                           <FaStar key={i} className="text-amber-600" />
-                        ))}
-                      </div>
-                    );
-                  })()}
+                        ),
+                      )}
+                    </div>
+                  ) : (
+                    <span className="text-gray-400 text-sm">Not Rated Yet</span>
+                  )}
                 </td>
 
-                <td className="text-headings whitespace-nowrap">
-                  {review ? review.reviewMessage : "Not Reviewed Yet"}
+                <td className="max-w-xs truncate">
+                  {vendorReview ? (
+                    <span className="text-gray-700">
+                      {vendorReview.reviewMessage}
+                    </span>
+                  ) : (
+                    <span className="text-gray-400 text-sm">
+                      No Review Submitted
+                    </span>
+                  )}
+                </td>
+
+                <td className="max-w-xs truncate">
+                  {adminReport ? (
+                    <div className="text-sm">
+                      <p className="font-semibold text-red-600">
+                        Sub: {adminReport.subject}
+                      </p>
+                      <p
+                        className="text-gray-600 truncate"
+                        title={adminReport.reportMessage}
+                      >
+                        {adminReport.reportMessage}
+                      </p>
+                    </div>
+                  ) : (
+                    <span className="text-gray-400 text-sm">
+                      Clean / No Issues
+                    </span>
+                  )}
                 </td>
 
                 <td>
@@ -224,13 +301,13 @@ const MyReviewsTable = ({ products }) => {
 
                 <td>
                   <button
-                    className="btn btn-error whitespace-nowrap"
-                    disabled={!review || reviewDeleting}
+                    className="btn btn-error btn-sm whitespace-nowrap"
+                    disabled={!vendorReview || reviewDeleting}
                     onClick={() =>
-                      deleteReview(review._id, product.productName)
+                      deleteReview(vendorReview._id, product.productName)
                     }
                   >
-                    {reviewDeleting ? "Deleting..." : "Delete"}
+                    {reviewDeleting ? "..." : "Delete Review"}
                   </button>
                 </td>
               </tr>
@@ -386,13 +463,13 @@ const MyReviewsTable = ({ products }) => {
                   type="submit"
                   className="btn shadow-none text-white bg-amber-600 hover:bg-amber-700"
                 >
-                  {reviewPending ? "Submitting..." : "Submit"}
+                  {reporting ? "Submitting..." : "Submit"}
                 </button>
 
                 <button
                   className="btn btn-error border-none shadow-none"
                   type="button"
-                  disabled={reviewPending}
+                  disabled={reporting}
                   onClick={() => {
                     resetReport();
                     document.getElementById("my_modal_6").close();

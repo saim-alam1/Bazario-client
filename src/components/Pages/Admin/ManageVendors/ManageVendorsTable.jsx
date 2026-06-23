@@ -71,6 +71,53 @@ const ManageVendorsTable = () => {
     },
   });
 
+  const handleReactivate = (customerId, customerName, customerEmail) => {
+    Swal.fire({
+      title: "Reactivate account?",
+      text: `Reactivate ${customerName}?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#16a34a",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, reactivate!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        reactivateVendor({
+          customerId,
+          customerName,
+          customerEmail,
+        });
+      }
+    });
+  };
+
+  const { mutate: reactivateVendor, isPending: reactivating } = useMutation({
+    mutationFn: async ({ customerId }) => {
+      const res = await axiosSecure.patch(`vendor/${customerId}/reactivate`);
+      return res.data;
+    },
+    onSuccess: (data, variable) => {
+      toast.success(
+        data?.message || `${variable.customerName} reactivated successfully`,
+      );
+
+      queryClient.invalidateQueries({
+        queryKey: ["Load-vendors", user?.email],
+      });
+
+      // Posting Data In Notification Collection
+      addNotification({
+        receiverEmail: variable.customerEmail,
+        message: `Dear ${variable.customerName}, your vendor account on Bazario platform has been reactivated successfully.`,
+      });
+    },
+    onError: (error) => {
+      toast.error(
+        error.response?.data?.message || "An unexpected error occurred",
+      );
+    },
+  });
+
   if (isLoading) return <Loading />;
 
   if (!vendors?.length) {
@@ -135,16 +182,15 @@ const ManageVendorsTable = () => {
                   <button
                     // disabled={reactivating}
                     className="btn btn-success border-none shadow-none"
-                    // onClick={() =>
-                    //   handleReactivate(
-                    //     vendor._id,
-                    //     vendor.fullName,
-                    //     vendor.email,
-                    //   )
-                    // }
+                    onClick={() =>
+                      handleReactivate(
+                        vendor._id,
+                        vendor.fullName,
+                        vendor.email,
+                      )
+                    }
                   >
-                    {/* {reactivating ? "Reactivating..." : "Reactivate"} */}
-                    Reactivate
+                    {reactivating ? "Reactivating..." : "Reactivate"}
                   </button>
                 ) : (
                   <button

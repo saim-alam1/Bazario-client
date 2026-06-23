@@ -2,14 +2,19 @@ import { useState } from "react"; // Added useState
 import LottiePlayer from "lottie-react";
 import noData from "../../../../assets/noData.json";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import useAuth from "../../../../Hooks/useAuth";
 import Loading from "../../../UI/Loading/Loading";
+import Swal from "sweetalert2";
+import { toast } from "react-toastify";
+import useNotifications from "../../../../Hooks/useNotifications";
 
 const ManageProductsTable = () => {
   const Lottie = LottiePlayer.default || LottiePlayer;
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
+  const { addNotification } = useNotifications();
+  const queryClient = useQueryClient();
 
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -18,6 +23,55 @@ const ManageProductsTable = () => {
     queryFn: async () => {
       const res = await axiosSecure("/all-products");
       return res.data;
+    },
+  });
+
+  console.log(products);
+
+  const handleSuspendProduct = (productId, productName, vendorsEmail) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: `Suspend ${productName}?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, suspend it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        suspendProduct({
+          productId,
+          productName,
+          vendorsEmail,
+        });
+      }
+    });
+  };
+
+  const { mutate: suspendProduct, isPending: suspendingProduct } = useMutation({
+    mutationFn: async ({ productId }) => {
+      const res = await axiosSecure.patch(`product/${productId}/suspend`);
+      return res.data;
+    },
+    onSuccess: (data, variable) => {
+      toast.success(
+        data?.message || `${variable.productName} suspended successfully`,
+      );
+
+      queryClient.invalidateQueries({
+        queryKey: ["all-products", user?.email],
+      });
+
+      // Posting Data In Notification Collection
+      addNotification({
+        receiverEmail: variable.vendorsEmail,
+        message: `Dear vendor, your product ${variable.productName} on Bazario platform has been temporarily suspended.`,
+      });
+    },
+    onError: (error) => {
+      toast.error(
+        error.response?.data?.message || "An unexpected error occurred",
+      );
     },
   });
 
@@ -49,7 +103,7 @@ const ManageProductsTable = () => {
           placeholder="Search by product name..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="input input-bordered w-full shadow-sm bg-white border-gray-200 focus:border-primary focus:outline-none"
+          className="input input-bordered w-full shadow-sm bg-white border-gray-200 focus:border-amber-500 focus:outline-none"
         />
       </div>
 
@@ -89,13 +143,15 @@ const ManageProductsTable = () => {
                   <td className="text-headings">
                     <span
                       className={`font-medium ${
-                        product.stockStatus === "paused"
+                        product.productStatus === "suspended"
                           ? "text-red-500"
                           : "text-green-600"
                       }`}
                     >
-                      {product.stockStatus.charAt(0).toUpperCase() +
-                        product.stockStatus.slice(1)}
+                      {product?.productStatus
+                        ? product.productStatus.charAt(0).toUpperCase() +
+                          product.productStatus.slice(1)
+                        : "Active"}
                     </span>
                   </td>
 
@@ -103,13 +159,24 @@ const ManageProductsTable = () => {
                     {new Date(product.addedAt).toLocaleDateString("en-GB")}
                   </td>
                   <td>
-                    {product.status === "suspended" ? (
-                      <button className="btn btn-success border-none shadow-none">
-                        Reactivate
+                    {product.productStatus === "suspended" ? (
+                      <button className="btn btn-success border-none shadow-none whitespace-nowrap">
+                        Restore Product
                       </button>
                     ) : (
-                      <button className="btn btn-warning border-none shadow-none">
-                        Suspend
+                      <button
+                        onClick={() =>
+                          handleSuspendProduct(
+                            product._id,
+                            product.productName,
+                            product.vendorsEmail,
+                          )
+                        }
+                        className="btn btn-warning border-none shadow-none whitespace-nowrap"
+                      >
+                        {suspendingProduct
+                          ? "Suspending..."
+                          : "Suspend Product"}
                       </button>
                     )}
                   </td>

@@ -6,13 +6,11 @@ import Loading from "../../UI/Loading/Loading";
 import { Link, NavLink, Outlet } from "react-router";
 import useIsActive from "../../../Hooks/useIsActive";
 import {
-  FaBolt,
   FaBoxOpen,
   FaFlag,
   FaPlus,
   FaRegUser,
   FaShoppingCart,
-  FaTags,
   FaUserCheck,
   FaUsers,
   FaWallet,
@@ -170,12 +168,6 @@ const DashboardLayout = () => {
                 </NavLink>
                 <NavLink to="manage-products" className={useIsActive}>
                   <FaBoxOpen style={{ marginRight: "8px" }} /> Products
-                </NavLink>
-                <NavLink to="categories" className={useIsActive}>
-                  <FaTags style={{ marginRight: "8px" }} /> Categories
-                </NavLink>
-                <NavLink to="flash-sales" className={useIsActive}>
-                  <FaBolt style={{ marginRight: "8px" }} /> Flash Sales
                 </NavLink>
                 <NavLink to="admin-analytics" className={useIsActive}>
                   <IoBarChartSharp style={{ marginRight: "8px" }} /> Analytics

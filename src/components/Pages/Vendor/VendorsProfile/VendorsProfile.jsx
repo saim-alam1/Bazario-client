@@ -32,53 +32,13 @@ const VendorsProfile = () => {
     storeDescription,
     registeredAt,
     contactNumber,
+    businessContactNumber,
     businessType,
     businessAddress,
     country,
     deliveryCapability,
     approvedAt,
   } = vendorInfo;
-
-  // const handleProfileUpdate = (data) => {
-  //   const filteredData = Object.fromEntries(
-  //     Object.entries(data).filter(([, value]) => value !== ""),
-  //   );
-
-  //   updateProfile(filteredData);
-  // };
-
-  // const { mutate: updateProfile, isPending } = useMutation({
-  //   mutationFn: async (vendorsInfo) => {
-  //     const res = await axiosSecure.patch(
-  //       `update-vendor/${user?.email}`,
-  //       vendorsInfo,
-  //     );
-  //     return res.data;
-  //   },
-  //   onSuccess: (data) => {
-  //     const modal = document.getElementById("my_modal_5");
-  //     if (modal) modal.close();
-
-  //     // Posting Data In Notification Collection
-  //     addNotification({
-  //       receiverEmail: user?.email,
-  //       message: "Profile updated successfully!",
-  //     });
-
-  //     toast.success(data?.message || "Profile updated successfully!");
-  //     queryClient.invalidateQueries({
-  //       queryKey: ["vendor-info", user?.email],
-  //     });
-  //     reset();
-  //   },
-  //   onError: (error) => {
-  //     const modal = document.getElementById("my_modal_5");
-  //     if (modal) modal.close();
-  //     toast.error(
-  //       error.response?.data?.message || "An unexpected error occurred",
-  //     );
-  //   },
-  // });
 
   if (isLoading) return <Loading />;
 
@@ -235,7 +195,7 @@ const VendorsProfile = () => {
                 </h4>
               </div>
               <p className="text-descriptions font-medium break-all">
-                +{contactNumber || "Not Provided"}
+                +{businessContactNumber || contactNumber}
               </p>
             </div>
 

@@ -118,6 +118,53 @@ const ManageVendorsTable = () => {
     },
   });
 
+  const handleRemove = (customerId, customerName, customerEmail) => {
+    Swal.fire({
+      title: "Danger!",
+      text: `This will permanently delete ${customerName}.`,
+      icon: "error",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        removeVendor({
+          customerId,
+          customerName,
+          customerEmail,
+        });
+      }
+    });
+  };
+
+  const { mutate: removeVendor, isPending: removingVendor } = useMutation({
+    mutationFn: async ({ customerId }) => {
+      const res = await axiosSecure.delete(`vendor/${customerId}/remove`);
+      return res.data;
+    },
+    onSuccess: (data, variable) => {
+      toast.success(
+        data?.message || `${variable.customerName} removed successfully`,
+      );
+
+      queryClient.invalidateQueries({
+        queryKey: ["Load-vendors", user?.email],
+      });
+
+      // Posting Data In Notification Collection
+      addNotification({
+        receiverEmail: variable.customerEmail,
+        message: `Dear ${variable.customerName}, your vendor account on Bazario platform has been deleted for violations of rules & regulations.`,
+      });
+    },
+    onError: (error) => {
+      toast.error(
+        error.response?.data?.message || "An unexpected error occurred",
+      );
+    },
+  });
+
   if (isLoading) return <Loading />;
 
   if (!vendors?.length) {
@@ -160,7 +207,9 @@ const ManageVendorsTable = () => {
 
               <td className="text-headings">{vendor.email}</td>
 
-              <td className="text-headings">+{vendor.contactNumber}</td>
+              <td className="text-headings">
+                +{vendor.contactNumber || vendor.businessContactNumber}
+              </td>
 
               <td className="text-headings">
                 <span
@@ -180,7 +229,7 @@ const ManageVendorsTable = () => {
               <td>
                 {vendor.status === "suspended" ? (
                   <button
-                    // disabled={reactivating}
+                    disabled={reactivating}
                     className="btn btn-success border-none shadow-none"
                     onClick={() =>
                       handleReactivate(
@@ -211,13 +260,13 @@ const ManageVendorsTable = () => {
 
               <td>
                 <button
-                  // disabled={removingCustomer}
-                  // onClick={() =>
-                  //   handleRemove(vendor._id, vendor.fullName, vendor.email)
-                  // }
+                  disabled={removingVendor}
+                  onClick={() =>
+                    handleRemove(vendor._id, vendor.fullName, vendor.email)
+                  }
                   className="btn btn-error border-none shadow-none"
                 >
-                  {/* {removingCustomer ? "Removing..." : "Remove"} */} Remove
+                  {removingVendor ? "Removing..." : "Remove"}
                 </button>
               </td>
             </tr>

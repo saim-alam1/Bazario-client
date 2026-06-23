@@ -28,7 +28,7 @@ const VendorApprovalTable = ({ vendorApplicants }) => {
       // Posting Data In Notification Collection
       addNotification({
         receiverEmail: email,
-        message: "Your seller application has been approved",
+        message: "Your vendor application has been approved",
       });
 
       toast.success(data?.message || "User appointed as vendor");

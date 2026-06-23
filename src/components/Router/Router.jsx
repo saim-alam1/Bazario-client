@@ -33,7 +33,6 @@ import ManageUsers from "../Pages/Admin/ManageUsers/ManageUsers";
 import ManageVendors from "../Pages/Admin/ManageVendors/ManageVendors";
 import VendorApproval from "../Pages/Admin/VendorApproval/VendorApproval";
 import ManageProducts from "../Pages/Admin/ManageProducts/ManageProducts";
-import ManageOrders from "../Pages/Admin/ManageOrders/ManageOrders";
 import CategoriesByAdmin from "../Pages/Admin/CategoriesByAdmin/CategoriesByAdmin";
 import FlashSales from "../Pages/Admin/FlashSales/FlashSales";
 import AdminAnalytics from "../Pages/Admin/AdminAnalytics/AdminAnalytics";
@@ -293,14 +292,6 @@ const router = createBrowserRouter([
         element: (
           <AdminRoute>
             <ManageProducts />
-          </AdminRoute>
-        ),
-      },
-      {
-        path: "manage-orders",
-        element: (
-          <AdminRoute>
-            <ManageOrders />
           </AdminRoute>
         ),
       },

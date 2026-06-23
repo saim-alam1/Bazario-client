@@ -169,11 +169,7 @@ const DashboardLayout = () => {
                   <FaUserCheck style={{ marginRight: "8px" }} /> Vendor Approval
                 </NavLink>
                 <NavLink to="manage-products" className={useIsActive}>
-                  <FaBoxOpen style={{ marginRight: "8px" }} /> Manage Products
-                </NavLink>
-                <NavLink to="manage-orders" className={useIsActive}>
-                  <FaShoppingCart style={{ marginRight: "8px" }} /> Manage
-                  Orders
+                  <FaBoxOpen style={{ marginRight: "8px" }} /> Products
                 </NavLink>
                 <NavLink to="categories" className={useIsActive}>
                   <FaTags style={{ marginRight: "8px" }} /> Categories

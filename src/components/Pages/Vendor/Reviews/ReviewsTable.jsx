@@ -8,6 +8,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import Loading from "../../../UI/Loading/Loading";
+import useUserRole from "../../../../Hooks/useUserRole";
 
 const ReviewsTable = () => {
   const reportForm = useForm();
@@ -16,6 +17,7 @@ const ReviewsTable = () => {
   const axiosSecure = useAxiosSecure();
   const { addNotification } = useNotifications();
   const queryClient = useQueryClient();
+  const { userRole, roleLoading } = useUserRole();
 
   const [reviewData, setReviewData] = useState("");
 
@@ -46,6 +48,7 @@ const ReviewsTable = () => {
       productName: reviewData.productName,
       customerReviewMessage: reviewData.reviewMessage,
       vendorEmail: user?.email,
+      reportedBy: userRole,
     };
 
     sendReport(reportData);
@@ -132,7 +135,7 @@ const ReviewsTable = () => {
     },
   });
 
-  if (isLoading) return <Loading />;
+  if (isLoading || roleLoading) return <Loading />;
 
   return (
     <div>

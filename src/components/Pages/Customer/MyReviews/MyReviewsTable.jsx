@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import Loading from "../../../UI/Loading/Loading";
 import { FaStar } from "react-icons/fa";
 import Swal from "sweetalert2";
+import useUserRole from "../../../../Hooks/useUserRole";
 
 const MyReviewsTable = ({ products }) => {
   const {
@@ -28,6 +29,7 @@ const MyReviewsTable = ({ products }) => {
   const axiosSecure = useAxiosSecure();
   const { addNotification } = useNotifications();
   const queryClient = useQueryClient();
+  const { userRole, roleLoading } = useUserRole();
 
   const [selectedProduct, setSelectedProduct] = useState(null);
 
@@ -159,6 +161,7 @@ const MyReviewsTable = ({ products }) => {
       vendorEmail: selectedProduct.vendorEmail,
       productName: selectedProduct.productName,
       productImage: selectedProduct.productImage,
+      reportedBy: userRole,
     };
 
     reportToAdmin(reportData);
@@ -198,7 +201,7 @@ const MyReviewsTable = ({ products }) => {
     },
   });
 
-  if (isLoading) return <Loading />;
+  if (isLoading || roleLoading) return <Loading />;
 
   return (
     <div className="overflow-x-auto bg-white rounded-xl border border-gray-100 shadow-sm">

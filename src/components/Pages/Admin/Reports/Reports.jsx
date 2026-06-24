@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet-async";
+import ReportsTable from "./ReportsTable";
 
 const Reports = () => {
   return (
@@ -21,6 +22,7 @@ const Reports = () => {
           to maintain marketplace integrity.
         </p>
       </div>
+      <ReportsTable />
     </section>
   );
 };

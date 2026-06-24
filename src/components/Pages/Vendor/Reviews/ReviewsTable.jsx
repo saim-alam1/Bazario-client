@@ -36,7 +36,7 @@ const ReviewsTable = ({ reviews }) => {
 
   const { mutate: sendReport, isPending: reporting } = useMutation({
     mutationFn: async (report) => {
-      const res = await axiosSecure.post("vendors-report", report);
+      const res = await axiosSecure.patch("vendors-report", report);
       return res.data;
     },
     onSuccess: (data) => {
@@ -121,7 +121,8 @@ const ReviewsTable = ({ reviews }) => {
               <th>Rating</th>
               <th>Comment</th>
               <th>Date</th>
-              <th>Report</th>
+              <th>Reply Customer</th>
+              <th>Report Admin</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -165,14 +166,25 @@ const ReviewsTable = ({ reviews }) => {
                   <td className="text-headings whitespace-nowrap">
                     <span
                       className={`${
+                        review?.vendorReply
+                          ? "badge badge-success"
+                          : "badge badge-warning"
+                      } font-semibold`}
+                    >
+                      {review?.vendorReply ? "Replied" : "Not Replied"}
+                    </span>
+                  </td>
+
+                  <td className="text-headings whitespace-nowrap">
+                    <span
+                      className={`${
                         review?.reportStatus === "pending"
                           ? "badge badge-error"
                           : "badge badge-success"
                       } font-semibold`}
                     >
-                      {review?.reportStatus
-                        ? review.reportStatus.charAt(0).toUpperCase() +
-                          review.reportStatus.slice(1)
+                      {review?.reportStatus === "pending"
+                        ? "Reported"
                         : "Not Reported"}
                     </span>
                   </td>
@@ -202,11 +214,12 @@ const ReviewsTable = ({ reviews }) => {
 
                   <td>
                     <button
+                      disabled={review?.vendorReply}
                       onClick={() => {
                         setReviewData(review);
                         document.getElementById("my_modal_6").showModal();
                       }}
-                      className="btn btn-info border-none shadow-none"
+                      className="btn btn-info border-none shadow-none disabled:cursor-not-allowed"
                     >
                       {replyPending ? "Replying..." : "Reply"}
                     </button>

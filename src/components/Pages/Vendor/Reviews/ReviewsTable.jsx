@@ -4,11 +4,12 @@ import { IoFlag } from "react-icons/io5";
 import useAuth from "../../../../Hooks/useAuth";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 import useNotifications from "../../../../Hooks/useNotifications";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import Loading from "../../../UI/Loading/Loading";
 
-const ReviewsTable = ({ reviews }) => {
+const ReviewsTable = () => {
   const reportForm = useForm();
   const replyForm = useForm();
   const { user } = useAuth();
@@ -17,6 +18,22 @@ const ReviewsTable = ({ reviews }) => {
   const queryClient = useQueryClient();
 
   const [reviewData, setReviewData] = useState("");
+
+  const { data: reviews = [], isLoading } = useQuery({
+    queryKey: ["reviews", user?.email],
+    queryFn: async () => {
+      const res = await axiosSecure(`reviews/${user?.email}`);
+      return res.data;
+    },
+  });
+
+  const { data: reports = [] } = useQuery({
+    queryKey: ["vendors-reports-to-admin", user?.email],
+    queryFn: async () => {
+      const res = await axiosSecure(`get-my-reports/${user?.email}`);
+      return res.data;
+    },
+  });
 
   const handleReport = (data) => {
     const reportData = {
@@ -45,6 +62,10 @@ const ReviewsTable = ({ reviews }) => {
 
       queryClient.invalidateQueries({
         queryKey: ["reviews", user?.email],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["vendors-reports-to-admin", user?.email],
       });
 
       toast.success(data.message || "Report sent to admin!");
@@ -111,6 +132,8 @@ const ReviewsTable = ({ reviews }) => {
     },
   });
 
+  if (isLoading) return <Loading />;
+
   return (
     <div>
       <div className="overflow-x-auto bg-white rounded-xl border border-gray-100 shadow-sm">
@@ -128,6 +151,11 @@ const ReviewsTable = ({ reviews }) => {
           </thead>
           <tbody>
             {reviews.map((review) => {
+              const existingReport = reports.find(
+                (report) => report.reviewId === review._id,
+              );
+              const isAlreadyReported = !!existingReport;
+
               return (
                 <tr key={review._id} className="hover:bg-gray-50 transition">
                   <td>
@@ -175,25 +203,24 @@ const ReviewsTable = ({ reviews }) => {
                     </span>
                   </td>
 
+                  {/* Dynamic Report Status Column */}
                   <td className="text-headings whitespace-nowrap">
                     <span
                       className={`${
-                        review?.reportStatus === "pending"
+                        isAlreadyReported
                           ? "badge badge-error"
                           : "badge badge-success"
                       } font-semibold`}
                     >
-                      {review?.reportStatus === "pending"
-                        ? "Reported"
-                        : "Not Reported"}
+                      {isAlreadyReported ? "Reported" : "Not Reported"}
                     </span>
                   </td>
 
                   <td>
                     <button
-                      disabled={reporting || review?.reportStatus}
+                      disabled={reporting || isAlreadyReported}
                       title="Report to Admin"
-                      className={`btn border-none shadow-none whitespace-nowrap ${review?.reportStatus ? "cursor-not-allowed" : ""}`}
+                      className={`btn border-none shadow-none whitespace-nowrap ${isAlreadyReported ? "cursor-not-allowed" : ""}`}
                       onClick={() => {
                         setReviewData(review);
                         document.getElementById("my_modal_5").showModal();
@@ -201,11 +228,11 @@ const ReviewsTable = ({ reviews }) => {
                     >
                       {reporting ? (
                         "Sending Report..."
+                      ) : isAlreadyReported ? (
+                        "Reported"
                       ) : (
                         <>
-                          <IoFlag
-                            className={`text-2xl ${review?.reportStatus ? "" : "text-red-500"}`}
-                          />{" "}
+                          <IoFlag className="text-red-500 text-2xl" />
                           Report admin
                         </>
                       )}

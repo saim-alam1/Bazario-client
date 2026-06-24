@@ -1,23 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
 import useAuth from "../../../../Hooks/useAuth";
-import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
-import Loading from "../../../UI/Loading/Loading";
 import { Helmet } from "react-helmet-async";
 import ReviewsTable from "./ReviewsTable";
 
 const Reviews = () => {
   const { user } = useAuth();
-  const axiosSecure = useAxiosSecure();
-
-  const { data: reviews = [], isLoading } = useQuery({
-    queryKey: ["reviews", user?.email],
-    queryFn: async () => {
-      const res = await axiosSecure(`reviews/${user?.email}`);
-      return res.data;
-    },
-  });
-
-  if (isLoading) return <Loading />;
 
   return (
     <section className="my-14 px-3">
@@ -39,7 +25,7 @@ const Reviews = () => {
           delivered to the customers.
         </p>
       </div>
-      <ReviewsTable reviews={reviews} />
+      <ReviewsTable />
     </section>
   );
 };

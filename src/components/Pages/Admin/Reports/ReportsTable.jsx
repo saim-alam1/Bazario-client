@@ -99,7 +99,7 @@ const ReportsTable = () => {
               {/* Actions - Grouped into a single clean cell with left padding spacing */}
               <td>
                 <Link
-                  to={`/buy-product/${report._id}`}
+                  to="/dashboard-layout/manage-vendors"
                   className="btn btn-success border-none shadow-none whitespace-nowrap"
                 >
                   Manage Vendor

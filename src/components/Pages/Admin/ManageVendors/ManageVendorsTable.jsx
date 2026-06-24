@@ -7,6 +7,7 @@ import Loading from "../../../UI/Loading/Loading";
 import noData from "../../../../assets/noData.json";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
+import { useState } from "react";
 
 const ManageVendorsTable = () => {
   const Lottie = LottiePlayer.default || LottiePlayer;
@@ -14,6 +15,9 @@ const ManageVendorsTable = () => {
   const { user } = useAuth();
   const { addNotification } = useNotifications();
   const queryClient = useQueryClient();
+
+  // Realtime search tracking state
+  const [searchTerm, setSearchTerm] = useState("");
 
   const { data: vendors = [], isLoading } = useQuery({
     queryKey: ["Load-vendors", user?.email],
@@ -167,6 +171,10 @@ const ManageVendorsTable = () => {
 
   if (isLoading) return <Loading />;
 
+  const filteredVendors = vendors.filter((vendor) =>
+    vendor?.email?.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
   if (!vendors?.length) {
     return (
       <div className="flex flex-col items-center justify-center py-10">
@@ -184,95 +192,127 @@ const ManageVendorsTable = () => {
   }
 
   return (
-    <div className="overflow-x-auto bg-white rounded-xl border border-gray-100 shadow-sm">
-      <table className="table w-full">
-        <thead className="bg-gray-50">
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Contact No.</th>
-            <th>Status</th>
-            <th>Vendor Since</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {vendors.map((vendor) => (
-            <tr key={vendor._id} className="hover:bg-gray-50 transition">
-              <td>
-                <div className="flex items-center gap-3 whitespace-nowrap">
-                  <div className="text-headings">{vendor.fullName}</div>
-                </div>
-              </td>
+    <div className="space-y-4 w-full">
+      {/* Realtime Search Input Field */}
+      <div className="max-w-md mb-12">
+        <label className="block mb-1 te text-headings">
+          Search vendors by email
+        </label>
+        <input
+          type="text"
+          placeholder="Search vendors by email address..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="input input-bordered w-full bg-white text-gray-800 border-gray-200 focus:outline-none focus:border-gray-400"
+        />
+      </div>
 
-              <td className="text-headings">{vendor.email}</td>
+      {filteredVendors.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-10 bg-white rounded-xl border border-gray-100 shadow-sm">
+          <Lottie animationData={noData} loop={true} className="w-72 md:w-96" />
+          <h3 className="text-3xl font-semibold text-headings mt-4">
+            No Vendors Found
+          </h3>
+          <p className="text-descriptions mt-2">
+            {searchTerm
+              ? `No vendor email matches "${searchTerm}"`
+              : "There are currently no registered vendors on the platform."}
+          </p>
+        </div>
+      ) : (
+        <div className="overflow-x-auto bg-white rounded-xl border border-gray-100 shadow-sm">
+          <table className="table w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Contact No.</th>
+                <th>Status</th>
+                <th>Vendor Since</th>
+                <th>Actions</th>
+                <th className="pl-12"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredVendors.map((vendor) => (
+                <tr key={vendor._id} className="hover:bg-gray-50 transition">
+                  <td>
+                    <div className="flex items-center gap-3 whitespace-nowrap">
+                      <div className="text-headings">{vendor.fullName}</div>
+                    </div>
+                  </td>
 
-              <td className="text-headings">
-                +{vendor.contactNumber || vendor.businessContactNumber}
-              </td>
+                  <td className="text-headings">{vendor.email}</td>
 
-              <td className="text-headings">
-                <span
-                  className={`font-medium ${
-                    vendor.status === "suspended"
-                      ? "text-red-500"
-                      : "text-green-500"
-                  }`}
-                >
-                  {vendor.status === "suspended" ? "Suspended" : "Active"}
-                </span>
-              </td>
+                  <td className="text-headings">
+                    +{vendor.contactNumber || vendor.businessContactNumber}
+                  </td>
 
-              <td className="text-headings">
-                {new Date(vendor.approvedAt).toLocaleDateString("en-GB")}
-              </td>
-              <td>
-                {vendor.status === "suspended" ? (
-                  <button
-                    disabled={reactivating}
-                    className="btn btn-success border-none shadow-none"
-                    onClick={() =>
-                      handleReactivate(
-                        vendor._id,
-                        vendor.fullName,
-                        vendor.email,
-                      )
-                    }
-                  >
-                    {reactivating ? "Reactivating..." : "Reactivate"}
-                  </button>
-                ) : (
-                  <button
-                    disabled={suspendingVendor}
-                    className="btn btn-warning border-none shadow-none"
-                    onClick={() =>
-                      handleVendorSuspend(
-                        vendor._id,
-                        vendor.fullName,
-                        vendor.email,
-                      )
-                    }
-                  >
-                    {suspendingVendor ? "Suspending..." : "Suspend"}
-                  </button>
-                )}
-              </td>
+                  <td className="text-headings">
+                    <span
+                      className={`font-medium ${
+                        vendor.status === "suspended"
+                          ? "text-red-500"
+                          : "text-green-500"
+                      }`}
+                    >
+                      {vendor.status === "suspended" ? "Suspended" : "Active"}
+                    </span>
+                  </td>
 
-              <td>
-                <button
-                  disabled={removingVendor}
-                  onClick={() =>
-                    handleRemove(vendor._id, vendor.fullName, vendor.email)
-                  }
-                  className="btn btn-error border-none shadow-none"
-                >
-                  {removingVendor ? "Removing..." : "Remove"}
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                  <td className="text-headings">
+                    {new Date(vendor.approvedAt).toLocaleDateString("en-GB")}
+                  </td>
+
+                  <td>
+                    {vendor.status === "suspended" ? (
+                      <button
+                        disabled={reactivating}
+                        className="btn btn-success border-none shadow-none text-white font-medium whitespace-nowrap"
+                        onClick={() =>
+                          handleReactivate(
+                            vendor._id,
+                            vendor.fullName,
+                            vendor.email,
+                          )
+                        }
+                      >
+                        {reactivating ? "Reactivating..." : "Reactivate"}
+                      </button>
+                    ) : (
+                      <button
+                        disabled={suspendingVendor}
+                        className="btn btn-warning border-none shadow-none text-white font-medium whitespace-nowrap"
+                        onClick={() =>
+                          handleVendorSuspend(
+                            vendor._id,
+                            vendor.fullName,
+                            vendor.email,
+                          )
+                        }
+                      >
+                        {suspendingVendor ? "Suspending..." : "Suspend"}
+                      </button>
+                    )}
+                  </td>
+
+                  <td>
+                    <button
+                      disabled={removingVendor}
+                      onClick={() =>
+                        handleRemove(vendor._id, vendor.fullName, vendor.email)
+                      }
+                      className="btn btn-error border-none shadow-none text-white font-medium whitespace-nowrap"
+                    >
+                      {removingVendor ? "Removing..." : "Remove"}
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };

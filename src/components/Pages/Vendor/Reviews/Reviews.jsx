@@ -19,8 +19,6 @@ const Reviews = () => {
 
   if (isLoading) return <Loading />;
 
-  console.log(reviews);
-
   return (
     <section className="my-14 px-3">
       {/* Helmet */}

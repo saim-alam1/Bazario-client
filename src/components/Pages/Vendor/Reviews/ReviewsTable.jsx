@@ -36,7 +36,7 @@ const ReviewsTable = ({ reviews }) => {
 
   const { mutate: sendReport, isPending: reporting } = useMutation({
     mutationFn: async (report) => {
-      const res = await axiosSecure.patch("vendors-report", report);
+      const res = await axiosSecure.post("vendors-report", report);
       return res.data;
     },
     onSuccess: (data) => {
@@ -121,8 +121,8 @@ const ReviewsTable = ({ reviews }) => {
               <th>Rating</th>
               <th>Comment</th>
               <th>Date</th>
-              <th>Reply Customer</th>
-              <th>Report Admin</th>
+              <th>Status</th>
+              <th>Report</th>
               <th>Actions</th>
             </tr>
           </thead>

@@ -39,6 +39,14 @@ const MyReviewsTable = ({ products }) => {
     },
   });
 
+  const { data: reports = [] } = useQuery({
+    queryKey: ["my-reports", user?.email],
+    queryFn: async () => {
+      const res = await axiosSecure(`my-reports-to-admin/${user?.email}`);
+      return res.data;
+    },
+  });
+
   const handleReviews = (data) => {
     if (!selectedProduct) return;
 
@@ -162,7 +170,8 @@ const MyReviewsTable = ({ products }) => {
     onSuccess: (res) => {
       document.getElementById("my_modal_6")?.close();
 
-      queryClient.invalidateQueries(["my-reviews", user?.email]);
+      queryClient.invalidateQueries({ queryKey: ["my-reviews", user?.email] });
+      queryClient.invalidateQueries({ queryKey: ["my-reports", user?.email] });
 
       addNotification({
         receiverEmail: user?.email,
@@ -203,16 +212,18 @@ const MyReviewsTable = ({ products }) => {
         </thead>
         <tbody>
           {products.map((product) => {
+            // 1. Find the review matching this product from the reviews array
             const vendorReview = myReviews.find(
-              (r) =>
-                r.productId === product.productId && r.reviewFor === "vendor",
+              (r) => r.productId === product.productId,
             );
 
-            // Find the separate admin report item
-            const adminReport = myReviews.find(
-              (r) =>
-                r.productId === product.productId && r.reviewFor === "admin",
+            // 2. Find the report matching this product from the separate reports array
+            const adminReport = reports.find(
+              (r) => r.productId === product.productId,
             );
+
+            // 3. Determine if this product has already been reported to disable the button
+            const isAlreadyReported = !!adminReport;
 
             return (
               <tr key={product._id} className="hover:bg-gray-50 transition">
@@ -290,18 +301,19 @@ const MyReviewsTable = ({ products }) => {
                 <td>
                   <button
                     className="btn btn-warning whitespace-nowrap"
+                    disabled={isAlreadyReported || reporting}
                     onClick={() => {
                       setSelectedProduct(product);
                       document.getElementById("my_modal_6").showModal();
                     }}
                   >
-                    Report Admin
+                    {isAlreadyReported ? "Reported" : "Report Admin"}
                   </button>
                 </td>
 
                 <td>
                   <button
-                    className="btn btn-error btn-sm whitespace-nowrap"
+                    className="btn btn-error whitespace-nowrap"
                     disabled={!vendorReview || reviewDeleting}
                     onClick={() =>
                       deleteReview(vendorReview._id, product.productName)

@@ -70,7 +70,9 @@ const MyReviewsTable = ({ products }) => {
     onSuccess: (res) => {
       document.getElementById("my_modal_5")?.close();
 
-      queryClient.invalidateQueries(["my-reviews", user?.email]);
+      queryClient.invalidateQueries({
+        queryKey: ["my-reviews", user?.email],
+      });
 
       addNotification({
         receiverEmail: user?.email,
@@ -150,7 +152,7 @@ const MyReviewsTable = ({ products }) => {
     if (!selectedProduct) return;
 
     const reportData = {
-      buyerEmail: user?.email,
+      customerEmail: user?.email,
       ...data,
       productId: selectedProduct.productId,
       orderId: selectedProduct._id,
@@ -205,7 +207,8 @@ const MyReviewsTable = ({ products }) => {
           <tr>
             <th>Product</th>
             <th>Rating</th>
-            <th>Review Message</th>
+            <th>Your Review</th>
+            <th>Vendor Reply</th>
             <th>Admin Report</th>
             <th>Actions</th>
           </tr>
@@ -263,6 +266,23 @@ const MyReviewsTable = ({ products }) => {
                     <span className="text-gray-400 text-sm">
                       No Review Submitted
                     </span>
+                  )}
+                </td>
+
+                <td className="max-w-xs truncate">
+                  {vendorReview?.vendorReply?.reviewStatus ===
+                  "acknowledged" ? (
+                    <div className="text-sm">
+                      <p className="font-semibold text-green-600">
+                        {vendorReview.vendorReply.subject}
+                      </p>
+
+                      <p className="text-gray-600">
+                        {vendorReview.vendorReply.vendorMessage}
+                      </p>
+                    </div>
+                  ) : (
+                    <span className="text-gray-400 text-sm">No Reply Yet</span>
                   )}
                 </td>
 

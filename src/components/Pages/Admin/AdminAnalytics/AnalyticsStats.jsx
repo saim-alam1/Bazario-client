@@ -80,103 +80,99 @@ const AnalyticsStats = () => {
       </div>
 
       {/* KPI Highlight Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5 mb-8">
         {/* Card 1: Platform Fee */}
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-          <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-xs font-semibold tracking-wider uppercase">
+          <div className="flex items-center justify-between text-descriptions mb-2">
+            <span className="text-sm font-semibold tracking-wider">
               Platform Fee Generated
             </span>
-            <span className="text-sm font-bold text-indigo-500">৳</span>
           </div>
-          <div className="text-2xl font-bold text-slate-900">
+          <div className="text-2xl font-bold text-headings">
             {formatCurrency(totalPlatformFeeGenerated)}
           </div>
-          <div className="text-xs text-emerald-600 font-medium mt-1">
+          <div className="text-sm text-emerald-600 font-medium mt-1">
             ↑ Direct revenue share
           </div>
         </div>
 
         {/* Card 2: Received Revenue */}
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-          <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-xs font-semibold tracking-wider uppercase">
-              Revenue Settled
+          <div className="flex items-center justify-between text-descriptions mb-2">
+            <span className="text-sm font-semibold tracking-wider">
+              Revenue Received
             </span>
-            <span className="text-sm font-bold text-emerald-500">৳</span>
           </div>
-          <div className="text-2xl font-bold text-slate-900">
+          <div className="text-2xl font-bold text-headings">
             {formatCurrency(totalRevenueReceived)}
           </div>
-          <div className="text-xs text-slate-500 mt-1">
+          <div className="text-sm text-descriptions mt-1">
             Deposited into bank accounts
           </div>
         </div>
 
         {/* Card 3: Due Revenue */}
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-          <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-xs font-semibold tracking-wider uppercase">
+          <div className="flex items-center justify-between text-descriptions mb-2">
+            <span className="text-sm font-semibold tracking-wider">
               Revenue Outstanding
             </span>
-            <span className="text-sm font-bold text-amber-500">৳</span>
           </div>
           <div className="text-2xl font-bold text-amber-600">
             {formatCurrency(totalRevenueDue)}
           </div>
-          <div className="text-xs text-slate-500 mt-1">In processing queue</div>
+          <div className="text-sm text-descriptions mt-1">
+            In processing queue
+          </div>
         </div>
 
         {/* Card 4: Periodic Targets */}
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-          <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-xs font-semibold tracking-wider uppercase">
-              This Month / Year
-            </span>
-            <span className="text-sm font-bold text-blue-500">৳</span>
+          <div className="text-descriptions mb-2">
+            <p className="text-sm font-semibold tracking-wider">
+              Revenue This Month:
+            </p>
+            <div className="text-xl font-bold text-headings">
+              {formatCurrency(thisMonthRevenue)}
+            </div>
           </div>
-          <div className="text-xl font-bold text-slate-900">
-            {formatCurrency(thisMonthRevenue)}
-          </div>
-          <div className="text-xs text-slate-400 mt-0.5">
-            YTD: {formatCurrency(thisYearRevenue)}
+
+          <div className="text-descriptions">
+            <p className="text-sm font-semibold tracking-wider">
+              Revenue This Year:
+            </p>
+            <div className="text-xl font-bold text-headings">
+              {formatCurrency(thisYearRevenue)}
+            </div>
           </div>
         </div>
 
         {/* Card 5: Core Ecosystem */}
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-          <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-xs font-semibold tracking-wider uppercase">
+          <div className="text-descriptions mb-2">
+            <span className="text-sm font-semibold tracking-wider">
               Ecosystem Size
             </span>
-            <svg
-              className="w-5 h-5 text-purple-500"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-              ></path>
-            </svg>
           </div>
-          <div className="text-xl font-bold text-slate-900">
+          <div className="text-xl font-bold text-headings">
             {totalCustomers}{" "}
-            <span className="text-xs font-normal text-slate-400">Buyers</span>
+            <span className="text-xs font-normal text-descriptions">
+              Buyers
+            </span>
           </div>
-          <div className="text-xs text-slate-500 mt-1">
-            {totalVendors} Verified Merchants
+          <div className="text-xl font-bold text-headings mt-1">
+            {totalVendors}{" "}
+            <span className="text-xs font-normal text-descriptions">
+              Verified Merchants
+            </span>
           </div>
         </div>
       </div>
 
       {/* Analytics Charts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-8">
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 mb-8">
         {/* Line Chart: Last 7 Days Sales Trend */}
-        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm lg:col-span-7">
+        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm xl:col-span-7">
           <div className="mb-4">
             <h3 className="text-base font-bold text-slate-900">
               Recent Sales Trend
@@ -237,7 +233,7 @@ const AnalyticsStats = () => {
         </div>
 
         {/* Bar Chart: Market Vertical Split */}
-        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm lg:col-span-5">
+        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm xl:col-span-5">
           <div className="mb-4">
             <h3 className="text-base font-bold text-slate-900">
               Category Performance
@@ -304,7 +300,7 @@ const AnalyticsStats = () => {
       </div>
 
       {/* Operational Breakdown Matrix */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
         {/* Fulfillment Pipeline Progression */}
         <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
           <div>
@@ -381,10 +377,10 @@ const AnalyticsStats = () => {
         {/* Top Vendors Leaderboard Grid */}
         <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm lg:col-span-2">
           <div className="mb-4">
-            <h3 className="text-base font-bold text-slate-900">
+            <h3 className="text-base font-bold text-headings">
               Top Performing Merchants
             </h3>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-descriptions">
               Highest grossing vendors sorted by total earnings generated
             </p>
           </div>
@@ -394,23 +390,27 @@ const AnalyticsStats = () => {
               <thead>
                 <tr className="border-b border-slate-100 text-slate-400 uppercase tracking-wider font-semibold">
                   <th className="py-3 px-2">Store / Merchant</th>
-                  <th className="py-3 px-2 text-center">Units Sold</th>
-                  <th className="py-3 px-2 text-right">Total Gross</th>
+                  <th className="py-3 px-2 text-center whitespace-nowrap">
+                    Units Sold
+                  </th>
+                  <th className="py-3 px-2 text-right whitespace-nowrap">
+                    Total Gross
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 font-medium">
                 {topVendors.map((vendor, idx) => (
                   <tr key={idx} className="hover:bg-slate-50 transition-colors">
-                    <td className="py-3 px-2">
-                      <div className="font-bold text-slate-900">
+                    <td className="py-3 px-2 space-y-1">
+                      <div className="font-bold text-headings">
                         {vendor.storeName}
                       </div>
-                      <div className="text-slate-400 text-[11px] font-normal">
+                      <div className="text-descriptions text-sm font-normal">
                         {vendor.vendorName} • {vendor.vendorEmail}
                       </div>
                     </td>
-                    <td className="py-3 px-2 text-center text-slate-700">
-                      <span className="bg-slate-100 px-2 py-0.5 rounded text-slate-800 font-semibold">
+                    <td className="py-3 px-2 text-center text-descriptions">
+                      <span className="bg-slate-100 px-2 py-0.5 rounded text-descriptions font-semibold">
                         {vendor.totalUnitSold}
                       </span>
                     </td>

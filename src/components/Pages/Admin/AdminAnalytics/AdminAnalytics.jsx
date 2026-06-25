@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet-async";
+import AnalyticsStats from "./AnalyticsStats";
 
 const AdminAnalytics = () => {
   return (
@@ -27,6 +28,7 @@ const AdminAnalytics = () => {
           </p>
         </div>
       </div>
+      <AnalyticsStats />
     </section>
   );
 };

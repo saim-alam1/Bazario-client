@@ -21,7 +21,7 @@ const AdminAnalytics = () => {
             Review live performance data across the marketplace. Monitor
             platform revenue streams for this month and year, keep tabs on
             top-performing vendors and high-demand products, track full order
-            lifecycles (pending, in-transit, delivered), and act on critical
+            lifecycle (pending, in-transit, delivered), and act on critical
             operational alerts such as low stock counts and performance drops by
             category.
           </p>

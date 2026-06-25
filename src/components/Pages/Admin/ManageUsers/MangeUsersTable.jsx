@@ -7,6 +7,7 @@ import Loading from "../../../UI/Loading/Loading";
 import { toast } from "react-toastify";
 import useNotifications from "../../../../Hooks/useNotifications";
 import Swal from "sweetalert2";
+import { useState } from "react";
 
 const MangeUsersTable = () => {
   const Lottie = LottiePlayer.default || LottiePlayer;
@@ -14,6 +15,9 @@ const MangeUsersTable = () => {
   const { user } = useAuth();
   const { addNotification } = useNotifications();
   const queryClient = useQueryClient();
+
+  // Realtime search tracking state
+  const [searchTerm, setSearchTerm] = useState("");
 
   const { data: customers = [], isLoading } = useQuery({
     queryKey: ["Load-customers", user?.email],
@@ -184,98 +188,133 @@ const MangeUsersTable = () => {
     );
   }
 
+  const filteredCustomers = customers.filter((customer) =>
+    customer?.email?.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
   return (
-    <div className="overflow-x-auto bg-white rounded-xl border border-gray-100 shadow-sm">
-      <table className="table w-full">
-        <thead className="bg-gray-50">
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Contact No.</th>
-            <th>Status</th>
-            <th>Registered At</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {customers.map((customer) => (
-            <tr key={customer._id} className="hover:bg-gray-50 transition">
-              <td>
-                <div className="flex items-center gap-3 whitespace-nowrap">
-                  <div className="text-headings">{customer.fullName}</div>
-                </div>
-              </td>
+    <div className="space-y-4 w-full">
+      {/* Realtime Search Input Field */}
+      <div className="max-w-md mb-12">
+        <label className="block mb-1 te text-headings">
+          Search customer by email
+        </label>
+        <input
+          type="text"
+          placeholder="Search customer by email address..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="input input-bordered w-full bg-white text-gray-800 border-gray-200 focus:outline-none focus:border-gray-400"
+        />
+      </div>
+      {filteredCustomers.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-10 bg-white rounded-xl border border-gray-100 shadow-sm">
+          <Lottie animationData={noData} loop={true} className="w-72 md:w-96" />
+          <h3 className="text-3xl font-semibold text-headings mt-4">
+            No Customer Found
+          </h3>
+          <p className="text-descriptions mt-2">
+            {searchTerm
+              ? `No customer email matches "${searchTerm}"`
+              : "There are currently no registered customers on the platform."}
+          </p>
+        </div>
+      ) : (
+        <div className="overflow-x-auto bg-white rounded-xl border border-gray-100 shadow-sm">
+          <table className="table w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Contact No.</th>
+                <th>Status</th>
+                <th>Registered At</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredCustomers.map((customer) => (
+                <tr key={customer._id} className="hover:bg-gray-50 transition">
+                  <td>
+                    <div className="flex items-center gap-3 whitespace-nowrap">
+                      <div className="text-headings">{customer.fullName}</div>
+                    </div>
+                  </td>
 
-              <td className="text-headings">{customer.email}</td>
+                  <td className="text-headings">{customer.email}</td>
 
-              <td className="text-headings">+{customer.contactNumber}</td>
+                  <td className="text-headings">+{customer.contactNumber}</td>
 
-              <td className="text-headings">
-                <span
-                  className={`font-medium ${
-                    customer.status === "suspended"
-                      ? "text-red-500"
-                      : "text-green-500"
-                  }`}
-                >
-                  {customer.status === "suspended" ? "Suspended" : "Active"}
-                </span>
-              </td>
+                  <td className="text-headings">
+                    <span
+                      className={`font-medium ${
+                        customer.status === "suspended"
+                          ? "text-red-500"
+                          : "text-green-500"
+                      }`}
+                    >
+                      {customer.status === "suspended" ? "Suspended" : "Active"}
+                    </span>
+                  </td>
 
-              <td className="text-headings">
-                {new Date(customer.registeredAt).toLocaleDateString("en-GB")}
-              </td>
-              <td>
-                {customer.status === "suspended" ? (
-                  <button
-                    disabled={reactivating}
-                    className="btn btn-success border-none shadow-none"
-                    onClick={() =>
-                      handleReactivate(
-                        customer._id,
-                        customer.fullName,
-                        customer.email,
-                      )
-                    }
-                  >
-                    {reactivating ? "Reactivating..." : "Reactivate"}
-                  </button>
-                ) : (
-                  <button
-                    disabled={suspendingCustomer}
-                    className="btn btn-warning border-none shadow-none"
-                    onClick={() =>
-                      handleSuspend(
-                        customer._id,
-                        customer.fullName,
-                        customer.email,
-                      )
-                    }
-                  >
-                    {suspendingCustomer ? "Suspending..." : "Suspend"}
-                  </button>
-                )}
-              </td>
+                  <td className="text-headings">
+                    {new Date(customer.registeredAt).toLocaleDateString(
+                      "en-GB",
+                    )}
+                  </td>
+                  <td>
+                    {customer.status === "suspended" ? (
+                      <button
+                        disabled={reactivating}
+                        className="btn btn-success border-none shadow-none"
+                        onClick={() =>
+                          handleReactivate(
+                            customer._id,
+                            customer.fullName,
+                            customer.email,
+                          )
+                        }
+                      >
+                        {reactivating ? "Reactivating..." : "Reactivate"}
+                      </button>
+                    ) : (
+                      <button
+                        disabled={suspendingCustomer}
+                        className="btn btn-warning border-none shadow-none"
+                        onClick={() =>
+                          handleSuspend(
+                            customer._id,
+                            customer.fullName,
+                            customer.email,
+                          )
+                        }
+                      >
+                        {suspendingCustomer ? "Suspending..." : "Suspend"}
+                      </button>
+                    )}
+                  </td>
 
-              <td>
-                <button
-                  disabled={removingCustomer}
-                  onClick={() =>
-                    handleRemove(
-                      customer._id,
-                      customer.fullName,
-                      customer.email,
-                    )
-                  }
-                  className="btn btn-error border-none shadow-none"
-                >
-                  {removingCustomer ? "Removing..." : "Remove"}
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                  <td>
+                    <button
+                      disabled={removingCustomer}
+                      onClick={() =>
+                        handleRemove(
+                          customer._id,
+                          customer.fullName,
+                          customer.email,
+                        )
+                      }
+                      className="btn btn-error border-none shadow-none"
+                    >
+                      {removingCustomer ? "Removing..." : "Remove"}
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };

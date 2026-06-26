@@ -89,6 +89,7 @@ const Register = () => {
         const userInfo = {
           fullName: name,
           email,
+          image,
         };
 
         const res = await axiosInstance.post("users", userInfo);

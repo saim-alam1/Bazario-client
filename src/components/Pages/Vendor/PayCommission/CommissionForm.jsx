@@ -105,6 +105,10 @@ const CommissionForm = () => {
           queryKey: ["commission-amount", user?.email],
         });
 
+        await queryClient.invalidateQueries({
+          queryKey: ["vendors-currency-stats", user?.email],
+        });
+
         // Posting Data In Notification Collection
         addNotification({
           receiverEmail: user?.email,

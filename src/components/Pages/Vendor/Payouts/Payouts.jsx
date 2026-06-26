@@ -34,7 +34,7 @@ const Payouts = () => {
   });
 
   // Loading Withdrawal Request Status
-  const { data: withdrawalReqStatus } = useQuery({
+  const { data: withdrawalReqStatus = {} } = useQuery({
     queryKey: ["withdrawal-request-status", user?.email],
     queryFn: async () => {
       const res = await axiosSecure(`withdrawal-request-status/${user?.email}`);
@@ -44,11 +44,11 @@ const Payouts = () => {
 
   const formattedStats = {
     monthly: `${currencyStats.monthlyRevenue?.toLocaleString() || 0} ৳`,
-    net: `${currencyStats.netRevenue?.toLocaleString() || 0} ৳`,
+    net: `${currencyStats.vendorsEarnings?.toLocaleString() || 0} ৳`,
     due: `${currencyStats.platformFeeDue?.toLocaleString() || 0} ৳`,
     paid: `${currencyStats.totalPlatformFeePaid?.toLocaleString() || 0} ৳`,
     total: `${currencyStats.totalRevenue?.toLocaleString() || 0} ৳`,
-    // withdrawn: `${withdrawalReqStatus.amount?.toLocaleString() || 0} ৳`,
+    withdrawn: `${withdrawalReqStatus?.totalWithdrawn?.toLocaleString() || 0} ৳`,
   };
 
   const handleWithdrawRequest = (data) => {
@@ -241,7 +241,7 @@ const Payouts = () => {
             </span>
           </div>
           <h3 className="mt-2 text-2xl font-bold text-headings">
-            {/* {formattedStats.withdrawn} */} Work Later
+            {formattedStats.withdrawn}
           </h3>
           <p className="text-sm text-gray-400 mt-1">
             Successfully transferred to your accounts

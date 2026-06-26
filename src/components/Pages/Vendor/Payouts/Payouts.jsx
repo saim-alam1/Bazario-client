@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import useAuth from "../../../../Hooks/useAuth";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 import Loading from "../../../UI/Loading/Loading";
@@ -23,6 +23,7 @@ const Payouts = () => {
     formState: { errors },
     reset,
   } = useForm();
+  const queryClient = useQueryClient();
 
   const { data: currencyStats = {}, isLoading } = useQuery({
     queryKey: ["vendors-currency-stats", user?.email],
@@ -52,8 +53,10 @@ const Payouts = () => {
 
   const handleWithdrawRequest = (data) => {
     const withdrawalReq = {
+      vendorName: user?.displayName,
       vendorEmail: user?.email,
       amount: data.amount,
+      ...data,
     };
 
     requestWithdrawal(withdrawalReq);
@@ -68,6 +71,10 @@ const Payouts = () => {
       return res.data;
     },
     onSuccess: async (data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["withdrawal-request-status", user?.email],
+      });
+
       // Posting Data In Notification Collection
       addNotification({
         receiverEmail: user?.email,
@@ -88,7 +95,7 @@ const Payouts = () => {
   if (isLoading || roleLoading) return <Loading />;
 
   return (
-    <section className="mx-auto max-w-7xl my-8 px-4 sm:px-6 lg:px-8 font-sans antialiased text-gray-800">
+    <section className="mx-auto max-w-7xl my-8 px-4 sm:px-6 lg:px-8 font-sans antialiased text-headings">
       <Helmet>
         <title>
           {user?.displayName
@@ -335,8 +342,9 @@ const Payouts = () => {
               className="fieldset w-full"
               onSubmit={handleSubmit(handleWithdrawRequest)}
             >
+              {/* Amount */}
               <div className="space-y-2">
-                <label className="block mb-2 text-[18px] text-descriptions">
+                <label className="block mb-1 text-[18px] text-descriptions">
                   Amount
                 </label>
                 <input
@@ -356,6 +364,56 @@ const Payouts = () => {
                 {errors.amount && (
                   <span className="text-red-500 text-[16px] mt-2">
                     {errors.amount.message}
+                  </span>
+                )}
+              </div>
+
+              {/* Payment Method */}
+              <div className="space-y-2">
+                <label className="block mb-1 text-[18px] text-descriptions">
+                  Payment Method
+                </label>
+                <select
+                  defaultValue=""
+                  {...register("paymentMethod", {
+                    required: "Payment Method is required",
+                  })}
+                  className="w-full px-4 py-3 text-sm text-headings bg-gray-50/50 border border-gray-200 rounded-xl focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 focus:outline-none transition-all duration-200"
+                >
+                  <option value="" disabled>
+                    Select Method
+                  </option>
+                  <option value="bKash">bKash</option>
+                  <option value="Nagad">Nagad</option>
+                  <option value="Rocket">Rocket</option>
+                  <option value="Upay">Upay</option>
+                </select>
+                {errors.paymentMethod && (
+                  <span className="text-red-500 text-[16px] mt-1">
+                    Payment Method field is required
+                  </span>
+                )}
+              </div>
+
+              {/* Account Number */}
+              <div className="space-y-2">
+                <label className="block mb-1 text-[18px] text-descriptions">
+                  Account Number
+                </label>
+                <input
+                  type="number"
+                  placeholder="Account Number"
+                  className="block placeholder:text-sm
+      placeholder:font-medium w-full px-3 py-3 text-headings bg-white border border-gray-200 text-sm rounded-lg focus:border-amber-400 focus:ring-amber-400 focus:outline-none focus:ring focus:ring-opacity-40"
+                  {...register("accountNumber", {
+                    required: true,
+                    valueAsNumber: true,
+                  })}
+                />
+
+                {errors.accountNumber && (
+                  <span className="text-red-500 text-[16px] mt-1">
+                    Account Number field is required
                   </span>
                 )}
               </div>

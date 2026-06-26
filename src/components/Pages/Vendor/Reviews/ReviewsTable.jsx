@@ -184,9 +184,7 @@ const ReviewsTable = () => {
                     </div>
                   </td>
 
-                  <td className="text-headings whitespace-nowrap">
-                    {review.reviewMessage}
-                  </td>
+                  <td className="text-headings">{review.reviewMessage}</td>
 
                   <td>
                     {new Date(

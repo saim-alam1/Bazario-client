@@ -37,7 +37,7 @@ const ProductsSection = () => {
 
       {/* HEADER */}
       <div className="mb-10">
-        <h1 className="text-4xl font-bold text-gray-900 tracking-tight">
+        <h1 className="text-4xl font-bold text-headings tracking-tight">
           Discover Products
         </h1>
         <p className="text-gray-500 mt-2">

@@ -222,7 +222,7 @@ const ProductsDetails = () => {
 
           {/* DESCRIPTION */}
           <div className="bg-white rounded-3xl border shadow-sm p-6">
-            <h3 className="text-xl font-semibold text-gray-900 mb-4">
+            <h3 className="text-xl font-semibold text-headings mb-4">
               Product Description
             </h3>
 
@@ -237,10 +237,10 @@ const ProductsDetails = () => {
               <div className="flex items-center gap-3 mb-3">
                 <MdOutlineInventory2 className="text-2xl text-amber-500" />
 
-                <h4 className="font-semibold text-gray-900">Available Stock</h4>
+                <h4 className="font-semibold text-headings">Available Stock</h4>
               </div>
 
-              <p className="text-2xl font-bold text-gray-800">
+              <p className="text-2xl font-bold text-headings">
                 {stockQuantity}
               </p>
             </div>
@@ -249,7 +249,7 @@ const ProductsDetails = () => {
               <div className="flex items-center gap-3 mb-3">
                 <MdLocalShipping className="text-2xl text-amber-500" />
 
-                <h4 className="font-semibold text-gray-900">Delivery Status</h4>
+                <h4 className="font-semibold text-headings">Delivery Status</h4>
               </div>
 
               <p
@@ -282,10 +282,21 @@ const ProductsDetails = () => {
                   Wishlist
                   <FaHeart className="text-red-500" />
                 </button>
-
                 <Link
-                  to={`/buy-product/${_id}`}
-                  className="flex-1 min-w-45 bg-amber-500 hover:bg-amber-600 text-white py-4 rounded-2xl font-semibold text-lg shadow-md hover:shadow-xl transition flex items-center justify-center gap-3 cursor-pointer"
+                  to={stockStatus === "paused" ? "#" : `/buy-product/${_id}`}
+                  onClick={(e) => {
+                    if (stockStatus === "paused") {
+                      e.preventDefault();
+                      toast.warning(
+                        "This product is temporarily unavailable for purchase.",
+                      );
+                    }
+                  }}
+                  className={`flex-1 min-w-45 py-4 rounded-2xl font-semibold text-lg shadow-md transition flex items-center justify-center gap-3 ${
+                    stockStatus === "paused"
+                      ? "bg-gray-300 cursor-not-allowed pointer-events-auto"
+                      : "bg-amber-500 hover:bg-amber-600 hover:shadow-xl text-white cursor-pointer"
+                  }`}
                 >
                   Buy
                   <FaArrowRight />
@@ -308,12 +319,12 @@ const ProductsDetails = () => {
           <div className="bg-white rounded-3xl border shadow-sm p-6">
             <div className="flex justify-between py-3 border-b">
               <span className="text-gray-500">Category</span>
-              <span className="font-semibold text-gray-900">{category}</span>
+              <span className="font-semibold text-headings">{category}</span>
             </div>
 
             <div className="flex justify-between py-3">
               <span className="text-gray-500">Added On</span>
-              <span className="font-semibold text-gray-900">
+              <span className="font-semibold text-headings">
                 {new Date(addedAt).toLocaleDateString("en-GB")}
               </span>
             </div>

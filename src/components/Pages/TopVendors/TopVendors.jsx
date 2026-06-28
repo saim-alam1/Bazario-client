@@ -15,16 +15,15 @@ const TopVendors = () => {
 
   if (isLoading) return <Loading />;
 
-  console.log(topVendors);
-
   return (
     <section className="my-24 px-3">
       <div className="text-center space-y-4 max-w-9/12 mx-auto">
         <h1 className="text-headings font-semibold text-5xl">Top Vendors</h1>
         <p className="text-xl text-descriptions">
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quisquam,
-          qui adipisci dolore ratione cum maxime, suscipit exercitationem
-          repudiandae provident blanditiis.
+          We celebrate the dedication and hard work of our top-performing
+          vendors who have earned their place through excellence and commitment.
+          Meet the outstanding sellers who help make{" "}
+          <span className="font-bold">Bazario</span> a trusted marketplace.
         </p>
       </div>
       <div className="my-12 grid grid-cols-3 gap-3">

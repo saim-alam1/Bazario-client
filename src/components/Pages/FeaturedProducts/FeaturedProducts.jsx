@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import useAxios from "../../../Hooks/useAxios";
 import Loading from "../../UI/Loading/Loading";
+import { Link } from "react-router";
 
 const FeaturedProducts = () => {
   const axios = useAxios();
@@ -47,7 +48,12 @@ const FeaturedProducts = () => {
               <h2 className="card-title">{product?.productName}</h2>
               <p>{product?.productDescriptions}</p>
               <div className="card-actions">
-                <button className="btn btn-primary">Buy Now</button>
+                <Link
+                  to={`/products-details/${product._id}`}
+                  className="btn border-none bg-amber-500"
+                >
+                  Buy Now
+                </Link>
               </div>
             </div>
           </div>

@@ -1,15 +1,18 @@
 import useAuth from "../../../../Hooks/useAuth";
+import LottiePlayer from "lottie-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 import Loading from "../../../UI/Loading/Loading";
 import { toast } from "react-toastify";
 import useNotifications from "../../../../Hooks/useNotifications";
+import noData from "../../../../assets/noData.json";
 
 const PayoutsTable = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
   const { addNotification } = useNotifications();
   const queryClient = useQueryClient();
+  const Lottie = LottiePlayer.default || LottiePlayer;
 
   const { data: withDrawReq, isLoading } = useQuery({
     queryKey: ["vendor-withdraw-requests", user?.email],
@@ -92,6 +95,22 @@ const PayoutsTable = () => {
   });
 
   if (isLoading) return <Loading />;
+
+  if (!withDrawReq?.length) {
+    return (
+      <div className="flex flex-col items-center justify-center py-10">
+        <Lottie animationData={noData} loop={true} className="w-72 md:w-96" />
+
+        <h3 className="text-3xl font-semibold text-headings">
+          No Payout Requests
+        </h3>
+
+        <p className="text-descriptions mt-2">
+          Looks like you haven't received any payout requests yet.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="overflow-x-auto bg-white rounded-xl border border-gray-100 shadow-sm">

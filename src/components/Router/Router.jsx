@@ -43,6 +43,7 @@ import ProductsSection from "../Pages/Customer/ProductsSection/ProductsSection";
 import ProductsDetails from "../Pages/ProductsDetails/ProductsDetails";
 import BuyProduct from "../Pages/Customer/BuyProduct/BuyProduct";
 import AdminRoute from "../Pages/Auth/AdminRoute/AdminRoute";
+import VendorsWithdrawHistory from "../Pages/Vendor/VendorsWithdrawHistory/VendorsWithdrawHistory";
 
 const router = createBrowserRouter([
   {
@@ -241,6 +242,14 @@ const router = createBrowserRouter([
         element: (
           <VendorsRoute>
             <Payouts />
+          </VendorsRoute>
+        ),
+      },
+      {
+        path: "withdrawal-history",
+        element: (
+          <VendorsRoute>
+            <VendorsWithdrawHistory />
           </VendorsRoute>
         ),
       },

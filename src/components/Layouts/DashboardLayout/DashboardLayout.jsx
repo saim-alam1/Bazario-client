@@ -8,6 +8,7 @@ import useIsActive from "../../../Hooks/useIsActive";
 import {
   FaBoxOpen,
   FaFlag,
+  FaHistory,
   FaPlus,
   FaRegUser,
   FaShoppingCart,
@@ -143,6 +144,9 @@ const DashboardLayout = () => {
                 </NavLink>
                 <NavLink to="payouts" className={useIsActive}>
                   <FaWallet style={{ marginRight: "8px" }} /> Payouts
+                </NavLink>
+                <NavLink to="withdrawal-history" className={useIsActive}>
+                  <FaHistory style={{ marginRight: "8px" }} /> Withdrawals
                 </NavLink>
               </>
             )}

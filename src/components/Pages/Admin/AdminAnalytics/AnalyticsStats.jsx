@@ -174,7 +174,7 @@ const AnalyticsStats = () => {
         {/* Line Chart: Last 7 Days Sales Trend */}
         <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm xl:col-span-7">
           <div className="mb-4">
-            <h3 className="text-base font-bold text-slate-900">
+            <h3 className="text-base font-bold text-headings">
               Recent Sales Trend
             </h3>
             <p className="text-xs text-slate-400">
@@ -235,7 +235,7 @@ const AnalyticsStats = () => {
         {/* Bar Chart: Market Vertical Split */}
         <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm xl:col-span-5">
           <div className="mb-4">
-            <h3 className="text-base font-bold text-slate-900">
+            <h3 className="text-base font-bold text-headings">
               Category Performance
             </h3>
             <p className="text-xs text-slate-400">
@@ -264,16 +264,15 @@ const AnalyticsStats = () => {
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "#0f172a",
+                    backgroundColor: "#f7f1e3",
                     borderRadius: "8px",
                     border: "none",
                   }}
                   itemStyle={{ fontSize: "12px" }}
+                  // Passing 'name' directly ensures it respects the Bar components' name props
                   formatter={(value, name) => [
                     `${value.toLocaleString("en-BD")}৳`,
-                    name === "categoryRevenue"
-                      ? "Category Gross"
-                      : "Platform Share",
+                    name,
                   ]}
                 />
                 <Legend
@@ -285,13 +284,13 @@ const AnalyticsStats = () => {
                   dataKey="categoryRevenue"
                   fill="#f97316"
                   radius={[4, 4, 0, 0]}
-                  name="Category Revenue"
+                  name="Category Gross"
                 />
                 <Bar
                   dataKey="platformRevenue"
                   fill="#6366f1"
                   radius={[4, 4, 0, 0]}
-                  name="Platform Take"
+                  name="Platform Share"
                 />
               </BarChart>
             </ResponsiveContainer>

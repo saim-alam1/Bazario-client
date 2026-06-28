@@ -140,7 +140,6 @@ const AddProducts = () => {
               </span>
             )}
           </div>
-
           {/* Discount (optional) */}
           <div className="space-y-2">
             <label className="block mb-2 text-[18px] text-descriptions font-medium">
@@ -150,10 +149,24 @@ const AddProducts = () => {
               type="number"
               {...register("discount", {
                 valueAsNumber: true,
+                validate: (value) => {
+                  // If the field is empty, allow it to pass (optional)
+                  if (value === "" || isNaN(value) || value === null)
+                    return true;
+                  // If there is a value, it must be strictly greater than 0
+                  return value > 0 || "Discount must be greater than 0";
+                },
               })}
               placeholder="Discount"
               className="block w-full px-5 py-3 mt-2 text-black bg-white border border-gray-200 rounded-lg focus:border-amber-400 dark:focus:border-amber-400 focus:ring-amber-400 focus:outline-none focus:ring focus:ring-opacity-40"
             />
+
+            {/* Display the error message if validation fails */}
+            {errors?.discount && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.discount.message}
+              </p>
+            )}
           </div>
 
           {/* Stock Quantity */}
@@ -171,7 +184,7 @@ const AddProducts = () => {
               className="block w-full px-5 py-3 mt-2 text-black bg-white border border-gray-200 rounded-lg focus:border-amber-400 dark:focus:border-amber-400 focus:ring-amber-400 focus:outline-none focus:ring focus:ring-opacity-40"
             />
 
-            {errors.skillsRequired && (
+            {errors.stockQuantity && (
               <span className="text-red-500 text-[16px] mt-1">
                 Stock Quantity field is required
               </span>

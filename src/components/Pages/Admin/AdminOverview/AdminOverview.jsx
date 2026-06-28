@@ -68,7 +68,7 @@ const AdminOverview = () => {
     },
     {
       title: "Revenue (This Month)",
-      value: overview.platformRevenueThisMonth || 0,
+      value: Math.round(overview.platformRevenueThisMonth) || 0,
       isCurrency: true,
       icon: FaBangladeshiTakaSign,
       color: "text-purple-600 bg-purple-50 border-purple-100",

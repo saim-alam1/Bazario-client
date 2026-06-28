@@ -61,6 +61,36 @@ const PayoutsTable = () => {
     },
   });
 
+  const handleRejectReq = (id, vendorEmail) => {
+    rejectVendorReq({ id, vendorEmail });
+  };
+
+  const { mutate: rejectVendorReq, isPending: rejecting } = useMutation({
+    mutationFn: async ({ id }) => {
+      const res = await axiosSecure.patch(`reject/${id}/withdrawal-request`);
+      return res.data;
+    },
+    onSuccess: async (data, variable) => {
+      toast.success(data?.message || "Withdraw request rejected successfully!");
+
+      // Posting Data In Notification Collection
+      addNotification({
+        receiverEmail: variable?.vendorEmail,
+        message:
+          "Dear Vendor, your withdraw request won't be approved until you clear platform dues!",
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["vendor-withdraw-requests", user?.email],
+      });
+    },
+    onError: (error) => {
+      toast.error(
+        error.response?.data?.message || "An unexpected error occurred",
+      );
+    },
+  });
+
   if (isLoading) return <Loading />;
 
   return (
@@ -89,7 +119,11 @@ const PayoutsTable = () => {
 
               <td className="text-headings">{req.amount}৳</td>
 
-              <td className="text-headings">{req.platformFeeDue}৳</td>
+              <td className="text-headings">
+                <p className="text-red-500 font-bold">
+                  Unpaid {req.platformFeeDue}৳
+                </p>
+              </td>
 
               <td className="text-headings">{req.paymentMethod}</td>
 
@@ -119,7 +153,7 @@ const PayoutsTable = () => {
                       req._id,
                       req.vendorEmail,
                       req.amount,
-                      req.platformFeeDue,
+                      Number(req.platformFeeDue),
                     )
                   }
                   className="btn btn-success border-none shadow-none whitespace-nowrap"
@@ -129,8 +163,11 @@ const PayoutsTable = () => {
               </td>
 
               <td>
-                <button className="btn btn-error border-none shadow-none">
-                  Reject
+                <button
+                  onClick={() => handleRejectReq(req._id, req.vendorEmail)}
+                  className="btn btn-error border-none shadow-none"
+                >
+                  {rejecting ? "Rejecting" : "Reject"}
                 </button>
               </td>
             </tr>

@@ -18,10 +18,8 @@ const CategoriesSection = () => {
 
   return (
     <section data-aos="fade-up" className="my-12 px-3 overflow-hidden">
-      <div className="text-center space-y-4 max-w-9/12 mx-auto">
-        <h1 className="text-headings font-semibold text-5xl">
-          Categories Section
-        </h1>
+      <div className="text-center space-y-4 max-w-11/12 mx-auto">
+        <h1 className="text-headings font-semibold text-5xl">Categories</h1>
         <p className="text-xl text-descriptions">
           Here you can see just a glimpse of all the trending categories we
           currently have. Also if you want you can see all the other categories

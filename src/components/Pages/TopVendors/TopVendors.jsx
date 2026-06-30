@@ -27,7 +27,7 @@ const TopVendors = () => {
         </p>
       </div>
 
-      <div className="my-12 grid grid-cols-3 gap-6 p-4">
+      <div className="my-12 grid md:grid-cols-2 xl:grid-cols-3 gap-6 p-4">
         {topVendors.map((vendor) => (
           <div
             key={vendor._id}

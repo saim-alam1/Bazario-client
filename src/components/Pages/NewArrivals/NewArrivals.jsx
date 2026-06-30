@@ -27,7 +27,7 @@ const NewArrivals = () => {
   if (isLoading) return <Loading />;
 
   return (
-    <section data-aos="fade-up-right" className="mb-24 px-3">
+    <section data-aos="fade-up-right" className="mb-24 px-3 overflow-hidden">
       <div className="text-center space-y-4 max-w-11/12 mx-auto">
         <h1 className="text-headings font-semibold text-5xl">
           Discover New Arrivals
@@ -39,9 +39,12 @@ const NewArrivals = () => {
         </p>
       </div>
 
-      <div className="my-12 grid grid-cols-3 gap-3">
+      <div className="my-12 grid md:grid-cols-2 xl:grid-cols-3 gap-6 p-4">
         {newProducts.map((product) => (
-          <div key={product._id} className="card bg-base-100 shadow-lg">
+          <div
+            key={product._id}
+            className="card bg-base-100 shadow-lg transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-2xl cursor-pointer"
+          >
             <figure className="px-10 pt-10">
               <img
                 src={product?.productImage}
@@ -55,7 +58,7 @@ const NewArrivals = () => {
               <div className="card-actions">
                 <Link
                   to={`/products-details/${product._id}`}
-                  className="btn border-none bg-amber-500"
+                  className="btn border-none bg-amber-500 hover:bg-amber-600 text-black"
                 >
                   Buy Now
                 </Link>

@@ -97,8 +97,6 @@ The landing page includes:
 - Featured Products
 - Top Vendors
 - New Arrivals
-- Customer Testimonials
-- Newsletter Subscription
 - Footer
 
 ---

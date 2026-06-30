@@ -4,7 +4,6 @@ import { toast } from "react-toastify";
 import { useEffect } from "react";
 
 const axiosSecure = axios.create({
-  // baseURL: "http://localhost:3000/",
   baseURL: "https://bazario-server-ruby.vercel.app/",
 });
 

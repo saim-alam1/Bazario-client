@@ -192,8 +192,8 @@ const Navbar = () => {
               <RiMenu2Fill size={25} className="text-amber-500" />
             </div>
             <ul
-              tabIndex="-1"
-              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+              tabIndex={0}
+              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-50 mt-3 w-52 p-2 shadow"
             >
               {links}
             </ul>

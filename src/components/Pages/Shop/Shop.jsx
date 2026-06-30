@@ -117,7 +117,7 @@ const Shop = () => {
       </Helmet>
 
       <h1 className="text-3xl md:text-5xl font-bold text-headings capitalize text-center mb-14">
-        Shop you desired Product
+        Shop your desired Product
       </h1>
 
       <div className="px-3 mb-14 grid grid-cols-1 lg:grid-cols-12 gap-8">

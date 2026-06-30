@@ -17,7 +17,7 @@ const FeaturedProducts = () => {
   if (isLoading) return <Loading />;
 
   return (
-    <section className="my-24 px-3">
+    <section className="my-24 px-3 overflow-hidden">
       <div className="text-center space-y-4 max-w-11/12 mx-auto">
         <h1 className="text-headings font-semibold text-5xl">
           Featured Products
@@ -30,30 +30,28 @@ const FeaturedProducts = () => {
         </p>
       </div>
 
-      <div className="my-12 grid md:grid-cols-2 xl:grid-cols-3 gap-3">
+      <div className="my-12 grid md:grid-cols-2 xl:grid-cols-3 gap-6 p-4">
         {topProducts.map((product) => (
-          <div
-            key={product._id}
-            data-aos="fade-right"
-            className="card bg-base-100 shadow-lg"
-          >
-            <figure className="px-10 pt-10">
-              <img
-                src={product?.productImage}
-                alt={`${product?.productName} Image`}
-                className="rounded-xl h-58.5 w-87.5 object-cover"
-              />
-            </figure>
-            <div className="card-body items-center text-center">
-              <h2 className="card-title">{product?.productName}</h2>
-              <p>{product?.productDescriptions}</p>
-              <div className="card-actions">
-                <Link
-                  to={`/products-details/${product._id}`}
-                  className="btn border-none bg-amber-500"
-                >
-                  Buy Now
-                </Link>
+          <div key={product._id} data-aos="fade-right" className="w-full">
+            <div className="card bg-base-100 shadow-lg h-full transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-2xl cursor-pointer">
+              <figure className="px-10 pt-10">
+                <img
+                  src={product?.productImage}
+                  alt={`${product?.productName} Image`}
+                  className="rounded-xl h-58.5 w-87.5 object-cover"
+                />
+              </figure>
+              <div className="card-body items-center text-center">
+                <h2 className="card-title">{product?.productName}</h2>
+                <p>{product?.productDescriptions}</p>
+                <div className="card-actions">
+                  <Link
+                    to={`/products-details/${product._id}`}
+                    className="btn border-none bg-amber-500 hover:bg-amber-600 text-black"
+                  >
+                    Buy Now
+                  </Link>
+                </div>
               </div>
             </div>
           </div>

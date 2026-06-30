@@ -17,7 +17,7 @@ const CategoriesSection = () => {
   if (isLoading) return <Loading />;
 
   return (
-    <section className="my-12 px-3">
+    <section data-aos="fade-up" className="my-12 px-3 overflow-hidden">
       <div className="text-center space-y-4 max-w-9/12 mx-auto">
         <h1 className="text-headings font-semibold text-5xl">
           Categories Section
@@ -29,7 +29,7 @@ const CategoriesSection = () => {
         </p>
       </div>
 
-      <div className="my-12 grid md:grid-cols-3 gap-4">
+      <div className="my-12 grid md:grid-cols-3 gap-6 p-4">
         {categories.slice(0, 6).map((data, index) => (
           <Link
             to={`/products-section?category=${data.category}`}
@@ -40,7 +40,7 @@ const CategoriesSection = () => {
               <img
                 src={data?.image}
                 alt="Shoes"
-                className="w-full object-cover object-center"
+                className="w-full h-full object-cover object-center"
               />
             </figure>
             <div className="card-body text-center flex flex-col items-center">

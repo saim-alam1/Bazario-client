@@ -16,7 +16,7 @@ const TopVendors = () => {
   if (isLoading) return <Loading />;
 
   return (
-    <section className="my-24 px-3">
+    <section data-aos="fade-left" className="my-24 px-3 overflow-hidden">
       <div className="text-center space-y-4 max-w-11/12 mx-auto">
         <h1 className="text-headings font-semibold text-5xl">Top Vendors</h1>
         <p className="text-xl text-descriptions">
@@ -26,9 +26,13 @@ const TopVendors = () => {
           <span className="font-bold">Bazario</span> a trusted marketplace.
         </p>
       </div>
-      <div className="my-12 grid grid-cols-3 gap-3">
+
+      <div className="my-12 grid grid-cols-3 gap-6 p-4">
         {topVendors.map((vendor) => (
-          <div key={vendor._id} className="card bg-base-100 shadow-lg">
+          <div
+            key={vendor._id}
+            className="card bg-base-100 shadow-lg transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-2xl cursor-pointer"
+          >
             <figure className="px-10 pt-10">
               <img
                 src={vendor?.image}
@@ -50,7 +54,6 @@ const TopVendors = () => {
           </div>
         ))}
       </div>
-      ;
     </section>
   );
 };

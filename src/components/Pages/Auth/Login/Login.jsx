@@ -43,7 +43,6 @@ const Login = () => {
         navigate(`${location.state ? location.state : "/"}`);
       })
       .catch((error) => {
-        console.log(error);
         toast.error(error.message || "Login failed");
       });
   };
@@ -67,23 +66,6 @@ const Login = () => {
                 </h1>
               </div>
               <form className="fieldset" onSubmit={handleSubmit(handleLogin)}>
-                <div className="space-y-2">
-                  <label className="block mb-2 text-[18px] text-descriptions">
-                    Name
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Your name"
-                    className="block placeholder:text-sm
-      placeholder:font-medium w-full px-3 py-3 text-black bg-white border border-gray-200 text-sm rounded-lg focus:border-amber-400 focus:ring-amber-400 focus:outline-none focus:ring focus:ring-opacity-40"
-                    {...register("name", { required: true })}
-                  />
-                  {errors.name && (
-                    <span className="text-red-500 text-[16px] mt-2">
-                      Name field is required
-                    </span>
-                  )}
-                </div>
                 {/* Email */}
                 <div className="my-2">
                   <label className="block mb-1.5 text-[18px] text-descriptions">

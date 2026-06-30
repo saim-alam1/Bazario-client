@@ -18,8 +18,6 @@ const Navbar = () => {
   const cartItemsCount = getCartItems().length;
   const wishlistItemsCount = getWishlistItems().length;
 
-  console.log(userRole);
-
   // Logout
   const handleLogout = () => {
     logOutUser()

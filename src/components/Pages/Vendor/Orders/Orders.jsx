@@ -49,8 +49,8 @@ const Orders = () => {
       </Helmet>
 
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-headings">Manage Orders</h2>
-        <p className="text-descriptions">
+        <h2 className="text-3xl font-bold text-headings">Manage Orders</h2>
+        <p className="text-descriptions mt-2 max-w-10/12">
           View and manage your which been ordered by customers. In this
           component you can track the orders you have received & send them to
           the customers by parcel or your own facilities if you have.

@@ -6,6 +6,7 @@ import Loading from "../../../UI/Loading/Loading";
 import { toast } from "react-toastify";
 import useNotifications from "../../../../Hooks/useNotifications";
 import noData from "../../../../assets/noData.json";
+import Swal from "sweetalert2";
 
 const PayoutsTable = () => {
   const { user } = useAuth();
@@ -64,8 +65,20 @@ const PayoutsTable = () => {
     },
   });
 
-  const handleRejectReq = (id, vendorEmail) => {
-    rejectVendorReq({ id, vendorEmail });
+  const handleRejectReq = (id, vendorName, vendorEmail) => {
+    Swal.fire({
+      title: "Are you sure!",
+      text: `This will permanently reject ${vendorName}'s withdrawal request.`,
+      icon: "error",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, reject it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        rejectVendorReq({ id, vendorEmail });
+      }
+    });
   };
 
   const { mutate: rejectVendorReq, isPending: rejecting } = useMutation({
@@ -140,7 +153,7 @@ const PayoutsTable = () => {
 
               <td className="text-headings">
                 <p className="text-red-500 font-bold">
-                  Unpaid {req.platformFeeDue}৳
+                  {req.platformFeeDue ? `${req.platformFeeDue} ৳` : "All Clear"}
                 </p>
               </td>
 
@@ -183,7 +196,9 @@ const PayoutsTable = () => {
 
               <td>
                 <button
-                  onClick={() => handleRejectReq(req._id, req.vendorEmail)}
+                  onClick={() =>
+                    handleRejectReq(req._id, req.vendorName, req.vendorEmail)
+                  }
                   className="btn btn-error border-none shadow-none"
                 >
                   {rejecting ? "Rejecting" : "Reject"}

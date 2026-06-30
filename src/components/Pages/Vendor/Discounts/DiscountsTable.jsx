@@ -78,7 +78,6 @@ const DiscountsTable = ({ products }) => {
       return res.data;
     },
     onSuccess: (res) => {
-      console.log(res);
       toast.success(res.message || "Discount data removed");
       queryClient.invalidateQueries(["my-products", user?.email]);
 

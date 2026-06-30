@@ -18,8 +18,6 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  console.log(user);
-
   // Register User
   const registerUser = (email, password) => {
     setLoading(true);

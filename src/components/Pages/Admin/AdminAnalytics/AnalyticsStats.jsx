@@ -115,7 +115,7 @@ const AnalyticsStats = () => {
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between text-descriptions mb-2">
             <span className="text-sm font-semibold tracking-wider">
-              Revenue Outstanding
+              Revenue Due
             </span>
           </div>
           <div className="text-2xl font-bold text-amber-600">

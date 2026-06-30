@@ -77,9 +77,6 @@ const CheckoutForm = ({
       }
 
       if (paymentIntent.status === "succeeded") {
-        // console.log("Payment Successful!");
-        // console.log("Transaction ID:", paymentIntent.id);
-
         toast.success("Payment Successful!");
 
         // save payment info to DB

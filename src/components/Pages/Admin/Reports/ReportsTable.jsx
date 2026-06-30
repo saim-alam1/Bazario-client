@@ -21,8 +21,6 @@ const ReportsTable = () => {
 
   if (isLoading) return <Loading />;
 
-  console.log(reports);
-
   if (reports.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-100 bg-white rounded-xl border border-gray-100 shadow-sm p-6">

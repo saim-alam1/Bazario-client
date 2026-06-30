@@ -7,11 +7,11 @@ const Footer = () => {
     <footer className="footer footer-horizontal footer-center bg-base-200 text-headings p-10">
       <aside>
         <Link to="/">
-          <SiShopify className="text-5xl" />
+          <SiShopify className="text-5xl text-amber-600" />
         </Link>
         <p className="font-bold text-2xl">Bazario Ltd.</p>
         <p className="font-semibold text-xl text-descriptions">
-          Providing reliable tech since 2021
+          Trusted by both merchants & customers since 2021
         </p>
         <p className="text-base text-descriptions">
           Copyright © {new Date().getFullYear()} - All right reserved
